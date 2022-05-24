@@ -13,7 +13,7 @@ const fetchJson = async (url: URL) => {
 }
 
 const fetchJsons = async (urls: Array<URL>) => {
-    return urls.map(fetchJson)
+    return await Promise.all(urls.map(fetchJson))
 }
 
 const getModFileUrl = (param: ModSearchParam) => {
