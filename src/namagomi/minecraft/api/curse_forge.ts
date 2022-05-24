@@ -7,15 +7,9 @@ const headers = {
     "x-api-key": curseForgeApiKey
 }
 
-const fetchJson = async (url: string) => {
-    const response = await fetch(url, {
-        headers
-    });
-    return await response.json();
-}
-
-const getModFileUrls = (modId: string) => {
-    return new URL(urlJoin(curseForgeApiBaseUrl, "/v1/mods", modId));
+const fetchJson = async (url: URL) => {
+    const response = await fetch(url.toString(), { headers })
+    return await response.json()
 }
 
 const getModFileUrl = (param: ModSearchParam) => {
@@ -24,11 +18,11 @@ const getModFileUrl = (param: ModSearchParam) => {
     const url = new URL(urlJoin(curseForgeApiBaseUrl, "/v1/mods", param.modid, "files"));
     if (!url.searchParams.has("gameVersion"))
         url.searchParams.append("gameVersion", param.gameVersion);
-    return url
+    return url;
 }
 
 const getModFileUrls = (params: Array<ModSearchParam>) => {
-    params.map()
+    return params.map(getModFileUrl);
 }
 
 export const testFunc = () => {
@@ -45,9 +39,8 @@ export const testFunc = () => {
         "        \"direct-url\": \"https://github.com/KisaragiEffective/Sakura_mod/releases/download/1.0.8-1.12.2%2Bflavored.ksrg.4/Sakura-1.0.8-1.12.2+flavored.ksrg.4.jar\",\n" +
         "    }\n" +
         "]"
-    jsonToModSearchParam(sampleJson)
-    const url = getModFileUrl("268560")("1.12.2");
-    url.searchParams.append("gameVersion", "1.12.2");
+    const params = jsonToModSearchParam(sampleJson)
+    const urls = getModFileUrl(params);
     fetchJson(url.toString())
         .then(json=>
         {
