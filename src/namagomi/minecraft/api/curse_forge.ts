@@ -26,7 +26,7 @@ const getModFileUrl = (param: ModSearchParam) => {
 }
 
 const getModFileUrls = (params: Array<ModSearchParam>) => {
-    return Promise.all(params.map(getModFileUrl))
+    return params.map(getModFileUrl)
 }
 
 const trimJson = (json: JSON, param: ModSearchParam) => {
