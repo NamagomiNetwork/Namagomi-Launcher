@@ -12,6 +12,10 @@ const fetchJson = async (url: URL) => {
     return await response.json()
 }
 
+const fetchJsons = async (urls: Array<URL>) => {
+    const response = urls.map(fetchJson)
+}
+
 const getModFileUrl = (param: ModSearchParam) => {
     if (param.directUrl !== "")
         return new URL(param.directUrl);
