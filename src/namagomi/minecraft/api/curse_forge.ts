@@ -1,6 +1,6 @@
-import urlJoin from "url-join";
-import {curseForgeApiBaseUrl, curseForgeApiKey} from "../../settings/config";
-import {jsonToModSearchParam} from "./NamagomiApi";
+import urlJoin from "url-join"
+import {curseForgeApiBaseUrl, curseForgeApiKey} from "../../settings/config"
+import {jsonToModSearchParam} from "./NamagomiApi"
 
 const headers = {
     "Accept": "application/json",
@@ -13,20 +13,24 @@ const fetchJson = async (url: URL) => {
 }
 
 const fetchJsons = async (urls: Array<URL>) => {
-    const response = urls.map(fetchJson)
+    return urls.map(fetchJson)
 }
 
 const getModFileUrl = (param: ModSearchParam) => {
     if (param.directUrl !== "")
-        return new URL(param.directUrl);
-    const url = new URL(urlJoin(curseForgeApiBaseUrl, "/v1/mods", param.modid, "files"));
+        return new URL(param.directUrl)
+    const url = new URL(urlJoin(curseForgeApiBaseUrl, "/v1/mods", param.modid, "files"))
     if (!url.searchParams.has("gameVersion"))
-        url.searchParams.append("gameVersion", param.gameVersion);
-    return url;
+        url.searchParams.append("gameVersion", param.gameVersion)
+    return url
 }
 
 const getModFileUrls = (params: Array<ModSearchParam>) => {
-    return params.map(getModFileUrl);
+    return Promise.all(params.map(getModFileUrl))
+}
+
+const trimJson = (json: JSON, param: ModSearchParam) => {
+    
 }
 
 export const testFunc = () => {
@@ -44,11 +48,6 @@ export const testFunc = () => {
         "    }\n" +
         "]"
     const params = jsonToModSearchParam(sampleJson)
-    const urls = getModFileUrl(params);
-    fetchJson(url.toString())
-        .then(json=>
-        {
-            console.log(json.data[0].displayName)
-            console.log(json.data[0].downloadUrl);
-        });
+    const urls = getModFileUrls(params)
+    const jsons = fetchJsons(urls)
 }
