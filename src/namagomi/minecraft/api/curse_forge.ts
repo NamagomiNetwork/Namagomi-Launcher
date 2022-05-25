@@ -27,7 +27,7 @@ const getModFileUrl = async (param: ModSearchParam) => {
     const trimmed = await trimJson(json, param)
     param.displayName = trimmed['displayName'] != null ? trimmed['displayName'] : ''
     if (trimmed.downloadUrl == null) {
-        console.error(`modid:${param.modid}/gameversion:${param.gameVersion}/${param.fileNamePattern} doesn't have download url`)
+        console.error(`modid:${param.modid} gameversion:${param.gameVersion} ${param.fileNamePattern} doesn't have download url`)
         return null
     } else
         return new URL(trimmed.downloadUrl)
@@ -42,7 +42,7 @@ const trimJson = async (json: any, param: ModSearchParam) => {
     return await json.then((data: any) => {
         const single = data.data.find((j: any) => j.fileName.indexOf(pattern) != -1)
         if (single == null)
-            console.error(`${param.modid}/${param.gameVersion}/${param.fileNamePattern} not found`)
+            console.error(`${param.modid} ${param.gameVersion} ${param.fileNamePattern} not found`)
         return single
     })
 }
