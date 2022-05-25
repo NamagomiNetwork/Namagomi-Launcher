@@ -21,7 +21,7 @@ const fetchJsons = async (urls: Array<URL>) => {
 const getModFileUrl = (param: ModSearchParam) => {
     if (param.directUrl !== '')
         return new URL(param.directUrl)
-    const url = new URL(urlJoin([curseForgeApiBaseUrl.toString(), '/v1/mods', param.modid, 'files']))
+    const url = new URL(urlJoin([curseForgeApiBaseUrl, '/v1/mods', param.modid, 'files']))
     if (!url.searchParams.has('gameVersion'))
         url.searchParams.append('gameVersion', param.gameVersion)
     const json = fetchJson(url)
