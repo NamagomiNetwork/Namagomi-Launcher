@@ -1,7 +1,6 @@
 import urlJoin from 'url-join'
-import {curseForgeApiBaseUrl, curseForgeApiKey} from '../../settings/config'
+import {curseForgeApiBaseUrl, curseForgeApiKey, namagomiModListUrl} from '../../settings/config'
 import {jsonToModSearchParam} from './NamagomiApi'
-import {sampleGomiJson} from './sample';
 import {ModSearchParam} from './ModSearchParam';
 
 const headers = {
@@ -11,41 +10,54 @@ const headers = {
 
 const fetchJson = async (url: URL) => {
     const response = await fetch(url.toString(), {headers})
-    return await response.json()
+    return response.json()
 }
 
 const fetchJsons = async (urls: Array<URL>) => {
     return await Promise.all(urls.map(fetchJson))
 }
 
-const getModFileUrl = (param: ModSearchParam) => {
+const getModFileUrl = async (param: ModSearchParam) => {
     if (param.directUrl != '')
         return new URL(param.directUrl)
-    console.log(param)
     const url = new URL(urlJoin([curseForgeApiBaseUrl, '/v1/mods', param.modid, 'files']))
     if (!url.searchParams.has('gameVersion'))
         url.searchParams.append('gameVersion', param.gameVersion)
     const json = fetchJson(url)
-    const trimmed = trimJson(json, param)
-    param.displayName = trimmed.displayName
-    return new URL(trimmed.downloadUrl)
+    const trimmed = await trimJson(json, param)
+    param.displayName = trimmed['displayName'] != null ? trimmed['displayName'] : ''
+    if (trimmed.downloadUrl != null) {
+        console.error(`${param.modid}/${param.gameVersion}/${param.fileNamePattern} doesn't have download url`)
+        return new URL('')
+    } else
+        return new URL(trimmed.downloadUrl)
 }
 
 const getModFileUrls = (params: Array<ModSearchParam>) => {
     return params.map(getModFileUrl)
 }
 
-const trimJson = (json: any, param: ModSearchParam) => {
+const trimJson = async (json: any, param: ModSearchParam) => {
     const pattern = param.fileNamePattern
-    return json.data.find((j: any) => j.fileName.indexOf(pattern) != -1)
+    return await json.then((data: any) => {
+        const single = data.data.find((j: any) => j.fileName.indexOf(pattern) != -1)
+        if (single == null)
+            console.error(`${param.modid}/${param.gameVersion}/${param.fileNamePattern} not found`)
+        return single
+    })
 }
 
 const trimJsons = (jsons: Array<any>, params: Array<ModSearchParam>) => {
     return jsons.map((json: any, index) => trimJson(json, params[index]))
 }
 
-export const testFunc = () => {
-    const params = jsonToModSearchParam(sampleGomiJson)
-    const urls = getModFileUrls(params)
-    console.log(urls)
+export const testFunc = async () => {
+    const p = (await fetch(namagomiModListUrl))
+    p.text().then(text => {
+        const params = jsonToModSearchParam(text)
+        const urls = getModFileUrls(params)
+        urls.map(url => {
+            //url.then(console.log)
+        })
+    })
 }
