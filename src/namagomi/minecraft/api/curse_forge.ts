@@ -2,6 +2,7 @@ import urlJoin from 'url-join'
 import {curseForgeApiBaseUrl, curseForgeApiKey, namagomiModListUrl} from '../../settings/config'
 import {jsonToModSearchParam} from './NamagomiApi'
 import {ModSearchParam} from './ModSearchParam';
+import exp from "constants";
 
 const headers = {
     'Accept': 'application/json',
