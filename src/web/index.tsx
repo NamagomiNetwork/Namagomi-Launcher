@@ -2,15 +2,43 @@ import React from 'react';
 
 import './index.css';
 
-import ReactDOM from 'react-dom';
-import {testFunc} from "../namagomi/minecraft/api/curse_forge";
+import {
+    downloadAllModFiles,
+    downloadClientModFiles,
+    downloadServerModFiles
+} from "../namagomi/minecraft/api/curse_forge";
+import {createRoot} from "react-dom/client";
 
-class Button extends React.Component {
+class AllDownloadButton extends React.Component {
     render() {
-        return <button onClick={testFunc}>
-            test
+        return <button onClick={downloadAllModFiles}>
+            All
         </button>
     }
 }
 
-ReactDOM.render(<Button />, document.getElementById('root'));
+class ServerDownloadButton extends React.Component {
+    render() {
+        return <button onClick={downloadServerModFiles}>
+            Server
+        </button>
+    }
+}
+
+class ClientDownloadButton extends React.Component {
+    render() {
+        return <button onClick={downloadClientModFiles}>
+            Client
+        </button>
+    }
+}
+
+const container = document.getElementById('root')!
+const root = createRoot(container)
+root.render(
+    <li>
+        <AllDownloadButton/>
+        <ServerDownloadButton/>
+        <ClientDownloadButton/>
+    </li>
+)

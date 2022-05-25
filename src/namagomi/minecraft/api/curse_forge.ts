@@ -1,8 +1,9 @@
 import urlJoin from 'url-join'
 import {curseForgeApiBaseUrl, curseForgeApiKey, namagomiModListUrl} from '../../settings/config'
-import {jsonToModSearchParam} from './NamagomiApi'
+import {jsonToModSearchParams} from './NamagomiApi'
 import {ModSearchParam} from './ModSearchParam';
 import exp from "constants";
+import * as http from "http";
 
 const headers = {
     'Accept': 'application/json',
@@ -28,7 +29,7 @@ const getModFileUrl = async (param: ModSearchParam) => {
     const trimmed = await trimJson(json, param)
     param.displayName = trimmed['displayName'] != null ? trimmed['displayName'] : ''
     if (trimmed.downloadUrl == null) {
-        console.error(`modid:${param.modid} gameversion:${param.gameVersion} ${param.displayName} doesn't have download url`)
+        console.info(`modid:${param.modid} gameversion:${param.gameVersion} ${param.displayName} doesn't have download url`)
         return null
     } else
         return new URL(trimmed.downloadUrl)
@@ -52,10 +53,46 @@ const trimJsons = (jsons: Array<any>, params: Array<ModSearchParam>) => {
     return jsons.map((json: any, index) => trimJson(json, params[index]))
 }
 
+export const downloadAllModFiles = async () => {
+    const p = (await fetch(namagomiModListUrl))
+    await p.text().then(text => {
+        const params = jsonToModSearchParams(text)
+        const urls = getModFileUrls(params)
+        urls.map(url=> {
+            if (url != null)
+                http.get(url.toString())
+        })
+    })
+}
+
+export const downloadClientModFiles = async () => {
+    const p = (await fetch(namagomiModListUrl))
+    await p.text().then(text => {
+        const params = jsonToModSearchParams(text)
+        const urls = getModFileUrls(params)
+        urls.map((url ,index)=> {
+            if (url != null && params[index].side == 'CLIENT')
+                http.get(url.toString())
+        })
+    })
+}
+
+export const downloadServerModFiles = async () => {
+    const p = (await fetch(namagomiModListUrl))
+    await p.text().then(text => {
+        const params = jsonToModSearchParams(text)
+        const urls = getModFileUrls(params)
+        urls.map((url ,index)=> {
+            if (url != null && params[index].side == 'SERVER')
+                http.get(url.toString())
+        })
+    })
+}
+
 export const testFunc = async () => {
     const p = (await fetch(namagomiModListUrl))
     p.text().then(text => {
-        const params = jsonToModSearchParam(text)
+        const params = jsonToModSearchParams(text)
         const urls = getModFileUrls(params)
         urls.map(url => {
             url.then(console.log)
