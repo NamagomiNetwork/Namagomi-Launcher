@@ -80,9 +80,9 @@ class LauncherProfileBuilder {
         return this
     }
 
-    public build(): void {
+    public build() {
         this.builtString =
-            '"' + this.uniqueId + '" : {\n' +
+            '{\n' +
             '  "created": "' + this.created + '",\n' +
             '  "gameDir": "' + this.gameDir + '",\n' +
             '  "icon": "' + this.icon + '",\n' +
@@ -93,5 +93,14 @@ class LauncherProfileBuilder {
             '  "type": "' + this.type + '"\n' +
             '}'
         this.builtJson = JSON.parse(this.builtString)
+        fetch(this.profile_path).then(
+            (response) => {
+                response.json().then(
+                    (json) => {
+                        json['profiles'][this.uniqueId] = this.builtJson
+                    }
+                )
+            }
+        )
     }
 }
