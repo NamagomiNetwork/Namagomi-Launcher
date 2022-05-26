@@ -1,6 +1,6 @@
 import {ModSearchParam} from './ModSearchParam'
 
-export const jsonToModSearchParam = (json: string) => {
+export const jsonToModSearchParams = (json: string) => {
     const result: Array<ModSearchParam> = []
     JSON.parse(json).map((item:any) =>
     {

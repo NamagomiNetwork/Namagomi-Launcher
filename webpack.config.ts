@@ -7,7 +7,7 @@ const isDev = process.env.NODE_ENV === 'development';
 const common: Configuration = {
   mode: isDev ? 'development' : 'production',
   resolve: {
-    extensions: ['.js', '.ts', '.jsx', '.tsx', '.json'],
+    extensions: ['.js', '.ts', '.jsx', '.tsx', '.json']
   },
   externals: ['fsevents'],
   output: {
