@@ -2,7 +2,9 @@ import UUID from 'uuidjs'
 import app = Electron.app;
 import path from "path";
 
-class LauncherProfileBuilder {
+type SetPattern = 'uniqueId' | 'created' | 'gameDir' | 'icon' | 'javaArgs' | 'lastUsed' | 'lastVersionId' | 'name' | 'type'
+
+export class LauncherProfileBuilder {
     private uniqueId: string
     private created: string
     private gameDir: string
@@ -45,7 +47,7 @@ class LauncherProfileBuilder {
         }
     }
 
-    public set(key: string, value: string): LauncherProfileBuilder {
+    public set(key: SetPattern , value: string): LauncherProfileBuilder {
         switch (key) {
             case 'uniqueId':
                 this.uniqueId = value
@@ -73,8 +75,6 @@ class LauncherProfileBuilder {
                 break
             case 'type':
                 this.type = value
-                break
-            default:
                 break
         }
         return this
