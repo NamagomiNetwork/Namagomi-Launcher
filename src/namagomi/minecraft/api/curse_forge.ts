@@ -92,7 +92,7 @@ export const downloadServerModFiles = async () => {
     })
 }
 
-export const testFunc = async () => {
+export const sampleDownloadServerModFiles = async () => {
     const params = jsonToModSearchParams(sampleGomiJson)
     const urls = getModFileUrls(params)
     urls.map((url ,index)=> {
