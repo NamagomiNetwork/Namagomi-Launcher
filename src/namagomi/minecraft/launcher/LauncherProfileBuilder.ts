@@ -1,4 +1,6 @@
 import UUID from 'uuidjs'
+import app = Electron.app;
+import path from "path";
 
 class LauncherProfileBuilder {
     private uniqueId: string
@@ -14,6 +16,8 @@ class LauncherProfileBuilder {
     private builtString: string
     private builtJson: any
 
+    public profile_path: string
+
     constructor() {
         this.uniqueId = UUID.generate()
         this.created = new Date().toISOString()
@@ -25,9 +29,23 @@ class LauncherProfileBuilder {
         this.name = 'new profile'
         this.type = 'custom'
         this.builtString = ''
+        this.profile_path = LauncherProfileBuilder.getProfilePath()
     }
 
-    set(key: string, value: string): LauncherProfileBuilder {
+    private static getProfilePath () {
+        switch (process.platform){
+            case 'win32':
+                return path.join(app.getPath('appData'),'Roaming\\.minecraft\\launcher_profiles.json')
+            case 'darwin':
+                return path.join(app.getPath('appData'),'minecraft/launcher_profiles.json')
+            case 'linux':
+                return path.join(app.getPath('home'), '.minecraft/launcher_profiles.json')
+            default:
+                return path.join(app.getPath('appData'),'Roaming\\.minecraft\\launcher_profiles.json')
+        }
+    }
+
+    public set(key: string, value: string): LauncherProfileBuilder {
         switch (key) {
             case 'uniqueId':
                 this.uniqueId = value
@@ -62,7 +80,7 @@ class LauncherProfileBuilder {
         return this
     }
 
-    build(): void {
+    public build(): void {
         this.builtString =
             '"' + this.uniqueId + '" : {\n' +
             '  "created": "' + this.created + '",\n' +
