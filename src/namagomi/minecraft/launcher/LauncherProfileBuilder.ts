@@ -1,4 +1,4 @@
-class LauncherProfileBuilder{
+class LauncherProfileBuilder {
     private created: string
     private gameDir: string
     private icon: string
@@ -9,6 +9,7 @@ class LauncherProfileBuilder{
     private type: string
 
     private builtString: string
+    private builtJson: any
 
     constructor() {
         this.created = new Date().toISOString()
@@ -22,7 +23,7 @@ class LauncherProfileBuilder{
         this.builtString = ''
     }
 
-    set(key: string, value: string) {
+    set(key: string, value: string): LauncherProfileBuilder {
         switch (key) {
             case 'created':
                 this.created = value
@@ -51,9 +52,10 @@ class LauncherProfileBuilder{
             default:
                 break
         }
+        return this
     }
 
-    build() {
+    build(): LauncherProfileBuilder {
         this.builtString =
             '{\n' +
             '  "created": "' + this.created + '",\n' +
@@ -65,5 +67,7 @@ class LauncherProfileBuilder{
             '  "name": "' + this.name + '",\n' +
             '  "type": "' + this.type + '"\n' +
             '}'
+        this.builtJson = JSON.parse(this.builtString)
+        return this
     }
 }
