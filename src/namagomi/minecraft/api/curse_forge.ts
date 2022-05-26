@@ -3,6 +3,8 @@ import {curseForgeApiBaseUrl, curseForgeApiKey, namagomiModListUrl} from '../../
 import {jsonToModSearchParams} from './NamagomiApi'
 import {ModSearchParam} from './ModSearchParam';
 import {sampleGomiJson} from "./sample";
+import BrowserWindow = Electron.BrowserWindow;
+import {download} from "electron-dl";
 
 const headers = {
     'Accept': 'application/json',
@@ -52,38 +54,14 @@ const trimJsons = (jsons: Array<any>, params: Array<ModSearchParam>) => {
     return jsons.map((json: any, index) => trimJson(json, params[index]))
 }
 
-// export const downloadAllModFiles = async () => {
-//     const p = (await fetch(namagomiModListUrl))
-//     await p.text().then(text => {
-//         const params = jsonToModSearchParams(text)
-//         const urls = getModFileUrls(params)
-//         urls.map(url=> {
-//             if (url != null)
-//                 http.get(url.toString())
-//         })
-//     })
-// }
-//
-// export const downloadClientModFiles = async () => {
-//     const p = (await fetch(namagomiModListUrl))
-//     await p.text().then(text => {
-//         const params = jsonToModSearchParams(text)
-//         const urls = getModFileUrls(params)
-//         urls.map((url ,index)=> {
-//             if (url != null && params[index].side == 'CLIENT')
-//                 http.get(url.toString())
-//         })
-//     })
-// }
-
-export const downloadServerModFiles = async () => {
+export const downloadAllModFiles = async () => {
     const p = (await fetch(namagomiModListUrl))
     await p.text().then(text => {
         const params = jsonToModSearchParams(text)
         const urls = getModFileUrls(params)
-        urls.map((url ,index)=> {
-            if (url != null && params[index].side == 'SERVER'){
-                let request = new XMLHttpRequest()
+        urls.map(url=> {
+            if (url != null){
+                const request = new XMLHttpRequest()
                 request.open('GET', url.toString(), true)
                 request.responseType = 'blob'
                 request.send()
@@ -92,15 +70,50 @@ export const downloadServerModFiles = async () => {
     })
 }
 
-export const sampleDownloadServerModFiles = async () => {
+export const downloadClientModFiles = async () => {
+    const p = (await fetch(namagomiModListUrl))
+    await p.text().then(text => {
+        const params = jsonToModSearchParams(text)
+        const urls = getModFileUrls(params)
+        urls.map((url ,index)=> {
+            if (url != null && params[index].side == 'CLIENT') {
+                const request = new XMLHttpRequest()
+                request.open('GET', url.toString(), true)
+                request.responseType = 'blob'
+                request.send()
+            }
+        })
+    })
+}
+
+export const downloadServerModFiles = async () => {
+    const p = (await fetch(namagomiModListUrl))
+    await p.text().then(text => {
+        const params = jsonToModSearchParams(text)
+        const urls = getModFileUrls(params)
+        urls.map((url ,index)=> {
+            if (url != null && params[index].side == 'SERVER'){
+                const request = new XMLHttpRequest()
+                request.open('GET', url.toString(), true)
+                request.responseType = 'blob'
+                request.send()
+            }
+        })
+    })
+}
+
+export const sampleDownloadModFiles = async () => {
     const params = jsonToModSearchParams(sampleGomiJson)
     const urls = getModFileUrls(params)
     urls.map((url ,index)=> {
-        if (url != null && params[index].side == 'SERVER'){
-            let request = new XMLHttpRequest()
-            request.open('GET', url.toString(), true)
-            request.responseType = 'blob'
-            request.send()
-        }
+        url.then(url =>{
+            const win = BrowserWindow.getFocusedWindow()
+            if (win != null && url != null){
+                download(win, url.toString(),
+                    {
+                        directory: './mods',
+                    })
+            }
+        })
     })
 }
