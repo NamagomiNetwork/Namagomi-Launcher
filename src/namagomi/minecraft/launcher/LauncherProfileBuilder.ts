@@ -1,7 +1,7 @@
 import UUID from 'uuidjs'
 
 class LauncherProfileBuilder {
-    private uuid: string
+    private uniqueId: string
     private created: string
     private gameDir: string
     private icon: string
@@ -15,7 +15,7 @@ class LauncherProfileBuilder {
     private builtJson: any
 
     constructor() {
-        this.uuid = UUID.generate()
+        this.uniqueId = UUID.generate()
         this.created = new Date().toISOString()
         this.gameDir = ''
         this.icon = 'Furnace'
@@ -29,6 +29,9 @@ class LauncherProfileBuilder {
 
     set(key: string, value: string): LauncherProfileBuilder {
         switch (key) {
+            case 'uniqueId':
+                this.uniqueId = value
+                break
             case 'created':
                 this.created = value
                 break
@@ -59,9 +62,9 @@ class LauncherProfileBuilder {
         return this
     }
 
-    build(): LauncherProfileBuilder {
+    build(): void {
         this.builtString =
-            '{\n' +
+            '"' + this.uniqueId + '" : {\n' +
             '  "created": "' + this.created + '",\n' +
             '  "gameDir": "' + this.gameDir + '",\n' +
             '  "icon": "' + this.icon + '",\n' +
@@ -72,6 +75,5 @@ class LauncherProfileBuilder {
             '  "type": "' + this.type + '"\n' +
             '}'
         this.builtJson = JSON.parse(this.builtString)
-        return this
     }
 }
