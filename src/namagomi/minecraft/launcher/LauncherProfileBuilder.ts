@@ -1,4 +1,7 @@
+import UUID from 'uuidjs'
+
 class LauncherProfileBuilder {
+    private uuid: string
     private created: string
     private gameDir: string
     private icon: string
@@ -12,6 +15,7 @@ class LauncherProfileBuilder {
     private builtJson: any
 
     constructor() {
+        this.uuid = UUID.generate()
         this.created = new Date().toISOString()
         this.gameDir = ''
         this.icon = 'Furnace'
