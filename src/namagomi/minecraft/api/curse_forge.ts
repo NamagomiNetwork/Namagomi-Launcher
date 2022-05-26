@@ -2,8 +2,7 @@ import urlJoin from 'url-join'
 import {curseForgeApiBaseUrl, curseForgeApiKey, namagomiModListUrl} from '../../settings/config'
 import {jsonToModSearchParams} from './NamagomiApi'
 import {ModSearchParam} from './ModSearchParam';
-import exp from "constants";
-import * as http from "http";
+import {sampleGomiJson} from "./sample";
 
 const headers = {
     'Accept': 'application/json',
@@ -53,29 +52,29 @@ const trimJsons = (jsons: Array<any>, params: Array<ModSearchParam>) => {
     return jsons.map((json: any, index) => trimJson(json, params[index]))
 }
 
-export const downloadAllModFiles = async () => {
-    const p = (await fetch(namagomiModListUrl))
-    await p.text().then(text => {
-        const params = jsonToModSearchParams(text)
-        const urls = getModFileUrls(params)
-        urls.map(url=> {
-            if (url != null)
-                http.get(url.toString())
-        })
-    })
-}
-
-export const downloadClientModFiles = async () => {
-    const p = (await fetch(namagomiModListUrl))
-    await p.text().then(text => {
-        const params = jsonToModSearchParams(text)
-        const urls = getModFileUrls(params)
-        urls.map((url ,index)=> {
-            if (url != null && params[index].side == 'CLIENT')
-                http.get(url.toString())
-        })
-    })
-}
+// export const downloadAllModFiles = async () => {
+//     const p = (await fetch(namagomiModListUrl))
+//     await p.text().then(text => {
+//         const params = jsonToModSearchParams(text)
+//         const urls = getModFileUrls(params)
+//         urls.map(url=> {
+//             if (url != null)
+//                 http.get(url.toString())
+//         })
+//     })
+// }
+//
+// export const downloadClientModFiles = async () => {
+//     const p = (await fetch(namagomiModListUrl))
+//     await p.text().then(text => {
+//         const params = jsonToModSearchParams(text)
+//         const urls = getModFileUrls(params)
+//         urls.map((url ,index)=> {
+//             if (url != null && params[index].side == 'CLIENT')
+//                 http.get(url.toString())
+//         })
+//     })
+// }
 
 export const downloadServerModFiles = async () => {
     const p = (await fetch(namagomiModListUrl))
@@ -83,19 +82,25 @@ export const downloadServerModFiles = async () => {
         const params = jsonToModSearchParams(text)
         const urls = getModFileUrls(params)
         urls.map((url ,index)=> {
-            if (url != null && params[index].side == 'SERVER')
-                http.get(url.toString())
+            if (url != null && params[index].side == 'SERVER'){
+                let request = new XMLHttpRequest()
+                request.open('GET', url.toString(), true)
+                request.responseType = 'blob'
+                request.send()
+            }
         })
     })
 }
 
 export const testFunc = async () => {
-    const p = (await fetch(namagomiModListUrl))
-    p.text().then(text => {
-        const params = jsonToModSearchParams(text)
-        const urls = getModFileUrls(params)
-        urls.map(url => {
-            url.then(console.log)
-        })
+    const params = jsonToModSearchParams(sampleGomiJson)
+    const urls = getModFileUrls(params)
+    urls.map((url ,index)=> {
+        if (url != null && params[index].side == 'SERVER'){
+            let request = new XMLHttpRequest()
+            request.open('GET', url.toString(), true)
+            request.responseType = 'blob'
+            request.send()
+        }
     })
 }
