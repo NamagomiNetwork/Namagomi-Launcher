@@ -3,8 +3,7 @@ import {curseForgeApiBaseUrl, curseForgeApiKey, namagomiModListUrl} from '../../
 import {jsonToModSearchParams} from './NamagomiApi'
 import {ModSearchParam} from './ModSearchParam';
 import {sampleGomiJson} from "./sample";
-import BrowserWindow = Electron.BrowserWindow;
-import {download} from "electron-dl";
+import * as http from "http";
 
 const headers = {
     'Accept': 'application/json',
@@ -107,12 +106,11 @@ export const sampleDownloadModFiles = async () => {
     const urls = getModFileUrls(params)
     urls.map((url ,index)=> {
         url.then(url =>{
-            const win = BrowserWindow.getFocusedWindow()
-            if (win != null && url != null){
-                download(win, url.toString(),
-                    {
-                        directory: './mods',
-                    })
+            if (url != null){
+                const request = new XMLHttpRequest()
+                request.open('GET', url.toString(), true)
+                request.responseType = 'blob'
+                request.send()
             }
         })
     })

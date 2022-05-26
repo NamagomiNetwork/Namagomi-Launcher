@@ -1,6 +1,6 @@
 import UUID from 'uuidjs'
-import app = Electron.app;
-import path from "path";
+import path from 'path'
+import {app} from 'electron'
 
 type SetPattern = 'uniqueId' | 'created' | 'gameDir' | 'icon' | 'javaArgs' | 'lastUsed' | 'lastVersionId' | 'name' | 'type'
 
