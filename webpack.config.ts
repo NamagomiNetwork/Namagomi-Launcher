@@ -7,7 +7,13 @@ const isDev = process.env.NODE_ENV === 'development';
 const common: Configuration = {
   mode: isDev ? 'development' : 'production',
   resolve: {
-    extensions: ['.js', '.ts', '.jsx', '.tsx', '.json']
+    extensions: ['.js', '.ts', '.jsx', '.tsx', '.json'],
+    fallback: {
+      "crypto": require.resolve("crypto-browserify"),
+      "buffer": require.resolve("buffer/"),
+      "path": require.resolve("path-browserify"),
+      "stream": require.resolve("stream-browserify")
+    }
   },
   externals: ['fsevents'],
   output: {
