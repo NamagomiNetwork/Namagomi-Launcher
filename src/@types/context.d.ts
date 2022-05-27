@@ -4,6 +4,7 @@ export interface IElectronAPI {
   downloadServerModFiles: () => Promise<void>;
   setupNamagomiLauncherProfile: () => Promise<void>;
   downloadModFilesDev: () => Promise<void>;
+  BuildGitTree: () => Promise<void>;
 }
 
 declare global {

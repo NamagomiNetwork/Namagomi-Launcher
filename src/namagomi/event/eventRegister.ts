@@ -27,4 +27,15 @@ export function eventHandlerRegistry () {
     ipcMain.handle('downloadModFilesDev', async () => {
         await DownloadModFilesDev()
     })
+
+    ipcMain.handle('BuildGitTree', async () => {
+        new GitTree().build('NamagomiNetwork', 'Namagomi-mod', 'main')
+            .then(tree => {
+                tree.getAllPaths().then(paths => {
+                    paths.map(path => {
+                        console.log(path)
+                    })
+                })
+            })
+    })
 }

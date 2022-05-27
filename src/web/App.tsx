@@ -9,6 +9,7 @@ export const App = () => {
                 <button onClick={window.namagomiAPI.downloadClientModFiles}>DownloadClientModFiles</button>
                 <button onClick={window.namagomiAPI.downloadServerModFiles}>DownloadServerModFiles</button>
                 <button onClick={window.namagomiAPI.setupNamagomiLauncherProfile}>SetupNamagomiLauncherProfile</button>
+                <button onClick={window.namagomiAPI.BuildGitTree}>BuildGitTree</button>
             </div>
         </div>
     );
