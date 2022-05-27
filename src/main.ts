@@ -45,15 +45,3 @@ const createWindow = () => {
 
 app.whenReady().then(createWindow);
 app.once('window-all-closed', () => app.quit());
-
-ipcMain.handle('setupNamagomiLauncherProfile', async () => {
-  setup()
-})
-
-ipcMain.handle('downloadAllModFiles', async () => {
-  await downloadAllModFiles()
-})
-
-ipcMain.handle('sampleDownloadModFilesDev', async () => {
-  await DownloadModFilesDev()
-})
