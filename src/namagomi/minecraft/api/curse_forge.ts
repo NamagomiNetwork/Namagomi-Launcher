@@ -3,8 +3,6 @@ import {curseForgeApiBaseUrl, curseForgeApiKey, namagomiModListUrl} from '../../
 import {jsonToModSearchParams} from './NamagomiApi'
 import {ModSearchParam} from './ModSearchParam';
 import {sampleGomiJson} from "./sample";
-import * as http from "http";
-import ipcMain = Electron.ipcMain;
 
 const headers = {
     'Accept': 'application/json',
