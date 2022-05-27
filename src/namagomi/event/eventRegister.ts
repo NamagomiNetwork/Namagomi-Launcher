@@ -24,7 +24,7 @@ export function eventHandlerRegistry () {
         await downloadServerModFiles()
     })
 
-    ipcMain.handle('sampleDownloadModFilesDev', async () => {
+    ipcMain.handle('downloadModFilesDev', async () => {
         await DownloadModFilesDev()
     })
 }

@@ -6,5 +6,5 @@ contextBridge.exposeInMainWorld('namagomiAPI', {
   downloadClientModFiles: () => ipcRenderer.invoke('downloadClientModFiles'),
   downloadServerModFiles: () => ipcRenderer.invoke('downloadServerModFiles'),
   setupNamagomiLauncherProfile: () => ipcRenderer.invoke('setupNamagomiLauncherProfile'),
-  sampleDownloadModFilesDev: () => ipcRenderer.invoke('sampleDownloadModFilesDev'),
+  downloadModFilesDev: () => ipcRenderer.invoke('downloadModFilesDev'),
 })
