@@ -1,10 +1,10 @@
-import {curseForgeApiBaseUrl, curseForgeApiKey, namagomiModListUrl} from '../../settings/config'
-import {jsonToModSearchParams} from './NamagomiApi'
+import {curseForgeApiBaseUrl, curseForgeApiKey, namagomiModListUrl} from '../../../settings/config'
+import {jsonToModSearchParams} from '../NamagomiApi'
 import {ModSearchParam} from './ModSearchParam';
-import {sampleGomiJson} from "./sample";
+import {sampleGomiJson} from "../sample";
 import path from "path";
 import fetch from 'electron-fetch'
-import {devModsDir} from '../../settings/localPath'
+import {devModsDir} from '../../../settings/localPath'
 import {pipeline} from "stream/promises";
 import {createWriteStream} from "fs";
 import * as fs from "fs";

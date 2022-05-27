@@ -5,7 +5,7 @@ import {
     downloadClientModFiles,
     DownloadModFilesDev,
     downloadServerModFiles
-} from "../minecraft/api/curse_forge";
+} from "../minecraft/api/mods/curse_forge";
 
 export function eventHandlerRegistry () {
     ipcMain.handle('setupNamagomiLauncherProfile', async () => {

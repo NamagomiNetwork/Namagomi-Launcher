@@ -1,4 +1,4 @@
-import {ModSearchParam} from './ModSearchParam'
+import {ModSearchParam} from './mods/ModSearchParam'
 
 export const jsonToModSearchParams = (json: string) => {
     const result: Array<ModSearchParam> = []
