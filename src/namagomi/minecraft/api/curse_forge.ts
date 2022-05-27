@@ -105,7 +105,7 @@ export const downloadServerModFiles = async () => {
     })
 }
 
-export const sampleDownloadModFiles = async () => {
+export const DownloadModFilesDev = async () => {
     const params = jsonToModSearchParams(sampleGomiJson)
     const urls = getModFileUrls(params)
     urls.map((url, index) => {
@@ -113,10 +113,9 @@ export const sampleDownloadModFiles = async () => {
             if (url != null) {
                 const win = BrowserWindow.getFocusedWindow()
                 if(win != null)
-                    console.log(url.toString())
-                    // download(win, url.toString(), {directory: path.join(app.getPath('userData'), 'minecraft\\sample\\mods')})
-                    //     .then(() => console.log('success'))
-                    //     .catch(err => console.log(url + 'not found'))
+                    download(win, url.toString(), {directory: path.join(app.getPath('userData'), 'minecraft\\sample\\mods'),openFolderWhenDone:false})
+                        .then(() => console.log('success'))
+                        .catch(err => console.log(url + 'not found'))
             }
         })
     })

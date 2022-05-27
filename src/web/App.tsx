@@ -5,7 +5,7 @@ export const App = () => {
     return (
         <div className="container">
             <div>
-                <button onClick={window.namagomiAPI.sampleDownloadModFiles}>&#x25BC;</button>
+                <button onClick={window.namagomiAPI.sampleDownloadModFilesDev}>&#x25BC;</button>
                 <button onClick={window.namagomiAPI.setupNamagomiLauncherProfile}>&#x25B2;</button>
             </div>
         </div>

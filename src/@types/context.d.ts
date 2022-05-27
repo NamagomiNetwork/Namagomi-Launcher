@@ -1,7 +1,7 @@
 export interface IElectronAPI {
   downloadAllModFiles: () => Promise<void>;
   setupNamagomiLauncherProfile: () => Promise<void>;
-    sampleDownloadModFiles: () => Promise<void>;
+    sampleDownloadModFilesDev: () => Promise<void>;
 }
 
 declare global {

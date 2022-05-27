@@ -4,5 +4,5 @@ import {downloadAllModFiles} from "./namagomi/minecraft/api/curse_forge";
 contextBridge.exposeInMainWorld('namagomiAPI', {
   downloadAllModFiles: () => ipcRenderer.invoke('downloadAllModFiles'),
   setupNamagomiLauncherProfile: () => ipcRenderer.invoke('setupNamagomiLauncherProfile'),
-  sampleDownloadModFiles: () => ipcRenderer.invoke('sampleDownloadModFiles'),
+  sampleDownloadModFilesDev: () => ipcRenderer.invoke('sampleDownloadModFilesDev'),
 })
