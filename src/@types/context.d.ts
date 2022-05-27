@@ -1,9 +1,10 @@
 export interface IElectronAPI {
-  update: (count: number) => void;
+  downloadAllModFiles: () => Promise<void>;
+  setupNamagomiLauncherProfile: () => Promise<void>;
 }
 
 declare global {
   interface Window {
-    myAPI: IElectronAPI;
+    namagomiAPI: IElectronAPI
   }
 }

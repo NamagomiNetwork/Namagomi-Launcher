@@ -18,8 +18,6 @@ export class LauncherProfileBuilder {
     private builtString: string
     private builtJson: any
 
-    public profile_path: string
-
     constructor() {
         this.uniqueId = UUID.generate()
         this.created = new Date().toISOString()
@@ -31,7 +29,6 @@ export class LauncherProfileBuilder {
         this.name = 'new profile'
         this.type = 'custom'
         this.builtString = ''
-        this.profile_path = LauncherProfileBuilder.getProfilePath()
     }
 
     private static getProfilePath () {
@@ -92,11 +89,13 @@ export class LauncherProfileBuilder {
             '  "name": "' + this.name + '",\n' +
             '  "type": "' + this.type + '"\n' +
             '}'
+        console.log(this.builtString)
         this.builtJson = JSON.parse(this.builtString)
-        fetch(this.profile_path).then(
+        fetch(LauncherProfileBuilder.getProfilePath()).then(
             (response) => {
                 response.json().then(
                     (json) => {
+                        console.log(json)
                         json['profiles'][this.uniqueId] = this.builtJson
                     }
                 )
