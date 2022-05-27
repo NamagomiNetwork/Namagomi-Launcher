@@ -5,13 +5,15 @@ import {ModSearchParam} from './ModSearchParam';
 import {sampleGomiJson} from "./sample";
 import ipcMain = Electron.ipcMain;
 
-const headers = {
-    'Accept': 'application/json',
-    'x-api-key': curseForgeApiKey
+const curseForgeHeaders: RequestInit = {
+    headers: {
+        'Accept': 'application/json',
+        'x-api-key': curseForgeApiKey
+    }
 }
 
 const fetchJson = async (url: URL) => {
-    const response = await fetch(url.toString(), {headers})
+    const response = await fetch(url.toString(), curseForgeHeaders)
     return response.json()
 }
 
@@ -115,7 +117,3 @@ export const sampleDownloadModFiles = async () => {
         })
     })
 }
-
-ipcMain.handle('downloadAllModFiles', async () => {
-    await downloadAllModFiles()
-})

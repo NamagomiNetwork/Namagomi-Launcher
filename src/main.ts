@@ -1,6 +1,8 @@
 import path from 'path';
 import { searchDevtools } from 'electron-search-devtools';
 import { BrowserWindow, app, ipcMain, session } from 'electron';
+import {setup} from "./namagomi/minecraft/launcher/setupNamagomiLauncherProfile";
+import {downloadAllModFiles} from "./namagomi/minecraft/api/curse_forge";
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -43,3 +45,11 @@ const createWindow = () => {
 
 app.whenReady().then(createWindow);
 app.once('window-all-closed', () => app.quit());
+
+ipcMain.handle('setupNamagomiLauncherProfile', async () => {
+  setup()
+})
+
+ipcMain.handle('downloadAllModFiles', async () => {
+  await downloadAllModFiles()
+})
