@@ -1,4 +1,6 @@
-class GitTree {
+import fetch from 'electron-fetch'
+
+export class GitTree {
     path: string
     type: 'blob' | 'tree'
     sha: string
@@ -16,9 +18,9 @@ class GitTree {
     public async build(owner: string, repo: string, sha: string, path?: string, type?: 'blob' | 'tree', url?: string) {
         this.sha = sha
         const apiUrl = `https://api.github.com/repos/${owner}/${repo}/git/trees/${sha}`
-        if (path == null) {
+        if (path == null || type == null || url == null) {
             await this.fetchTree(owner, repo, apiUrl)
-        } else if (url != null && type != null) {
+        } else {
             this.path = path
             this.type = type
             this.url = url
@@ -29,14 +31,14 @@ class GitTree {
     }
 
     private async fetchTree(owner: string, repo: string, apiUrl: string) {
-        await fetch(apiUrl).then(p => p.json()).then(json => {
-            json['tree'].map(async (item: any) => {
+        await fetch(apiUrl).then(p => p.json()).then(async json => {
+            await Promise.all(json['tree'].map(async (item: any) => {
                 const path = item['path']
                 const type = item['type']
                 const sha = item['sha']
                 const url = item['url']
                 this.children.push(await new GitTree().build(owner, repo, sha, path, type, url))
-            })
+            }))
         })
     }
 
@@ -48,7 +50,7 @@ class GitTree {
 
     private async getAllPathsRecursive(result: string[], pwd: string): Promise<void> {
         if (this.type === 'blob') {
-            result.push(this.path)
+            result.push(pwd)
         } else {
             this.children.map(async (child: GitTree) => {
                 await child.getAllPathsRecursive(result, `${pwd}/${child.path}`)

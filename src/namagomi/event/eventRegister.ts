@@ -6,6 +6,7 @@ import {
     DownloadModFilesDev,
     downloadServerModFiles
 } from "../minecraft/api/mods/curse_forge";
+import {GitTree} from '../minecraft/api/github/GitTree';
 
 export function eventHandlerRegistry () {
     ipcMain.handle('setupNamagomiLauncherProfile', async () => {
