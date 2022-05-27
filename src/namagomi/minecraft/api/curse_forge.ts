@@ -3,8 +3,13 @@ import {jsonToModSearchParams} from './NamagomiApi'
 import {ModSearchParam} from './ModSearchParam';
 import {sampleGomiJson} from "./sample";
 import path from "path";
+import fetch from 'electron-fetch'
+import {devModsDir} from '../../settings/localPath'
+import {pipeline} from "stream/promises";
+import {createWriteStream} from "fs";
+import * as fs from "fs";
 
-const curseForgeHeaders: RequestInit = {
+const curseForgeHeaders = {
     headers: {
         'Accept': 'application/json',
         'x-api-key': curseForgeApiKey
@@ -15,11 +20,6 @@ const fetchJson = async (url: URL) => {
     const response = await fetch(url.toString(), curseForgeHeaders)
     return response.json()
 }
-
-const fetchJsons = async (urls: Array<URL>) => {
-    return await Promise.all(urls.map(fetchJson))
-}
-
 const getModFileUrl = async (param: ModSearchParam) => {
     if (param.directUrl != '')
         return new URL(param.directUrl)
@@ -49,11 +49,6 @@ const trimJson = async (json: any, param: ModSearchParam) => {
         return single
     })
 }
-
-const trimJsons = (jsons: Array<any>, params: Array<ModSearchParam>) => {
-    return jsons.map((json: any, index) => trimJson(json, params[index]))
-}
-
 export const downloadAllModFiles = async () => {
     const p = (await fetch(namagomiModListUrl))
     await p.text().then(text => {
@@ -102,17 +97,28 @@ export const downloadServerModFiles = async () => {
     })
 }
 
-export const sampleDownloadModFiles = async () => {
+export const DownloadModFilesDev = async () => {
     const params = jsonToModSearchParams(sampleGomiJson)
-    const urls = getModFileUrls(params)
-    urls.map((url, index) => {
-        url.then(url => {
-            if (url != null) {
-                const request = new XMLHttpRequest()
-                request.open('GET', url.toString(), true)
-                request.responseType = 'blob'
-                request.send()
+    const urls = await Promise.all(getModFileUrls(params))
+    urls.map(async (url, index) => {
+        if (url != null) {
+            const fileName = url.toString().split('/').pop()!.split('?')[0].split('#')[0];
+            const filePath = path.join(devModsDir, fileName)
+            if(!fs.existsSync(devModsDir)) fs.mkdirSync(devModsDir)
+            if(!fs.existsSync(filePath)) {
+                console.log(`downloading ${fileName}`)
+                pipeline(
+                    (await fetch(url.toString())).body,
+                    createWriteStream(filePath)
+                ).then(() => {
+                    console.log('[COMPLETE] ' + fileName)
+                }).catch(err => {
+                    console.error(err)
+                    console.log('[FAILED] ' + fileName + ' ' + url.toString())
+                })
             }
-        })
+            else
+                console.log('[IGNORE] ' + fileName)
+        }
     })
 }

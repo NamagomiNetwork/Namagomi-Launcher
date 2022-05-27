@@ -5,8 +5,10 @@ export const App = () => {
     return (
         <div className="container">
             <div>
-                <button onClick={window.namagomiAPI.downloadAllModFiles}>&#x25BC;</button>
-                <button onClick={window.namagomiAPI.setupNamagomiLauncherProfile}>&#x25B2;</button>
+                <button onClick={window.namagomiAPI.downloadModFilesDev}>DownloadModFilesDev</button>
+                <button onClick={window.namagomiAPI.downloadClientModFiles}>DownloadClientModFiles</button>
+                <button onClick={window.namagomiAPI.downloadServerModFiles}>DownloadServerModFiles</button>
+                <button onClick={window.namagomiAPI.setupNamagomiLauncherProfile}>SetupNamagomiLauncherProfile</button>
             </div>
         </div>
     );
