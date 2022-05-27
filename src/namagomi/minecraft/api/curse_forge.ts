@@ -103,7 +103,7 @@ export const DownloadModFilesDev = async () => {
             if (url != null) {
                 const win = BrowserWindow.getFocusedWindow()
                 if(win != null)
-                    download(win, url.toString(), {directory: path.join(app.getPath('userData'), 'minecraft\\sample\\mods'),openFolderWhenDone:false})
+                    download(win, url.toString(), {directory: path.join(app.getPath('userData'), 'minecraft\\dev\\mods'),openFolderWhenDone:false})
                         .then(() => console.log('success'))
                         .catch(err => console.log(url + 'not found'))
             }

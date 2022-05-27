@@ -7,8 +7,8 @@ const namagomiBase64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACA
 export function setup() {
     const launcher = new LauncherProfileBuilder()
     launcher
-        .set('uniqueId', 'namagomi')
-        .set('gameDir', path.join(app.getPath('userData'),'minecraft'))
+        .set('uniqueId', 'namagomidev')
+        .set('gameDir', path.join(app.getPath('userData'),'minecraft\\dev'))
         .set('icon', namagomiBase64)
         .set('name', '生ゴミ鯖')
         .set('lastVersionId', '1.12.2-forge-14.23.5.2860')
