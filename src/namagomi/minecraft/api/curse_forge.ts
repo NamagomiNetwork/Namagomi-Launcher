@@ -2,10 +2,12 @@ import {curseForgeApiBaseUrl, curseForgeApiKey, namagomiModListUrl} from '../../
 import {jsonToModSearchParams} from './NamagomiApi'
 import {ModSearchParam} from './ModSearchParam';
 import {sampleGomiJson} from "./sample";
-import {download} from 'electron-dl'
 import path from "path";
-import {BrowserWindow, app} from 'electron'
 import fetch from 'electron-fetch'
+import {devModsDir} from '../../settings/localPath'
+import {pipeline} from "stream/promises";
+import {createWriteStream} from "fs";
+import * as fs from "fs";
 
 const curseForgeHeaders = {
     headers: {
@@ -97,16 +99,28 @@ export const downloadServerModFiles = async () => {
 
 export const DownloadModFilesDev = async () => {
     const params = jsonToModSearchParams(sampleGomiJson)
-    const urls = getModFileUrls(params)
-    urls.map((url, index) => {
-        url.then(url => {
-            if (url != null) {
-                const win = BrowserWindow.getFocusedWindow()
-                if(win != null)
-                    download(win, url.toString(), {directory: path.join(app.getPath('userData'), 'minecraft\\dev\\mods'),openFolderWhenDone:false})
-                        .then(() => console.log('success'))
-                        .catch(err => console.log(url + 'not found'))
+    const urls = await Promise.all(getModFileUrls(params))
+    Promise.all(urls.map(async (url, index) => {
+        if (url != null) {
+            const fileName = url.toString().split('/').pop()!
+            const filePath = path.join(devModsDir, fileName)
+            if(!fs.existsSync(devModsDir)) fs.mkdirSync(devModsDir)
+            if(!fs.existsSync(filePath)) {
+                console.log(`downloading ${fileName}`)
+                pipeline(
+                    (await fetch(url.toString())).body,
+                    createWriteStream(filePath)
+                ).then(() => {
+                    console.log('[COMPLETE] ' + fileName)
+                }).catch(err => {
+                    console.error(err)
+                    console.log('[FAILED] ' + fileName + ' ' + url.toString())
+                })
             }
-        })
+            else
+                console.log('[IGNORE] ' + fileName)
+        }
+    })).then(() => {
+        console.log('Downloading all mod files')
     })
 }
