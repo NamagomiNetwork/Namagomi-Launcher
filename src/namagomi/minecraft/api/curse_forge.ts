@@ -1,9 +1,8 @@
-import urlJoin from 'url-join'
 import {curseForgeApiBaseUrl, curseForgeApiKey, namagomiModListUrl} from '../../settings/config'
 import {jsonToModSearchParams} from './NamagomiApi'
 import {ModSearchParam} from './ModSearchParam';
 import {sampleGomiJson} from "./sample";
-import ipcMain = Electron.ipcMain;
+import path from "path";
 
 const curseForgeHeaders: RequestInit = {
     headers: {
@@ -24,7 +23,7 @@ const fetchJsons = async (urls: Array<URL>) => {
 const getModFileUrl = async (param: ModSearchParam) => {
     if (param.directUrl != '')
         return new URL(param.directUrl)
-    const url = new URL(urlJoin([curseForgeApiBaseUrl, '/v1/mods', param.modid, 'files']))
+    const url = new URL(path.join(curseForgeApiBaseUrl, '/v1/mods', param.modid, 'files'))
     if (!url.searchParams.has('gameVersion'))
         url.searchParams.append('gameVersion', param.gameVersion)
     const json = fetchJson(url)

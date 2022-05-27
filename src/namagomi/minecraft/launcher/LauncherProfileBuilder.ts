@@ -1,6 +1,7 @@
 import UUID from 'uuidjs'
 import path from 'path'
 import {app} from 'electron'
+import * as fs from "fs";
 
 type SetPattern = 'uniqueId' | 'created' | 'gameDir' | 'icon' | 'javaArgs' | 'lastUsed' | 'lastVersionId' | 'name' | 'type'
 
@@ -15,9 +16,6 @@ export class LauncherProfileBuilder {
     private name: string
     private type: string
 
-    private builtString: string
-    private builtJson: any
-
     constructor() {
         this.uniqueId = UUID.generate()
         this.created = new Date().toISOString()
@@ -28,19 +26,18 @@ export class LauncherProfileBuilder {
         this.lastVersionId = ''
         this.name = 'new profile'
         this.type = 'custom'
-        this.builtString = ''
     }
 
     private static getProfilePath () {
         switch (process.platform){
             case 'win32':
-                return path.join(app.getPath('appData'),'Roaming\\.minecraft\\launcher_profiles.json')
+                return path.join(app.getPath('appData'),'.minecraft\\launcher_profiles.json')
             case 'darwin':
                 return path.join(app.getPath('appData'),'minecraft/launcher_profiles.json')
             case 'linux':
                 return path.join(app.getPath('home'), '.minecraft/launcher_profiles.json')
             default:
-                return path.join(app.getPath('appData'),'Roaming\\.minecraft\\launcher_profiles.json')
+                return path.join(app.getPath('appData'),'.minecraft\\launcher_profiles.json')
         }
     }
 
@@ -78,28 +75,20 @@ export class LauncherProfileBuilder {
     }
 
     public build() {
-        this.builtString =
-            '{\n' +
-            '  "created": "' + this.created + '",\n' +
-            '  "gameDir": "' + this.gameDir + '",\n' +
-            '  "icon": "' + this.icon + '",\n' +
-            '  "javaArgs": "' + this.javaArgs + '",\n' +
-            '  "lastUsed": "' + this.lastUsed + '",\n' +
-            '  "lastVersionId": "' + this.lastVersionId + '",\n' +
-            '  "name": "' + this.name + '",\n' +
-            '  "type": "' + this.type + '"\n' +
-            '}'
-        console.log(this.builtString)
-        this.builtJson = JSON.parse(this.builtString)
-        fetch(LauncherProfileBuilder.getProfilePath()).then(
-            (response) => {
-                response.json().then(
-                    (json) => {
-                        console.log(json)
-                        json['profiles'][this.uniqueId] = this.builtJson
-                    }
-                )
-            }
-        )
+        const builtJson = JSON.parse("{}")
+        builtJson['created'] = this.created
+        builtJson['gameDir'] = this.gameDir
+        builtJson['icon'] = this.icon
+        builtJson['javaArgs'] = this.javaArgs
+        builtJson['lastUsed'] = this.lastUsed
+        builtJson['lastVersionId'] = this.lastVersionId
+        builtJson['name'] = this.name
+        builtJson['type'] = this.type
+
+        console.log(builtJson.toString())
+
+        const launcherProfiles = JSON.parse(fs.readFileSync(LauncherProfileBuilder.getProfilePath(), 'utf8'))
+        launcherProfiles['profiles'][this.uniqueId] = builtJson
+        fs.writeFileSync(LauncherProfileBuilder.getProfilePath(), JSON.stringify(launcherProfiles))
     }
 }
