@@ -4,6 +4,7 @@ import {jsonToModSearchParams} from './NamagomiApi'
 import {ModSearchParam} from './ModSearchParam';
 import {sampleGomiJson} from "./sample";
 import * as http from "http";
+import ipcMain = Electron.ipcMain;
 
 const headers = {
     'Accept': 'application/json',
@@ -58,8 +59,8 @@ export const downloadAllModFiles = async () => {
     await p.text().then(text => {
         const params = jsonToModSearchParams(text)
         const urls = getModFileUrls(params)
-        urls.map(url=> {
-            if (url != null){
+        urls.map(url => {
+            if (url != null) {
                 const request = new XMLHttpRequest()
                 request.open('GET', url.toString(), true)
                 request.responseType = 'blob'
@@ -74,7 +75,7 @@ export const downloadClientModFiles = async () => {
     await p.text().then(text => {
         const params = jsonToModSearchParams(text)
         const urls = getModFileUrls(params)
-        urls.map((url ,index)=> {
+        urls.map((url, index) => {
             if (url != null && params[index].side == 'CLIENT') {
                 const request = new XMLHttpRequest()
                 request.open('GET', url.toString(), true)
@@ -90,8 +91,8 @@ export const downloadServerModFiles = async () => {
     await p.text().then(text => {
         const params = jsonToModSearchParams(text)
         const urls = getModFileUrls(params)
-        urls.map((url ,index)=> {
-            if (url != null && params[index].side == 'SERVER'){
+        urls.map((url, index) => {
+            if (url != null && params[index].side == 'SERVER') {
                 const request = new XMLHttpRequest()
                 request.open('GET', url.toString(), true)
                 request.responseType = 'blob'
@@ -104,9 +105,9 @@ export const downloadServerModFiles = async () => {
 export const sampleDownloadModFiles = async () => {
     const params = jsonToModSearchParams(sampleGomiJson)
     const urls = getModFileUrls(params)
-    urls.map((url ,index)=> {
-        url.then(url =>{
-            if (url != null){
+    urls.map((url, index) => {
+        url.then(url => {
+            if (url != null) {
                 const request = new XMLHttpRequest()
                 request.open('GET', url.toString(), true)
                 request.responseType = 'blob'
