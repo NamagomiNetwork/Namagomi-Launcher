@@ -102,7 +102,7 @@ export const DownloadModFilesDev = async () => {
     const urls = await Promise.all(getModFileUrls(params))
     Promise.all(urls.map(async (url, index) => {
         if (url != null) {
-            const fileName = url.toString().split('/').pop()!
+            const fileName = url.toString().split('/').pop()!.split('?')[0].split('#')[0];
             const filePath = path.join(devModsDir, fileName)
             if(!fs.existsSync(devModsDir)) fs.mkdirSync(devModsDir)
             if(!fs.existsSync(filePath)) {
