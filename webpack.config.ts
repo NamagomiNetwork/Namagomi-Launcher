@@ -12,7 +12,8 @@ const common: Configuration = {
       crypto: require.resolve("crypto-browserify"),
       buffer: require.resolve("buffer/"),
       path: require.resolve("path-browserify"),
-      stream: require.resolve("stream-browserify")
+      stream: require.resolve("stream-browserify"),
+      fs: require.resolve("fs"),
     }
   },
   externals: ['fsevents'],
