@@ -46,6 +46,7 @@ export class GitTree {
         if (this.data.type === 'blob') {
             result.push(pwd)
         } else {
+            result.push(pwd)
             this.children.map(async (child: GitTree) => {
                 await child.getAllPathsRecursive(result, `${pwd}/${child.data.path}`)
             })
