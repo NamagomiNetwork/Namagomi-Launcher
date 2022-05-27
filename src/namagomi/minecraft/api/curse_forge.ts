@@ -75,7 +75,7 @@ export const downloadClientModFiles = async () => {
         const params = jsonToModSearchParams(text)
         const urls = getModFileUrls(params)
         urls.map((url, index) => {
-            if (url != null && params[index].side == 'CLIENT') {
+            if (url != null && params[index].side === 'CLIENT') {
                 const request = new XMLHttpRequest()
                 request.open('GET', url.toString(), true)
                 request.responseType = 'blob'
@@ -91,7 +91,7 @@ export const downloadServerModFiles = async () => {
         const params = jsonToModSearchParams(text)
         const urls = getModFileUrls(params)
         urls.map((url, index) => {
-            if (url != null && params[index].side == 'SERVER') {
+            if (url != null && params[index].side === 'SERVER') {
                 const request = new XMLHttpRequest()
                 request.open('GET', url.toString(), true)
                 request.responseType = 'blob'
