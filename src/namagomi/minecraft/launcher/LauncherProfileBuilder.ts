@@ -85,8 +85,6 @@ export class LauncherProfileBuilder {
         builtJson['name'] = this.name
         builtJson['type'] = this.type
 
-        console.log(builtJson.toString())
-
         const launcherProfiles = JSON.parse(fs.readFileSync(LauncherProfileBuilder.getProfilePath(), 'utf8'))
         launcherProfiles['profiles'][this.uniqueId] = builtJson
         fs.writeFileSync(LauncherProfileBuilder.getProfilePath(), JSON.stringify(launcherProfiles))
