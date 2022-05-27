@@ -18,11 +18,6 @@ const fetchJson = async (url: URL) => {
     const response = await fetch(url.toString(), curseForgeHeaders)
     return response.json()
 }
-
-const fetchJsons = async (urls: Array<URL>) => {
-    return await Promise.all(urls.map(fetchJson))
-}
-
 const getModFileUrl = async (param: ModSearchParam) => {
     if (param.directUrl != '')
         return new URL(param.directUrl)
@@ -52,11 +47,6 @@ const trimJson = async (json: any, param: ModSearchParam) => {
         return single
     })
 }
-
-const trimJsons = (jsons: Array<any>, params: Array<ModSearchParam>) => {
-    return jsons.map((json: any, index) => trimJson(json, params[index]))
-}
-
 export const downloadAllModFiles = async () => {
     const p = (await fetch(namagomiModListUrl))
     await p.text().then(text => {
