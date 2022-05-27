@@ -5,8 +5,9 @@ import {sampleGomiJson} from "./sample";
 import {download} from 'electron-dl'
 import path from "path";
 import {BrowserWindow, app} from 'electron'
+import fetch from 'electron-fetch'
 
-const curseForgeHeaders: RequestInit = {
+const curseForgeHeaders = {
     headers: {
         'Accept': 'application/json',
         'x-api-key': curseForgeApiKey
