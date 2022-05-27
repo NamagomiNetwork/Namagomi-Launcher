@@ -2,7 +2,7 @@ import path from 'path';
 import { searchDevtools } from 'electron-search-devtools';
 import { BrowserWindow, app, ipcMain, session } from 'electron';
 import {setup} from "./namagomi/minecraft/launcher/setupNamagomiLauncherProfile";
-import {downloadAllModFiles} from "./namagomi/minecraft/api/curse_forge";
+import {downloadAllModFiles, sampleDownloadModFiles} from "./namagomi/minecraft/api/curse_forge";
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -52,4 +52,8 @@ ipcMain.handle('setupNamagomiLauncherProfile', async () => {
 
 ipcMain.handle('downloadAllModFiles', async () => {
   await downloadAllModFiles()
+})
+
+ipcMain.handle('sampleDownloadModFiles', async () => {
+  await sampleDownloadModFiles()
 })

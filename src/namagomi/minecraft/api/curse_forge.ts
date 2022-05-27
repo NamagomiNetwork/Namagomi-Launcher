@@ -2,7 +2,9 @@ import {curseForgeApiBaseUrl, curseForgeApiKey, namagomiModListUrl} from '../../
 import {jsonToModSearchParams} from './NamagomiApi'
 import {ModSearchParam} from './ModSearchParam';
 import {sampleGomiJson} from "./sample";
+import {download} from 'electron-dl'
 import path from "path";
+import {BrowserWindow, app} from 'electron'
 
 const curseForgeHeaders: RequestInit = {
     headers: {
@@ -108,10 +110,12 @@ export const sampleDownloadModFiles = async () => {
     urls.map((url, index) => {
         url.then(url => {
             if (url != null) {
-                const request = new XMLHttpRequest()
-                request.open('GET', url.toString(), true)
-                request.responseType = 'blob'
-                request.send()
+                const win = BrowserWindow.getFocusedWindow()
+                if(win != null)
+                    console.log(url.toString())
+                    // download(win, url.toString(), {directory: path.join(app.getPath('userData'), 'minecraft\\sample\\mods')})
+                    //     .then(() => console.log('success'))
+                    //     .catch(err => console.log(url + 'not found'))
             }
         })
     })
