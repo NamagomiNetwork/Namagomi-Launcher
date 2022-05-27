@@ -13,7 +13,7 @@ class GitTree {
         this.children = []
     }
 
-    public async build(owner: string, repo: string, sha: string = 'main', path?: string, type?: 'blob' | 'tree', url?: string) {
+    public async build(owner: string, repo: string, sha: string, path?: string, type?: 'blob' | 'tree', url?: string) {
         this.sha = sha
         const apiUrl = `https://api.github.com/repos/${owner}/${repo}/git/trees/${sha}`
         if (path == null) {
@@ -38,5 +38,21 @@ class GitTree {
                 this.children.push(await new GitTree().build(owner, repo, sha, path, type, url))
             })
         })
+    }
+
+    public async getAllPaths(): Promise<string[]> {
+        const result: string[] = []
+        await this.getAllPathsRecursive(result, '')
+        return result
+    }
+
+    private async getAllPathsRecursive(result: string[], pwd: string): Promise<void> {
+        if (this.type === 'blob') {
+            result.push(this.path)
+        } else {
+            this.children.map(async (child: GitTree) => {
+                await child.getAllPathsRecursive(result, `${pwd}/${child.path}`)
+            })
+        }
     }
 }
