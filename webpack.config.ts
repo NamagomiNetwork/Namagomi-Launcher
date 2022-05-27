@@ -9,10 +9,10 @@ const common: Configuration = {
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.json'],
     fallback: {
-      "crypto": require.resolve("crypto-browserify"),
-      "buffer": require.resolve("buffer/"),
-      "path": require.resolve("path-browserify"),
-      "stream": require.resolve("stream-browserify")
+      crypto: require.resolve("crypto-browserify"),
+      buffer: require.resolve("buffer/"),
+      path: require.resolve("path-browserify"),
+      stream: require.resolve("stream-browserify")
     }
   },
   externals: ['fsevents'],
