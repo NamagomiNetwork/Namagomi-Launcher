@@ -70,6 +70,21 @@ export class GitTree implements IGitTree {
         }
     }
 
+    public async getAllDirectoryPaths(): Promise<string[]> {
+        const result: string[] = []
+        await this.getAllDirectoryPathsRecursive(result, '')
+        return result
+    }
+
+    private async getAllDirectoryPathsRecursive(result: string[], pwd: string): Promise<void> {
+        if (this.data.type === 'tree') {
+            result.push(pwd)
+            this.children.map(async (child: GitTree) => {
+                await child.getAllDirectoryPathsRecursive(result, `${pwd}/${child.data.path}`)
+            })
+        }
+    }
+
     public async getData(path: string) {
         const paths = path.split('/')
         return paths.reduce(
