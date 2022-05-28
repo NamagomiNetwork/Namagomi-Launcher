@@ -8,6 +8,7 @@ import {devDir, devModsDir, mainDir, ModsDir} from '../../../settings/localPath'
 import {pipeline} from "stream/promises";
 import * as fs from "fs";
 import {createWriteStream} from "fs";
+import {getFileName} from "../../../settings/mappings";
 
 const curseForgeHeaders = {
     headers: {
@@ -51,7 +52,7 @@ const trimJson = async (json: any, param: ModSearchParam) => {
 }
 
 async function downloadModFile(url: URL) {
-    const fileName = url.toString().split('/').pop()!.split('?')[0].split('#')[0];
+    const fileName = getFileName(url.toString())
     const filePath = path.join(ModsDir, fileName)
     if (!fs.existsSync(mainDir)) fs.mkdirSync(mainDir)
     if (!fs.existsSync(ModsDir)) fs.mkdirSync(ModsDir)
@@ -109,7 +110,7 @@ async function rmModFiles(params: ModSearchParam[], urls: (URL | null)[], side: 
     const remoteFiles = urls
         .filter((url: URL | null, index) => url != null && (params[index].side === '' || params[index].side.includes(side)))
         .map((url: URL | null) =>
-            url!.toString().split('/').pop()!.split('?')[0].split('#')[0]
+            getFileName(url!.toString())
         )
 
     await Promise.all(files.map((file) => {
@@ -125,7 +126,7 @@ export const DownloadModFilesDev = async () => {
     const urls = await Promise.all(getModFileUrls(params))
     await Promise.all(urls.map(async (url) => {
         if (url != null) {
-            const fileName = url.toString().split('/').pop()!.split('?')[0].split('#')[0];
+            const fileName = getFileName(url.toString())
             const filePath = path.join(devModsDir, fileName)
             if(!fs.existsSync(devDir)) fs.mkdirSync(devDir)
             if(!fs.existsSync(devModsDir)) fs.mkdirSync(devModsDir)
