@@ -56,18 +56,16 @@ async function downloadModFile(url: URL) {
     if (!fs.existsSync(mainDir)) fs.mkdirSync(mainDir)
     if (!fs.existsSync(modsDir)) fs.mkdirSync(modsDir)
     if (!fs.existsSync(filePath)) {
-        console.log(`downloading ${fileName}`)
         await pipeline(
             (await fetch(url.toString())).body,
             createWriteStream(filePath)
         ).then(() => {
-            console.log('[COMPLETE] ' + fileName)
+            console.log('downloaded: ' + fileName)
         }).catch(err => {
             console.error(err)
-            console.log('[FAILED] ' + fileName + ' ' + url.toString())
+            console.error('failed: ' + fileName + ' ' + url.toString())
         })
-    } else
-        console.log('[IGNORE] ' + fileName)
+    }
 }
 
 export const downloadAllModFiles = async () => {
@@ -115,7 +113,7 @@ async function rmModFiles(params: ModSearchParam[], urls: (URL | null)[], side: 
     await Promise.all(files.map((file) => {
         if (!(remoteFiles.includes(file))) {
             fs.rmSync(path.join(modsDir, file))
-            console.log('[DELETE] ' + file)
+            console.log('delete: ' + file)
         }
     }))
 }
