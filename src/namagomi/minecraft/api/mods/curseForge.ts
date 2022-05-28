@@ -74,33 +74,49 @@ export const downloadAllModFiles = async () => {
     const jsonText = await (await fetch(namagomiModListUrl)).text()
     const params = jsonToModSearchParams(jsonText)
     const urls = await Promise.all(getModFileUrls(params))
-    urls.map(async (url) => {
+    await Promise.all(urls.map(async (url) => {
         if (url != null) {
             await downloadModFile(url)
         }
-    })
+    })).then(() => rmModFiles(params, urls, ''))
 }
 
 export const downloadClientModFiles = async () => {
     const jsonText = await (await fetch(namagomiModListUrl)).text()
     const params = jsonToModSearchParams(jsonText)
     const urls = await Promise.all(getModFileUrls(params))
-    urls.map(async (url, index) => {
+    await Promise.all(urls.map(async (url, index) => {
         if (url != null && (params[index].side === 'CLIENT' || params[index].side == '')) {
             await downloadModFile(url)
         }
-    })
+    })).then(() => rmModFiles(params, urls, 'CLIENT'))
 }
 
 export const downloadServerModFiles = async () => {
     const jsonText = await (await fetch(namagomiModListUrl)).text()
     const params = jsonToModSearchParams(jsonText)
     const urls = await Promise.all(getModFileUrls(params))
-    urls.map(async (url, index) => {
+    Promise.all(urls.map(async (url, index) => {
         if (url != null && (params[index].side === 'SERVER' || params[index].side == '')) {
             await downloadModFile(url)
         }
-    })
+    })).then(() => rmModFiles(params, urls, 'SERVER'))
+}
+
+async function rmModFiles(params: ModSearchParam[], urls: (URL | null)[], side: 'CLIENT' | 'SERVER' | '') {
+    const files = fs.readdirSync(ModsDir)
+
+    const remoteFiles = urls
+        .filter((url: URL | null, index) => url != null && (side === '' || params[index].side === side))
+        .map((url: URL | null) =>
+            url!.toString().split('/').pop()!.split('?')[0].split('#')[0]
+        )
+    await Promise.all(files.map((file) => {
+        if (!(remoteFiles.includes(file))) {
+            fs.rmSync(path.join(ModsDir, file))
+            console.log('[DELETE] ' + file)
+        }
+    }))
 }
 
 export const DownloadModFilesDev = async () => {
