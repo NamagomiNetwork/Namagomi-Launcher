@@ -132,7 +132,7 @@ export const DownloadModFilesDev = async () => {
             if(!fs.existsSync(devModsDir)) fs.mkdirSync(devModsDir)
             if(!fs.existsSync(filePath)) {
                 console.log(`downloading ${fileName}`)
-                pipeline(
+                await pipeline(
                     (await fetch(url.toString())).body,
                     createWriteStream(filePath)
                 ).then(() => {
