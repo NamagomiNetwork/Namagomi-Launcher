@@ -1,6 +1,6 @@
 import React from "react";
 
-export class AddMod extends React.Component<{}, {}> {
+export class AddMods extends React.Component<{}, {}> {
     constructor(props: any) {
         super(props);
         this.onFileDrop = this.onFileDrop.bind(this);
@@ -10,7 +10,7 @@ export class AddMod extends React.Component<{}, {}> {
         e.stopPropagation()
 
         const files = e.dataTransfer.files
-        Array.from(files).map(file => console.log(file))
+        window.namagomiAPI.addMods(files)
     }
 
     render() {
