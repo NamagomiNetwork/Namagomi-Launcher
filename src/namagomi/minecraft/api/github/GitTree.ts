@@ -1,6 +1,7 @@
 import fetch from 'electron-fetch'
+import {IGitTree} from "./IGitTree";
 
-export class GitTree {
+export class GitTree implements IGitTree {
     data: {path: string, type: 'blob' | 'tree', sha: string, url: string}
     children: GitTree[]
 
