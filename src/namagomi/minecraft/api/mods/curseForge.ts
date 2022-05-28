@@ -6,8 +6,8 @@ import path from "path";
 import fetch from 'electron-fetch'
 import {devDir, devModsDir, mainDir, ModsDir} from '../../../settings/localPath'
 import {pipeline} from "stream/promises";
-import {createWriteStream} from "fs";
 import * as fs from "fs";
+import {createWriteStream} from "fs";
 
 const curseForgeHeaders = {
     headers: {
@@ -57,7 +57,7 @@ async function downloadModFile(url: URL) {
     if (!fs.existsSync(ModsDir)) fs.mkdirSync(ModsDir)
     if (!fs.existsSync(filePath)) {
         console.log(`downloading ${fileName}`)
-        pipeline(
+        await pipeline(
             (await fetch(url.toString())).body,
             createWriteStream(filePath)
         ).then(() => {
@@ -74,39 +74,56 @@ export const downloadAllModFiles = async () => {
     const jsonText = await (await fetch(namagomiModListUrl)).text()
     const params = jsonToModSearchParams(jsonText)
     const urls = await Promise.all(getModFileUrls(params))
-    urls.map(async (url, index) => {
+    await Promise.all(urls.map(async (url) => {
         if (url != null) {
             await downloadModFile(url)
         }
-    })
+    })).then(() => rmModFiles(params, urls, ''))
 }
 
 export const downloadClientModFiles = async () => {
     const jsonText = await (await fetch(namagomiModListUrl)).text()
     const params = jsonToModSearchParams(jsonText)
     const urls = await Promise.all(getModFileUrls(params))
-    urls.map(async (url, index) => {
+    await Promise.all(urls.map(async (url, index) => {
         if (url != null && (params[index].side === 'CLIENT' || params[index].side == '')) {
             await downloadModFile(url)
         }
-    })
+    })).then(() => rmModFiles(params, urls, 'CLIENT'))
 }
 
 export const downloadServerModFiles = async () => {
     const jsonText = await (await fetch(namagomiModListUrl)).text()
     const params = jsonToModSearchParams(jsonText)
     const urls = await Promise.all(getModFileUrls(params))
-    urls.map(async (url, index) => {
+    Promise.all(urls.map(async (url, index) => {
         if (url != null && (params[index].side === 'SERVER' || params[index].side == '')) {
             await downloadModFile(url)
         }
-    })
+    })).then(() => rmModFiles(params, urls, 'SERVER'))
+}
+
+async function rmModFiles(params: ModSearchParam[], urls: (URL | null)[], side: 'CLIENT' | 'SERVER' | '') {
+    const files = fs.readdirSync(ModsDir)
+
+    const remoteFiles = urls
+        .filter((url: URL | null, index) => url != null && (params[index].side === '' || params[index].side === side))
+        .map((url: URL | null) =>
+            url!.toString().split('/').pop()!.split('?')[0].split('#')[0]
+        )
+
+    await Promise.all(files.map((file) => {
+        if (!(remoteFiles.includes(file))) {
+            fs.rmSync(path.join(ModsDir, file))
+            console.log('[DELETE] ' + file)
+        }
+    }))
 }
 
 export const DownloadModFilesDev = async () => {
     const params = jsonToModSearchParams(sampleGomiJson)
     const urls = await Promise.all(getModFileUrls(params))
-    urls.map(async (url, index) => {
+    await Promise.all(urls.map(async (url) => {
         if (url != null) {
             const fileName = url.toString().split('/').pop()!.split('?')[0].split('#')[0];
             const filePath = path.join(devModsDir, fileName)
@@ -127,5 +144,21 @@ export const DownloadModFilesDev = async () => {
             else
                 console.log('[IGNORE] ' + fileName)
         }
-    })
+    })).then(()=>rmModFilesDev(params, urls))
+}
+
+async function rmModFilesDev(params: ModSearchParam[], urls: (URL | null)[]) {
+    const files = fs.readdirSync(devModsDir)
+
+    const remoteFiles = urls
+        .filter((url: URL | null) => url != null)
+        .map((url: URL | null) =>
+            url!.toString().split('/').pop()!.split('?')[0].split('#')[0]
+    )
+    await Promise.all(files.map((file) => {
+        if (!(remoteFiles.includes(file))) {
+            fs.rmSync(path.join(devModsDir, file))
+            console.log('[DELETE] ' + file)
+        }
+    }))
 }
