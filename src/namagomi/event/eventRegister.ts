@@ -7,6 +7,7 @@ import {
     downloadServerModFiles
 } from "../minecraft/api/mods/curse_forge";
 import {GitTree} from '../minecraft/api/github/GitTree';
+import {devDownloadAllConfigFile} from "../minecraft/api/config/namagomiConfig";
 
 export function eventHandlerRegistry () {
     ipcMain.handle('setupNamagomiLauncherProfile', async () => {
@@ -42,11 +43,14 @@ export function eventHandlerRegistry () {
 
     ipcMain.on('GetGitFileData', async (event, arg) => {
         const tree = await new GitTree().build('NamagomiNetwork', 'Namagomi-mod', 'main')
-        const configTree = await new GitTree().build('NamagomiNetwork', 'Namagomi-mod', (await tree.getData('config')).data.sha)
-        configTree.getAllPaths().then(paths => {
-            paths.map(path => {
-                console.log(path)
-            })
-        })
+        const data = await tree.getData(arg)
+        console.log(`path: ${data.data.path}`)
+        console.log(`type: ${data.data.type}`)
+        console.log(`sha: ${data.data.sha}`)
+        console.log(`url: ${data.data.url}`)
+    })
+
+    ipcMain.handle('DownloadAllConfigFile', async () => {
+        await devDownloadAllConfigFile()
     })
 }

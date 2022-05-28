@@ -8,6 +8,7 @@ export interface IElectronAPI {
   downloadModFilesDev: () => Promise<void>;
   BuildGitTree: () => Promise<void>;
   GetGitFileData: (path: string) => Promise<void>;
+  DownloadAllConfigFile: () => Promise<void>;
 }
 
 declare global {
