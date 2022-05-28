@@ -93,7 +93,7 @@ export class GitTree implements IGitTree {
                     (value: GitTree) =>
                         value.data.path === path)
                 if (found == undefined) {
-                    throw new Error(`${path} not found`)
+                    throw new Error(`${paths} not found. no such file or directory`)
                 } else {
                     return found
                 }
