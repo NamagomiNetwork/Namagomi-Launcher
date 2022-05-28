@@ -1,4 +1,4 @@
-import {ipcMain} from "electron";
+import {ipcMain, shell} from "electron";
 import {setup} from "../minecraft/launcher/setupNamagomiLauncherProfile";
 import {
     downloadAllModFiles,
@@ -8,6 +8,7 @@ import {
 } from "../minecraft/api/mods/curse_forge";
 import {GitTree} from '../minecraft/api/github/GitTree';
 import {devDownloadAllConfigFile} from "../minecraft/api/config/namagomiConfig";
+import {devDir, mainDir} from "../settings/localPath";
 
 export function eventHandlerRegistry () {
     ipcMain.handle('setupNamagomiLauncherProfile', async () => {
@@ -52,5 +53,13 @@ export function eventHandlerRegistry () {
 
     ipcMain.handle('DownloadAllConfigFile', async () => {
         await devDownloadAllConfigFile()
+    })
+
+    ipcMain.handle('OpenDevFolder', async () => {
+        await shell.openPath(devDir)
+    })
+
+    ipcMain.handle('OpenFolder', async () => {
+        await shell.openPath(mainDir)
     })
 }

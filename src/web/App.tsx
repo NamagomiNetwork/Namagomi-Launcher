@@ -44,6 +44,8 @@ class Buttons extends React.Component<{}, {value: string}> {
                 <button onClick={()=>window.namagomiAPI.GetGitFileData(this.state.value)}>GetFileData</button>
                     <input type="text" id="filePath" value={this.state.value} onChange={this.handleChange} />
                 <button onClick={window.namagomiAPI.DownloadAllConfigFile}>DownloadAllConfigFile</button>
+                <button onClick={window.namagomiAPI.OpenDevFolder}>OpenDevFolder</button>
+                <button onClick={window.namagomiAPI.OpenFolder}>OpenFolder</button>
             </div>
         );
     }
