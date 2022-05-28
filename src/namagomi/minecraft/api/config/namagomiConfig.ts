@@ -11,11 +11,16 @@ export async function devDownloadAllConfigFile() {
     const configSha = (await tree.getData('config')).data.sha;
     const configTree = await new GitTree().build('NamagomiNetwork', 'Namagomi-mod', configSha);
     const configPaths = await configTree.getAllFilePaths()
+    const configSubDirs = await configTree.getAllDirectoryPaths()
+
     configPaths.map(async cfgPath => {
         const fileName = cfgPath.split('/').pop()!
         if (!fs.existsSync(devConfigDir)) fs.mkdirSync(devConfigDir)
+        configSubDirs.map(async (dir) => {
+            const absDir = path.join(devConfigDir, dir)
+            if (!fs.existsSync(absDir)) fs.mkdirSync(absDir)
+        })
 
-        const sha = (await configTree.getData(cfgPath)).data.sha
         const filePath = path.join(devConfigDir, cfgPath)
         console.log(`downloading ${fileName}`)
 
