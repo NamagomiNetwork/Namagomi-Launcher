@@ -3,7 +3,7 @@ import fs from "fs";
 import {NamagomiIgnore} from "./NamagomiIgnore";
 import path from "path";
 
-export function addMod(mod: FileList) {
+export function addMods(mod: FileList) {
     if(!fs.existsSync(namagomiIgnore)) mkEmptyJson(namagomiIgnore)
     const namagomiIgnoreJson = JSON.parse(fs.readFileSync(namagomiIgnore).toString()) as NamagomiIgnore
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import {AddMod} from "./AddMod";
+import {AddMods} from "./AddMods";
 
 export const App = () => {
     return (
@@ -8,7 +8,7 @@ export const App = () => {
             <div>
                 <Buttons />
             </div><br/>
-            <AddMod />
+            <AddMods />
         </div>
     );
 };
