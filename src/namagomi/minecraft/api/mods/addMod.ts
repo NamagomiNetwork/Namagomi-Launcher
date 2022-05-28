@@ -3,14 +3,14 @@ import fs from "fs";
 import {NamagomiIgnore} from "./NamagomiIgnore";
 import path from "path";
 
-export function addMods(mod: FileList) {
+export function addMods(paths: string[], names: string[]) {
     if(!fs.existsSync(namagomiIgnore)) mkEmptyJson(namagomiIgnore)
     const namagomiIgnoreJson = JSON.parse(fs.readFileSync(namagomiIgnore).toString()) as NamagomiIgnore
 
-    Array.from(mod)
-        .map(file => {
-            namagomiIgnoreJson.push(file.name)
-            fs.copyFileSync(file.path, path.join(modsDir, file.name))
+    paths
+        .map((pPath, index)=> {
+            namagomiIgnoreJson.push(names[index])
+            fs.copyFileSync(pPath, path.join(modsDir, names[index]))
         })
 
     fs.writeFileSync(namagomiIgnore, JSON.stringify(namagomiIgnoreJson))

@@ -8,7 +8,7 @@ export interface IElectronAPI {
     BuildGitTree: () => Promise<void>;
     GetGitFileData: (path: string) => Promise<void>;
     OpenFolder: () => Promise<void>;
-    addMods: (mod: FileList) => Promise<void>;
+    addMods: (paths:string[], names:string[]) => Promise<void>;
 }
 
 declare global {

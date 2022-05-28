@@ -9,8 +9,9 @@ export class AddMods extends React.Component<{}, {}> {
     async onFileDrop(e: React.DragEvent<HTMLDivElement>) {
         e.stopPropagation()
 
-        const files = e.dataTransfer.files
-        window.namagomiAPI.addMods(files)
+        const paths = Array.from(e.dataTransfer.files).map(file => file.path)
+        const names = Array.from(e.dataTransfer.files).map(file => file.name)
+        window.namagomiAPI.addMods(paths, names)
     }
 
     render() {

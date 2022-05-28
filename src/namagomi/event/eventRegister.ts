@@ -55,7 +55,7 @@ export function eventHandlerRegistry () {
         await shell.openPath(mainDir)
     })
 
-    ipcMain.on('addMods', async (event, arg:FileList) => {
-        addMods(arg)
+    ipcMain.handle('addMods', (event, paths:string[], names:string[]) => {
+        addMods(paths, names)
     })
 }
