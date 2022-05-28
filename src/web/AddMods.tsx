@@ -11,7 +11,7 @@ export class AddMods extends React.Component<{}, {}> {
 
         const paths = Array.from(e.dataTransfer.files).map(file => file.path)
         const names = Array.from(e.dataTransfer.files).map(file => file.name)
-        window.namagomiAPI.addMods(paths, names)
+        window.namagomiAPI.addMods(paths, names).then()
     }
 
     render() {
