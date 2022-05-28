@@ -52,4 +52,21 @@ export class GitTree {
             })
         }
     }
+
+    public async getData(path: string) {
+        const paths = path.split('/')
+        return paths.reduce(
+            (tree: GitTree, path: string) =>
+                {
+                    const found = tree.children.find(
+                        (value: GitTree) =>
+                            value.data.path === path)
+                    if (found == undefined){
+                        throw new Error(`${path} not found`)
+                    }
+                    else{
+                        return found
+                    }
+                }, this)
+    }
 }

@@ -1,3 +1,5 @@
+import {IpcMainEvent} from "electron";
+
 export interface IElectronAPI {
   downloadAllModFiles: () => Promise<void>;
   downloadClientModFiles: () => Promise<void>;
@@ -5,6 +7,7 @@ export interface IElectronAPI {
   setupNamagomiLauncherProfile: () => Promise<void>;
   downloadModFilesDev: () => Promise<void>;
   BuildGitTree: () => Promise<void>;
+  GetGitFileData: (path: string) => Promise<void>;
 }
 
 declare global {
