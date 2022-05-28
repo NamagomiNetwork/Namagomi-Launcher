@@ -57,7 +57,7 @@ async function downloadModFile(url: URL) {
     if (!fs.existsSync(ModsDir)) fs.mkdirSync(ModsDir)
     if (!fs.existsSync(filePath)) {
         console.log(`downloading ${fileName}`)
-        pipeline(
+        await pipeline(
             (await fetch(url.toString())).body,
             createWriteStream(filePath)
         ).then(() => {
@@ -107,10 +107,11 @@ async function rmModFiles(params: ModSearchParam[], urls: (URL | null)[], side: 
     const files = fs.readdirSync(ModsDir)
 
     const remoteFiles = urls
-        .filter((url: URL | null, index) => url != null && (side === '' || params[index].side === side))
+        .filter((url: URL | null, index) => url != null && (params[index].side === '' || params[index].side === side))
         .map((url: URL | null) =>
             url!.toString().split('/').pop()!.split('?')[0].split('#')[0]
         )
+
     await Promise.all(files.map((file) => {
         if (!(remoteFiles.includes(file))) {
             fs.rmSync(path.join(ModsDir, file))
