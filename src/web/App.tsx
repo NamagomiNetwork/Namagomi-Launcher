@@ -33,16 +33,14 @@ class Buttons extends React.Component<{}, {value: string}> {
     render() {
         return (
             <div>
-                <button onClick={window.namagomiAPI.downloadModFilesDev}>DownloadModFilesDev</button>
                 <button onClick={window.namagomiAPI.downloadAllModFiles}>DownloadAllModFiles</button>
                 <button onClick={window.namagomiAPI.downloadClientModFiles}>DownloadClientModFiles</button>
                 <button onClick={window.namagomiAPI.downloadServerModFiles}>DownloadServerModFiles</button>
+                <button onClick={window.namagomiAPI.downloadAllConfigFiles}>DownloadAllConfigFile</button>
                 <button onClick={window.namagomiAPI.setupNamagomiLauncherProfile}>SetupNamagomiLauncherProfile</button>
                 <button onClick={window.namagomiAPI.BuildGitTree}>BuildGitTree</button>
                 <button onClick={()=>window.namagomiAPI.GetGitFileData(this.state.value)}>GetFileData</button>
                     <input type="text" id="filePath" value={this.state.value} onChange={this.handleChange} />
-                <button onClick={window.namagomiAPI.DevDownloadAllConfigFile}>DevDownloadAllConfigFile</button>
-                <button onClick={window.namagomiAPI.OpenDevFolder}>OpenDevFolder</button>
                 <button onClick={window.namagomiAPI.OpenFolder}>OpenFolder</button>
             </div>
         );

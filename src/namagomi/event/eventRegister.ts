@@ -3,12 +3,11 @@ import {setup} from "../minecraft/launcher/setupNamagomiLauncherProfile";
 import {
     downloadAllModFiles,
     downloadClientModFiles,
-    DownloadModFilesDev,
     downloadServerModFiles
 } from "../minecraft/api/mods/curseForge";
 import {GitTree} from '../minecraft/api/github/GitTree';
-import {devDownloadAllConfigFile} from "../minecraft/api/config/namagomiConfig";
-import {devDir, mainDir} from "../settings/localPath";
+import {downloadAllConfigFiles} from "../minecraft/api/config/namagomiConfig";
+import {mainDir} from "../settings/localPath";
 
 export function eventHandlerRegistry () {
     ipcMain.handle('setupNamagomiLauncherProfile', async () => {
@@ -25,10 +24,6 @@ export function eventHandlerRegistry () {
 
     ipcMain.handle('downloadServerModFiles', async () => {
         await downloadServerModFiles()
-    })
-
-    ipcMain.handle('downloadModFilesDev', async () => {
-        await DownloadModFilesDev()
     })
 
     ipcMain.handle('BuildGitTree', async () => {
@@ -51,12 +46,8 @@ export function eventHandlerRegistry () {
         console.log(`url: ${data.data.url}`)
     })
 
-    ipcMain.handle('DevDownloadAllConfigFile', async () => {
-        await devDownloadAllConfigFile()
-    })
-
-    ipcMain.handle('OpenDevFolder', async () => {
-        await shell.openPath(devDir)
+    ipcMain.handle('downloadAllConfigFiles', async () => {
+        await downloadAllConfigFiles()
     })
 
     ipcMain.handle('OpenFolder', async () => {
