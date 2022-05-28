@@ -5,7 +5,7 @@ import {
     downloadClientModFiles,
     DownloadModFilesDev,
     downloadServerModFiles
-} from "../minecraft/api/mods/curse_forge";
+} from "../minecraft/api/mods/curseForge";
 import {GitTree} from '../minecraft/api/github/GitTree';
 import {devDownloadAllConfigFile} from "../minecraft/api/config/namagomiConfig";
 import {devDir, mainDir} from "../settings/localPath";
