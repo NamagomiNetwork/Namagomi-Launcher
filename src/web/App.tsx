@@ -11,8 +11,11 @@ export const App = () => {
     );
 };
 
-class Buttons extends React.Component {
-    state: {value: string}
+interface State {
+    value: string;
+}
+
+class Buttons extends React.Component<{}, {value: string}> {
     constructor(props: any) {
         super(props);
         this.state = {value: ''};
@@ -39,7 +42,7 @@ class Buttons extends React.Component {
                 <button onClick={window.namagomiAPI.setupNamagomiLauncherProfile}>SetupNamagomiLauncherProfile</button>
                 <button onClick={window.namagomiAPI.BuildGitTree}>BuildGitTree</button>
                 <button onClick={()=>window.namagomiAPI.GetGitFileData(this.state.value)}>GetFileData</button>
-                <input type="text" id="filePath" value={this.state.value} />
+                    <input type="text" id="filePath" value={this.state.value} onChange={this.handleChange} />
             </div>
         );
     }
