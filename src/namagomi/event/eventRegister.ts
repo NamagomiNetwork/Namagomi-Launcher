@@ -51,7 +51,7 @@ export function eventHandlerRegistry () {
         console.log(`url: ${data.data.url}`)
     })
 
-    ipcMain.handle('DownloadAllConfigFile', async () => {
+    ipcMain.handle('DevDownloadAllConfigFile', async () => {
         await devDownloadAllConfigFile()
     })
 

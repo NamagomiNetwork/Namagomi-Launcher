@@ -8,7 +8,7 @@ contextBridge.exposeInMainWorld('namagomiAPI', {
     downloadModFilesDev: () => ipcRenderer.invoke('downloadModFilesDev'),
     BuildGitTree: () => ipcRenderer.invoke('BuildGitTree'),
     GetGitFileData: (path: string) => ipcRenderer.send('GetGitFileData', path),
-    DownloadAllConfigFile: () => ipcRenderer.invoke('DownloadAllConfigFile'),
+    DevDownloadAllConfigFile: () => ipcRenderer.invoke('DevDownloadAllConfigFile'),
     OpenDevFolder: () => ipcRenderer.invoke('OpenDevFolder'),
     OpenFolder: () => ipcRenderer.invoke('OpenFolder')
 })
