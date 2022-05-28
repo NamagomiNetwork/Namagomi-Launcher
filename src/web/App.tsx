@@ -1,12 +1,14 @@
 import React from 'react';
 import './App.css';
+import {AddMod} from "./AddMod";
 
 export const App = () => {
     return (
         <div className="container">
             <div>
                 <Buttons />
-            </div>
+            </div><br/>
+            <AddMod />
         </div>
     );
 };
