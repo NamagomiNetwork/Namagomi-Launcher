@@ -2,7 +2,7 @@ import fetch from 'electron-fetch'
 import {IGitTree} from "./IGitTree";
 
 export class GitTree implements IGitTree {
-    data: {path: string, type: 'blob' | 'tree', sha: string, url: string}
+    data: { path: string, type: 'blob' | 'tree', sha: string, url: string }
     children: GitTree[]
 
     constructor() {
@@ -54,20 +54,34 @@ export class GitTree implements IGitTree {
         }
     }
 
+    public async getAllFilePaths(): Promise<string[]> {
+        const result: string[] = []
+        await this.getAllFilePathsRecursive(result, '')
+        return result
+    }
+
+    private async getAllFilePathsRecursive(result: string[], pwd: string): Promise<void> {
+        if (this.data.type === 'blob') {
+            result.push(pwd)
+        } else {
+            this.children.map(async (child: GitTree) => {
+                await child.getAllFilePathsRecursive(result, `${pwd}/${child.data.path}`)
+            })
+        }
+    }
+
     public async getData(path: string) {
         const paths = path.split('/')
         return paths.reduce(
-            (tree: GitTree, path: string) =>
-                {
-                    const found = tree.children.find(
-                        (value: GitTree) =>
-                            value.data.path === path)
-                    if (found == undefined){
-                        throw new Error(`${path} not found`)
-                    }
-                    else{
-                        return found
-                    }
-                }, this)
+            (tree: GitTree, path: string) => {
+                const found = tree.children.find(
+                    (value: GitTree) =>
+                        value.data.path === path)
+                if (found == undefined) {
+                    throw new Error(`${path} not found`)
+                } else {
+                    return found
+                }
+            }, this)
     }
 }
