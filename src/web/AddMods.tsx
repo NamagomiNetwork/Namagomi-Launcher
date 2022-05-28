@@ -6,7 +6,7 @@ export class AddMods extends React.Component<{}, {}> {
         this.onFileDrop = this.onFileDrop.bind(this);
     }
 
-    onFileDrop(e:React.DragEvent<HTMLDivElement>) {
+    async onFileDrop(e: React.DragEvent<HTMLDivElement>) {
         e.stopPropagation()
 
         const files = e.dataTransfer.files
