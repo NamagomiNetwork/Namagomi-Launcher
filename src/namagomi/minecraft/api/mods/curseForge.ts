@@ -4,7 +4,7 @@ import {ModSearchParam} from './ModSearchParam';
 import {sampleGomiJson} from "../sample";
 import path from "path";
 import fetch from 'electron-fetch'
-import {devModsDir} from '../../../settings/localPath'
+import {devDir, devModsDir, mainDir, ModsDir} from '../../../settings/localPath'
 import {pipeline} from "stream/promises";
 import {createWriteStream} from "fs";
 import * as fs from "fs";
@@ -49,51 +49,57 @@ const trimJson = async (json: any, param: ModSearchParam) => {
         return single
     })
 }
-export const downloadAllModFiles = async () => {
-    const p = (await fetch(namagomiModListUrl))
-    await p.text().then(text => {
-        const params = jsonToModSearchParams(text)
-        const urls = getModFileUrls(params)
-        urls.map(url => {
-            if (url != null) {
-                const request = new XMLHttpRequest()
-                request.open('GET', url.toString(), true)
-                request.responseType = 'blob'
-                request.send()
-            }
+
+async function downloadModFile(url: URL) {
+    const fileName = url.toString().split('/').pop()!.split('?')[0].split('#')[0];
+    const filePath = path.join(ModsDir, fileName)
+    if (!fs.existsSync(mainDir)) fs.mkdirSync(mainDir)
+    if (!fs.existsSync(ModsDir)) fs.mkdirSync(ModsDir)
+    if (!fs.existsSync(filePath)) {
+        console.log(`downloading ${fileName}`)
+        pipeline(
+            (await fetch(url.toString())).body,
+            createWriteStream(filePath)
+        ).then(() => {
+            console.log('[COMPLETE] ' + fileName)
+        }).catch(err => {
+            console.error(err)
+            console.log('[FAILED] ' + fileName + ' ' + url.toString())
         })
+    } else
+        console.log('[IGNORE] ' + fileName)
+}
+
+export const downloadAllModFiles = async () => {
+    const jsonText = await (await fetch(namagomiModListUrl)).text()
+    const params = jsonToModSearchParams(jsonText)
+    const urls = await Promise.all(getModFileUrls(params))
+    urls.map(async (url, index) => {
+        if (url != null) {
+            await downloadModFile(url)
+        }
     })
 }
 
 export const downloadClientModFiles = async () => {
-    const p = (await fetch(namagomiModListUrl))
-    await p.text().then(text => {
-        const params = jsonToModSearchParams(text)
-        const urls = getModFileUrls(params)
-        urls.map((url, index) => {
-            if (url != null && params[index].side === 'CLIENT') {
-                const request = new XMLHttpRequest()
-                request.open('GET', url.toString(), true)
-                request.responseType = 'blob'
-                request.send()
-            }
-        })
+    const jsonText = await (await fetch(namagomiModListUrl)).text()
+    const params = jsonToModSearchParams(jsonText)
+    const urls = await Promise.all(getModFileUrls(params))
+    urls.map(async (url, index) => {
+        if (url != null && (params[index].side === 'CLIENT' || params[index].side == '')) {
+            await downloadModFile(url)
+        }
     })
 }
 
 export const downloadServerModFiles = async () => {
-    const p = (await fetch(namagomiModListUrl))
-    await p.text().then(text => {
-        const params = jsonToModSearchParams(text)
-        const urls = getModFileUrls(params)
-        urls.map((url, index) => {
-            if (url != null && params[index].side === 'SERVER') {
-                const request = new XMLHttpRequest()
-                request.open('GET', url.toString(), true)
-                request.responseType = 'blob'
-                request.send()
-            }
-        })
+    const jsonText = await (await fetch(namagomiModListUrl)).text()
+    const params = jsonToModSearchParams(jsonText)
+    const urls = await Promise.all(getModFileUrls(params))
+    urls.map(async (url, index) => {
+        if (url != null && (params[index].side === 'SERVER' || params[index].side == '')) {
+            await downloadModFile(url)
+        }
     })
 }
 
@@ -104,6 +110,7 @@ export const DownloadModFilesDev = async () => {
         if (url != null) {
             const fileName = url.toString().split('/').pop()!.split('?')[0].split('#')[0];
             const filePath = path.join(devModsDir, fileName)
+            if(!fs.existsSync(devDir)) fs.mkdirSync(devDir)
             if(!fs.existsSync(devModsDir)) fs.mkdirSync(devModsDir)
             if(!fs.existsSync(filePath)) {
                 console.log(`downloading ${fileName}`)

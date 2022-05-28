@@ -3,7 +3,7 @@ export class ModSearchParam {
     gameVersion: string
     fileNamePattern: string
     directUrl: string
-    side: "CLIENT" | "SERVER"
+    side: "CLIENT" | "SERVER" | ""
     displayName: string
     constructor(modid: string, gameVersion: string, fileNamePattern: string, directUrl: string, side: "CLIENT" | "SERVER") {
         this.modid = modid
