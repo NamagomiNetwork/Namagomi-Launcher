@@ -28,20 +28,17 @@ export async function downloadAllConfigFiles() {
         if(!(fileName in cacheJson)) cacheJson[fileName] = ""
         if(cacheJson[fileName] !== sha) {
             const filePath = path.join(configDir, cfgPath)
-            console.log(`downloading ${fileName}`)
 
             await pipeline(
                 (await fetch(namagomiFileUrlBase(cfgPath))).body,
                 createWriteStream(filePath)
             ).then(() => {
-                console.log('[COMPLETE] ' + fileName)
+                console.log('downloaded: ' + fileName)
                 cacheJson[fileName] = sha
             }).catch(err => {
                 console.error(err)
-                console.log('[FAILED] ' + fileName + ' ' + namagomiFileUrlBase(cfgPath).toString())
+                console.log('failed: ' + fileName + ' ' + namagomiFileUrlBase(cfgPath).toString())
             })
-        } else {
-            console.log(`[IGNORE] ${fileName}`)
         }
     }))
     fs.writeFileSync(namagomiCache, JSON.stringify(cacheJson))

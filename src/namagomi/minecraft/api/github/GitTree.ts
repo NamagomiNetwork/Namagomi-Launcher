@@ -85,7 +85,7 @@ export class GitTree implements IGitTree {
         }
     }
 
-    public async getData(path: string) {
+    public getData(path: string) {
         const paths = path.split('/').filter(p => p !== '')
         return paths.reduce(
             (tree: GitTree, path: string) => {

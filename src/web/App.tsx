@@ -5,21 +5,20 @@ import {AddMods} from "./AddMods";
 export const App = () => {
     return (
         <div className="container">
-            <div>
-                <Buttons />
-            </div><br/>
-            <AddMods />
+            <Buttons/><br/>
+            <AddMods/>
         </div>
     );
 };
 
-class Buttons extends React.Component<{}, {value: string}> {
+class Buttons extends React.Component<{}, { value: string, updateAvailable: boolean }> {
     constructor(props: any) {
         super(props);
-        this.state = {value: ''};
+        this.state = {value: '', updateAvailable: false};
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.checkUpdate = this.checkUpdate.bind(this)
     }
 
     handleChange(event: any) {
@@ -31,6 +30,16 @@ class Buttons extends React.Component<{}, {value: string}> {
         event.preventDefault();
     }
 
+    checkUpdate() {
+        window.namagomiAPI.isLatestMods().then(isLatest => {
+            this.setState({updateAvailable: !isLatest})
+        })
+    }
+
+    componentDidMount() {
+        this.checkUpdate()
+    }
+
     render() {
         return (
             <div>
@@ -40,9 +49,10 @@ class Buttons extends React.Component<{}, {value: string}> {
                 <button onClick={window.namagomiAPI.downloadAllConfigFiles}>DownloadAllConfigFile</button>
                 <button onClick={window.namagomiAPI.setupNamagomiLauncherProfile}>SetupNamagomiLauncherProfile</button>
                 <button onClick={window.namagomiAPI.BuildGitTree}>BuildGitTree</button>
-                <button onClick={()=>window.namagomiAPI.GetGitFileData(this.state.value)}>GetFileData</button>
-                    <input type="text" id="filePath" value={this.state.value} onChange={this.handleChange} />
+                <button onClick={() => window.namagomiAPI.GetGitFileData(this.state.value)}>GetFileData</button>
+                <input type="text" id="filePath" value={this.state.value} onChange={this.handleChange}/>
                 <button onClick={window.namagomiAPI.OpenFolder}>OpenFolder</button>
+                <button onClick={this.checkUpdate}>updatable: {this.state.updateAvailable?'true':'false'}</button>
             </div>
         );
     }

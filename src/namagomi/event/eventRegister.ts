@@ -3,7 +3,7 @@ import {setup} from "../minecraft/launcher/setupNamagomiLauncherProfile";
 import {
     downloadAllModFiles,
     downloadClientModFiles,
-    downloadServerModFiles
+    downloadServerModFiles, isLatestMods
 } from "../minecraft/api/mods/curseForge";
 import {GitTree} from '../minecraft/api/github/GitTree';
 import {downloadAllConfigFiles} from "../minecraft/api/config/namagomiConfig";
@@ -65,5 +65,9 @@ export function eventHandlerRegistry () {
 
     ipcMain.handle('removeMods', (event, mods:string[]) => {
         removeMods(mods)
+    })
+
+    ipcMain.handle('isLatestMods', async () => {
+        return await isLatestMods()
     })
 }

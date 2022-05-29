@@ -7,5 +7,5 @@ export interface IGitTree {
     getAllPaths(): Promise<string[]>
     getAllFilePaths(): Promise<string[]>
     getAllDirectoryPaths(): Promise<string[]>
-    getData(path: string): Promise<GitTree>
+    getData(path: string): GitTree
 }
