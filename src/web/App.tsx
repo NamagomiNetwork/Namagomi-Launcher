@@ -12,6 +12,7 @@ export const App = () => {
         </div>
     );
 };
+
 class Buttons extends React.Component<{}, {value: string}> {
     constructor(props: any) {
         super(props);
