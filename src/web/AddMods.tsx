@@ -16,12 +16,11 @@ export class AddMods extends React.Component<{}, { files: string[] }> {
 
         const paths = Array.from(e.dataTransfer.files).map(file => file.path)
         const names = Array.from(e.dataTransfer.files).map(file => file.name)
-        const res = window.namagomiAPI.addMods(paths, names)
-        const concatFiles = this.state.files.concat(await res)
-        this.setState({files: concatFiles})
+        await window.namagomiAPI.addMods(paths, names)
+        this.setState({files: await window.namagomiAPI.getIgnoreList()})
     }
 
-    async componentWillMount() {
+    async componentDidMount() {
         this.setState({files: await window.namagomiAPI.getIgnoreList()})
     }
 

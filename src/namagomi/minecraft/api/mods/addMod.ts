@@ -26,3 +26,7 @@ export function getIgnoreList() {
     if(!fs.existsSync(namagomiIgnore)) mkEmptyJson(namagomiIgnore)
     return JSON.parse(fs.readFileSync(namagomiIgnore).toString()) as NamagomiIgnore
 }
+
+export function removeMods(names: string[]) {
+
+}

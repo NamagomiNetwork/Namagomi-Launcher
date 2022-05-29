@@ -4,29 +4,25 @@ type Props = {
     files: string[]
 }
 
-function rmMod(mod: string) {
+function removeMod(mod: string) {
     console.log(mod)
 }
 
 export const ModList: React.FC<Props> = ({files}) => (
     <div id="mod list">
         <table>
-            <tr>
-                <th></th>
-                <th>file</th>
-                <th></th>
-            </tr>
-        {files.map((file: string, index: number) => {
-            return <div>
-                <tr>
-                    <input type={"checkbox"}/>
+            <tbody>
+            {files.map((file: string, index: number) => {
+                return <tr key={index}>
+                    <td><input type={"checkbox"}/></td>
                     <td>{file}</td>
                     <td>
-                        <input type={"submit"} value={"削除"} onClick={() => rmMod(file)}/>
+                        <input type={"submit"} value={"削除"} onClick={() => removeMod(file)}/>
                     </td>
                 </tr>
-            </div>
-        })}
+
+            })}
+            </tbody>
         </table>
     </div>
 )
