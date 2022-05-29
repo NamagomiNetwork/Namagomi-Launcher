@@ -21,3 +21,8 @@ export function addMods(paths: string[], names: string[]) {
 function mkEmptyJson(path: string) {
     fs.writeFileSync(path, JSON.stringify([]))
 }
+
+export function getIgnoreList() {
+    if(!fs.existsSync(namagomiIgnore)) mkEmptyJson(namagomiIgnore)
+    return JSON.parse(fs.readFileSync(namagomiIgnore).toString()) as NamagomiIgnore
+}
