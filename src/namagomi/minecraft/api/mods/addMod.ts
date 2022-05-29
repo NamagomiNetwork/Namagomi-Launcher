@@ -9,11 +9,13 @@ export function addMods(paths: string[], names: string[]) {
 
     paths
         .map((pPath, index)=> {
-            namagomiIgnoreJson.push(names[index])
+            if(!namagomiIgnoreJson.includes(names[index]))
+                namagomiIgnoreJson.push(names[index])
             fs.copyFileSync(pPath, path.join(modsDir, names[index]))
         })
 
     fs.writeFileSync(namagomiIgnore, JSON.stringify(namagomiIgnoreJson))
+    return names
 }
 
 function mkEmptyJson(path: string) {
