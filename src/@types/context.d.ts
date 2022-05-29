@@ -11,6 +11,7 @@ export interface IElectronAPI {
     addMods: (paths:string[], names:string[]) => Promise<void>;
     getIgnoreList: () => Promise<string[]>;
     removeMods: (mods:string[]) => Promise<void>;
+    isLatestMods: () => Promise<boolean>;
 }
 
 declare global {

@@ -12,5 +12,6 @@ contextBridge.exposeInMainWorld('namagomiAPI', {
     OpenFolder: () => ipcRenderer.invoke('OpenFolder'),
     addMods: (paths:string[], names:string[]) => ipcRenderer.invoke('addMods', paths, names),
     getIgnoreList: () => ipcRenderer.invoke('getIgnoreList'),
-    removeMods: (mods:string[]) => ipcRenderer.invoke('removeMods', mods)
+    removeMods: (mods:string[]) => ipcRenderer.invoke('removeMods', mods),
+    isLatestMods: () => ipcRenderer.invoke('isLatestMods')
 })
