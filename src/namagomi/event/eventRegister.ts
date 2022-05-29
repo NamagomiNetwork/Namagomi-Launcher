@@ -56,6 +56,6 @@ export function eventHandlerRegistry () {
     })
 
     ipcMain.handle('addMods', (event, paths:string[], names:string[]) => {
-        addMods(paths, names)
+        return addMods(paths, names)
     })
 }

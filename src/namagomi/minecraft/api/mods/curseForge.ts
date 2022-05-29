@@ -3,11 +3,12 @@ import {jsonToModSearchParams} from '../NamagomiApi'
 import {ModSearchParam} from './ModSearchParam';
 import path from "path";
 import fetch from 'electron-fetch'
-import {mainDir, modsDir} from '../../../settings/localPath'
+import {mainDir, modsDir, namagomiIgnore} from '../../../settings/localPath'
 import {pipeline} from "stream/promises";
 import * as fs from "fs";
 import {createWriteStream} from "fs";
 import {getFileName} from "../../../settings/mappings";
+import {mkEmptyFile, NamagomiIgnore} from "./NamagomiIgnore";
 
 const curseForgeHeaders = {
     headers: {
@@ -110,8 +111,12 @@ async function rmModFiles(params: ModSearchParam[], urls: (URL | null)[], side: 
             getFileName(url!.toString())
         )
 
+    if (!fs.existsSync(namagomiIgnore)) mkEmptyFile(namagomiIgnore)
+    const ignoreFiles =
+        JSON.parse(fs.readFileSync(namagomiIgnore, 'utf8')) as NamagomiIgnore
+
     await Promise.all(files.map((file) => {
-        if (!(remoteFiles.includes(file))) {
+        if (!(remoteFiles.includes(file) || ignoreFiles.includes(file))) {
             fs.rmSync(path.join(modsDir, file))
             console.log('delete: ' + file)
         }
