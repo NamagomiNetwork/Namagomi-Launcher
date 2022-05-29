@@ -1,0 +1,6 @@
+#drag {
+    border: 2px solid black;
+    border-radius: 3px;
+    padding: 5px;
+    display: inline-block;
+}
