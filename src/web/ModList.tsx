@@ -18,7 +18,7 @@ export const ModList: React.FC<Props> = ({files, freshList}) => (
                     <td><input type={"checkbox"}/></td>
                     <td>{file}</td>
                     <td>
-                        <input type={"submit"} value={"削除"} onClick={() => {
+                        <input type={"submit"} value={"delete"} onClick={() => {
                             removeMod(file)
                             freshList()
                         }}/>

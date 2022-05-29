@@ -1,5 +1,6 @@
 import React from "react";
 import {ModList} from "./ModList";
+import "./AddMods.css";
 
 export class AddMods extends React.Component<{}, { files: string[] }> {
     constructor(props: any) {
@@ -32,7 +33,7 @@ export class AddMods extends React.Component<{}, { files: string[] }> {
     render() {
         return (
             <div>
-                <div onDrop={this.onFileDrop} id="drop">mod files drop here</div><br/>
+                <span onDrop={this.onFileDrop} id="drop">mod files drop here</span><br/>
                 <ModList files={this.state.files} freshList={this.freshList}/>
             </div>
         )
