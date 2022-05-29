@@ -4,8 +4,7 @@ import {NamagomiIgnore} from "./NamagomiIgnore";
 import path from "path";
 
 export function addMods(paths: string[], names: string[]) {
-    if(!fs.existsSync(namagomiIgnore)) mkEmptyJson(namagomiIgnore)
-    const namagomiIgnoreJson = JSON.parse(fs.readFileSync(namagomiIgnore).toString()) as NamagomiIgnore
+    const namagomiIgnoreJson = getIgnoreList()
 
     paths
         .map((pPath, index)=> {
@@ -27,6 +26,11 @@ export function getIgnoreList() {
     return JSON.parse(fs.readFileSync(namagomiIgnore).toString()) as NamagomiIgnore
 }
 
-export function removeMods(names: string[]) {
-
+export function removeMods(mods: string[]) {
+    const ignoreFiles = getIgnoreList()
+    const newIgnore = mods.filter(mod => {ignoreFiles.includes(mod)})
+    fs.writeFileSync(namagomiIgnore, JSON.stringify(newIgnore))
+    mods.map(mod => {
+        fs.rmSync(path.join(modsDir, mod))
+    })
 }

@@ -1,11 +1,12 @@
 import React from "react";
+import {removeMods} from "../namagomi/minecraft/api/mods/addMod";
 
 type Props = {
     files: string[]
 }
 
 function removeMod(mod: string) {
-    console.log(mod)
+    removeMods([mod]);
 }
 
 export const ModList: React.FC<Props> = ({files}) => (
@@ -20,7 +21,6 @@ export const ModList: React.FC<Props> = ({files}) => (
                         <input type={"submit"} value={"削除"} onClick={() => removeMod(file)}/>
                     </td>
                 </tr>
-
             })}
             </tbody>
         </table>

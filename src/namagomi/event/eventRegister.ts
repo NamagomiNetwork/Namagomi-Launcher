@@ -8,7 +8,7 @@ import {
 import {GitTree} from '../minecraft/api/github/GitTree';
 import {downloadAllConfigFiles} from "../minecraft/api/config/namagomiConfig";
 import {mainDir} from "../settings/localPath";
-import {addMods, getIgnoreList} from "../minecraft/api/mods/addMod";
+import {addMods, getIgnoreList, removeMods} from "../minecraft/api/mods/addMod";
 
 export function eventHandlerRegistry () {
     ipcMain.handle('setupNamagomiLauncherProfile', async () => {
@@ -56,10 +56,14 @@ export function eventHandlerRegistry () {
     })
 
     ipcMain.handle('addMods', (event, paths:string[], names:string[]) => {
-        return addMods(paths, names)
+        addMods(paths, names)
     })
 
     ipcMain.handle('getIgnoreList', () => {
         return getIgnoreList()
+    })
+
+    ipcMain.handle('removeMods', (event, mods:string[]) => {
+        removeMods(mods)
     })
 }
