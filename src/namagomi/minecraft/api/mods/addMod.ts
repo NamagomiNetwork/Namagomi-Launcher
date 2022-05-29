@@ -28,7 +28,7 @@ export function getIgnoreList() {
 
 export function removeMods(mods: string[]) {
     const ignoreFiles = getIgnoreList()
-    const newIgnore = mods.filter(mod => {ignoreFiles.includes(mod)})
+    const newIgnore = ignoreFiles.filter(ignore => !mods.includes(ignore))
     fs.writeFileSync(namagomiIgnore, JSON.stringify(newIgnore))
     mods.map(mod => {
         fs.rmSync(path.join(modsDir, mod))

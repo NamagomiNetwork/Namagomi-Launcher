@@ -1,15 +1,15 @@
 import React from "react";
-import {removeMods} from "../namagomi/minecraft/api/mods/addMod";
 
 type Props = {
     files: string[]
+    freshList: () => void
 }
 
 function removeMod(mod: string) {
-    removeMods([mod]);
+    window.namagomiAPI.removeMods([mod]).then()
 }
 
-export const ModList: React.FC<Props> = ({files}) => (
+export const ModList: React.FC<Props> = ({files, freshList}) => (
     <div id="mod list">
         <table>
             <tbody>
@@ -18,7 +18,10 @@ export const ModList: React.FC<Props> = ({files}) => (
                     <td><input type={"checkbox"}/></td>
                     <td>{file}</td>
                     <td>
-                        <input type={"submit"} value={"削除"} onClick={() => removeMod(file)}/>
+                        <input type={"submit"} value={"削除"} onClick={() => {
+                            removeMod(file)
+                            freshList()
+                        }}/>
                     </td>
                 </tr>
             })}
