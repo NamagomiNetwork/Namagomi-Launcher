@@ -1,130 +1,130 @@
 type GetMod = {
-    "data": {
-        "id": number,
-        "gameId": number,
-        "name": string,
-        "slug": string,
-        "links": {
-            "websiteUrl": string,
-            "wikiUrl": string,
-            "issuesUrl": string,
-            "sourceUrl": string
+    "data"?: {
+        "id"?: number,
+        "gameId"?: number,
+        "name"?: string,
+        "slug"?: string,
+        "links"?: {
+            "websiteUrl"?: string,
+            "wikiUrl"?: string,
+            "issuesUrl"?: string,
+            "sourceUrl"?: string
         },
-        "summary": string,
-        "status": number,
-        "downloadCount": number,
-        "isFeatured": boolean,
-        "primaryCategoryId": number,
-        "categories": [
+        "summary"?: string,
+        "status"?: number,
+        "downloadCount"?: number,
+        "isFeatured"?: boolean,
+        "primaryCategoryId"?: number,
+        "categories"?: [
             {
-                "id": number,
-                "gameId": number,
-                "name": string,
-                "slug": string,
-                "url": string,
-                "iconUrl": string,
-                "dateModified": string,
-                "isClass": boolean,
-                "classId": number,
-                "parentCategoryId": number,
-                "displayIndex": number
+                "id"?: number,
+                "gameId"?: number,
+                "name"?: string,
+                "slug"?: string,
+                "url"?: string,
+                "iconUrl"?: string,
+                "dateModified"?: string,
+                "isClass"?: boolean,
+                "classId"?: number,
+                "parentCategoryId"?: number,
+                "displayIndex"?: number
             }
         ],
-        "classId": number,
-        "authors": [
+        "classId"?: number,
+        "authors"?: [
             {
-                "id": number,
-                "name": string,
-                "url": string
+                "id"?: number,
+                "name"?: string,
+                "url"?: string
             }
         ],
-        "logo": {
-            "id": number,
-            "modId": number,
-            "title": string,
-            "description": string,
-            "thumbnailUrl": string,
-            "url": string
+        "logo"?: {
+            "id"?: number,
+            "modId"?: number,
+            "title"?: string,
+            "description"?: string,
+            "thumbnailUrl"?: string,
+            "url"?: string
         },
-        "screenshots": [
+        "screenshots"?: [
             {
-                "id": number,
-                "modId": number,
-                "title": string,
-                "description": string,
-                "thumbnailUrl": string,
-                "url": string
+                "id"?: number,
+                "modId"?: number,
+                "title"?: string,
+                "description"?: string,
+                "thumbnailUrl"?: string,
+                "url"?: string
             }
         ],
-        "mainFileId": number,
-        "latestFiles": [
+        "mainFileId"?: number,
+        "latestFiles"?: [
             {
-                "id": number,
-                "gameId": number,
-                "modId": number,
-                "isAvailable": boolean,
-                "displayName": string,
-                "fileName": string,
-                "releaseType": number,
-                "fileStatus": number,
-                "hashes": [
+                "id"?: number,
+                "gameId"?: number,
+                "modId"?: number,
+                "isAvailable"?: boolean,
+                "displayName"?: string,
+                "fileName"?: string,
+                "releaseType"?: number,
+                "fileStatus"?: number,
+                "hashes"?: [
                     {
-                        "value": string,
-                        "algo": number
+                        "value"?: string,
+                        "algo"?: number
                     }
                 ],
-                "fileDate": string,
-                "fileLength": number,
-                "downloadCount": number,
-                "downloadUrl": string,
-                "gameVersions": [
+                "fileDate"?: string,
+                "fileLength"?: number,
+                "downloadCount"?: number,
+                "downloadUrl"?: string,
+                "gameVersions"?: [
                     string
                 ],
-                "sortableGameVersions": [
+                "sortableGameVersions"?: [
                     {
-                        "gameVersionName": string,
-                        "gameVersionPadded": string,
-                        "gameVersion": string,
-                        "gameVersionReleaseDate": string,
-                        "gameVersionTypeId": number
+                        "gameVersionName"?: string,
+                        "gameVersionPadded"?: string,
+                        "gameVersion"?: string,
+                        "gameVersionReleaseDate"?: string,
+                        "gameVersionTypeId"?: number
                     }
                 ],
-                "dependencies": [
+                "dependencies"?: [
                     {
-                        "modId": number,
-                        "relationType": number
+                        "modId"?: number,
+                        "relationType"?: number
                     }
                 ],
-                "exposeAsAlternative": boolean,
-                "parentProjectFileId": number,
-                "alternateFileId": number,
-                "isServerPack": boolean,
-                "serverPackFileId": number,
-                "fileFingerprint": number,
-                "modules": [
+                "exposeAsAlternative"?: boolean,
+                "parentProjectFileId"?: number,
+                "alternateFileId"?: number,
+                "isServerPack"?: boolean,
+                "serverPackFileId"?: number,
+                "fileFingerprint"?: number,
+                "modules"?: [
                     {
-                        "name": string,
-                        "fingerprint": number
+                        "name"?: string,
+                        "fingerprint"?: number
                     }
                 ]
             }
         ],
-        "latestFilesIndexes": [
+        "latestFilesIndexes"?: [
             {
-                "gameVersion": string,
-                "fileId": number,
-                "filename": string,
-                "releaseType": number,
-                "gameVersionTypeId": number,
-                "modLoader": number
+                "gameVersion"?: string,
+                "fileId"?: number,
+                "filename"?: string,
+                "releaseType"?: number,
+                "gameVersionTypeId"?: number,
+                "modLoader"?: number
             }
         ],
-        "dateCreated": string,
-        "dateModified": string,
-        "dateReleased": string,
-        "allowModDistribution": boolean,
-        "gamePopularityRank": number,
-        "isAvailable": boolean,
-        "thumbsUpCount": number
+        "dateCreated"?: string,
+        "dateModified"?: string,
+        "dateReleased"?: string,
+        "allowModDistribution"?: boolean,
+        "gamePopularityRank"?: number,
+        "isAvailable"?: boolean,
+        "thumbsUpCount"?: number
     }
 }

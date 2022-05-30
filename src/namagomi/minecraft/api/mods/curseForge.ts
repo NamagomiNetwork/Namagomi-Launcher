@@ -10,7 +10,7 @@ import {createWriteStream} from "fs";
 import {getFileName} from "../../../settings/mappings";
 import {mkEmptyNamagomiIgnore, NamagomiIgnore} from "./NamagomiIgnore";
 import {GitTree} from "../github/GitTree";
-import {Either, left, right, isRight, isLeft} from "fp-ts/Either"
+import {Either, isLeft, isRight, left, right} from "fp-ts/Either"
 
 const curseForgeHeaders = {
     headers: {
@@ -108,8 +108,7 @@ export const downloadAllModFiles = async () => {
 
     await updateModCache()
 
-    console.log(manuallyFiles)
-    return manuallyFiles
+    return await Promise.all(manuallyFiles.map(getWebsiteLink))
 }
 
 export const downloadClientModFiles = async () => {
@@ -185,4 +184,10 @@ function setupLauncherDirs() {
     if (!fs.existsSync(configDir)) fs.mkdirSync(configDir)
     if (!fs.existsSync(namagomiCache)) fs.writeFileSync(namagomiCache, JSON.stringify({}))
     if (!fs.existsSync(namagomiIgnore)) mkEmptyNamagomiIgnore(namagomiIgnore)
+}
+
+async function getWebsiteLink(modid: string){
+    const response = await fetch(`https://api.curseforge.com/v1/mods/${modid}`, curseForgeHeaders)
+    const json = await response.json() as GetMod
+    return json.data?.links?.websiteUrl
 }

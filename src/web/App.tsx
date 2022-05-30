@@ -1,7 +1,6 @@
 import React from 'react';
 import './App.css';
 import {AddMods} from "./AddMods";
-import {fetchJson} from "../namagomi/minecraft/api/mods/curseForge";
 
 export const App = () => {
     return (
@@ -53,14 +52,7 @@ class Buttons extends React.Component<{}, State> {
     }
 
     async showManuallyMods(modids: Promise<string[]>) {
-        const websiteLinks = (await modids)
-            .map(modid => `https://www.nexusmods.com/minecraft/mods/${modid}`)
         this.setState({manuallyMods: await modids})
-        console.log(this.state.manuallyMods)
-    }
-
-    async getWebsiteLink(modid: string){
-        const json = fetchJson(new URL(`https://api.curseforge.com/v1/mods${modid}`))
     }
 
     render() {
