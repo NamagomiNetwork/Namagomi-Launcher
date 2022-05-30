@@ -3,12 +3,12 @@ import {jsonToModSearchParams} from '../NamagomiApi'
 import {ModSearchParam} from './ModSearchParam';
 import path from "path";
 import fetch from 'electron-fetch'
-import {mainDir, modsDir, namagomiCache, namagomiIgnore} from '../../../settings/localPath'
+import {configDir, mainDir, minecraftDir, modsDir, namagomiCache, namagomiIgnore} from '../../../settings/localPath'
 import {pipeline} from "stream/promises";
 import * as fs from "fs";
 import {createWriteStream} from "fs";
 import {getFileName} from "../../../settings/mappings";
-import {mkEmptyFile, NamagomiIgnore} from "./NamagomiIgnore";
+import {mkEmptyNamagomiIgnore, NamagomiIgnore} from "./NamagomiIgnore";
 import {GitTree} from "../github/GitTree";
 
 const curseForgeHeaders = {
@@ -53,7 +53,7 @@ const trimJson = async (json: any, param: ModSearchParam) => {
 }
 
 async function updateModCache() {
-    if (!fs.existsSync(namagomiCache)) fs.writeFileSync(namagomiCache, JSON.stringify({}))
+    setupLauncherDirs()
     const cacheJson = JSON.parse(fs.readFileSync(namagomiCache, 'utf8'))
 
     const tree = await new GitTree().build('NamagomiNetwork', 'Namagomi-mod', 'main');
@@ -63,7 +63,7 @@ async function updateModCache() {
 }
 
 export async function isLatestMods() {
-    if (!fs.existsSync(namagomiCache)) fs.writeFileSync(namagomiCache, JSON.stringify({}))
+    setupLauncherDirs()
     const cacheJson = JSON.parse(fs.readFileSync(namagomiCache, 'utf8'))
 
     if ('mods' in cacheJson) {
@@ -75,8 +75,7 @@ export async function isLatestMods() {
 async function downloadModFile(url: URL) {
     const fileName = getFileName(url.toString())
     const filePath = path.join(modsDir, fileName)
-    if (!fs.existsSync(mainDir)) fs.mkdirSync(mainDir)
-    if (!fs.existsSync(modsDir)) fs.mkdirSync(modsDir)
+    setupLauncherDirs()
 
     if (!fs.existsSync(filePath)) {
         await pipeline(
@@ -92,6 +91,7 @@ async function downloadModFile(url: URL) {
 }
 
 export const downloadAllModFiles = async () => {
+    setupLauncherDirs()
     const jsonText = await (await fetch(namagomiModListUrl)).text()
     const params = jsonToModSearchParams(jsonText)
     const urls = await Promise.all(getModFileUrls(params))
@@ -105,6 +105,7 @@ export const downloadAllModFiles = async () => {
 }
 
 export const downloadClientModFiles = async () => {
+    setupLauncherDirs()
     const jsonText = await (await fetch(namagomiModListUrl)).text()
     const params = jsonToModSearchParams(jsonText)
     const urls = await Promise.all(getModFileUrls(params))
@@ -118,6 +119,7 @@ export const downloadClientModFiles = async () => {
 }
 
 export const downloadServerModFiles = async () => {
+    setupLauncherDirs()
     const jsonText = await (await fetch(namagomiModListUrl)).text()
     const params = jsonToModSearchParams(jsonText)
     const urls = await Promise.all(getModFileUrls(params))
@@ -139,7 +141,7 @@ async function rmModFiles(params: ModSearchParam[], urls: (URL | null)[], side: 
             getFileName(url!.toString())
         )
 
-    if (!fs.existsSync(namagomiIgnore)) mkEmptyFile(namagomiIgnore)
+    if (!fs.existsSync(namagomiIgnore)) mkEmptyNamagomiIgnore(namagomiIgnore)
     const ignoreFiles =
         JSON.parse(fs.readFileSync(namagomiIgnore, 'utf8')) as NamagomiIgnore
 
@@ -149,4 +151,13 @@ async function rmModFiles(params: ModSearchParam[], urls: (URL | null)[], side: 
             console.log('delete: ' + file)
         }
     }))
+}
+
+function setupLauncherDirs(){
+    if (!fs.existsSync(minecraftDir)) fs.mkdirSync(minecraftDir)
+    if (!fs.existsSync(mainDir)) fs.mkdirSync(mainDir)
+    if (!fs.existsSync(modsDir)) fs.mkdirSync(modsDir)
+    if (!fs.existsSync(configDir)) fs.mkdirSync(configDir)
+    if (!fs.existsSync(namagomiCache)) fs.writeFileSync(namagomiCache, JSON.stringify({}))
+    if (!fs.existsSync(namagomiIgnore)) mkEmptyNamagomiIgnore(namagomiIgnore)
 }
