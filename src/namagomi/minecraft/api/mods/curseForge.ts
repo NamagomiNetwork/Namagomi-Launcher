@@ -146,7 +146,7 @@ async function rmModFiles(params: ModSearchParam[], urls: (URL | null)[], side: 
         JSON.parse(fs.readFileSync(namagomiIgnore, 'utf8')) as NamagomiIgnore
 
     await Promise.all(files.map((file) => {
-        if (!(remoteFiles.includes(file) || ignoreFiles.includes(file))) {
+        if (!(remoteFiles.includes(file) || ignoreFiles.includes(file) || fs.statSync(path.join(modsDir, file)).isDirectory())) {
             fs.rmSync(path.join(modsDir, file))
             console.log('delete: ' + file)
         }
