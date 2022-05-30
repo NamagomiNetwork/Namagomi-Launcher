@@ -12,6 +12,7 @@ import {mkEmptyNamagomiIgnore, NamagomiIgnore} from "./NamagomiIgnore";
 import {GitTree} from "../github/GitTree";
 import {Either, isLeft, isRight, left, right} from "fp-ts/Either"
 import {GetMod} from "./CurseForgeAPIResponseTypes/GetMod";
+import {GetFiles} from "./CurseForgeAPIResponseTypes/GetFiles";
 
 const curseForgeHeaders = {
     headers: {
@@ -22,36 +23,48 @@ const curseForgeHeaders = {
 
 export const fetchJson = async (url: URL) => {
     const response = await fetch(url.toString(), curseForgeHeaders)
-    return response.json()
+    return await response.json()
 }
-const getModFileUrl = async (param: ModSearchParam) : Promise<Either<string, URL>> => {
+
+const getModFileUrl = async (param: ModSearchParam): Promise<Either<string, ModSearchParam>> => {
     if (param.directUrl != '')
-        return right(new URL(param.directUrl))
+        return right(param)
+
     const url = new URL(path.join(curseForgeApiBaseUrl, '/v1/mods', param.modid, 'files'))
-    if (!url.searchParams.has('gameVersion'))
-        url.searchParams.append('gameVersion', param.gameVersion)
-    const json = fetchJson(url)
+
+    const json = await fetchJson(url) as GetFiles
     const trimmed = await trimJson(json, param)
-    param.displayName = trimmed['displayName'] != null ? trimmed['displayName'] : ''
-    if (trimmed.downloadUrl == null) {
+    if (trimmed == undefined) return left(param.modid)
+    param.displayName = trimmed.displayName != null ? trimmed.displayName : ''
+    param.fileName = trimmed.fileName != null ? trimmed.fileName : ''
+
+    const filePath = path.join(modsDir, param.fileName)
+    const filePath2 = path.join(modsDir, param.fileName.replace(/\s+/g, '+'))
+    const fileExist = fs.existsSync(filePath) || fs.existsSync(filePath2)
+
+    if (trimmed.downloadUrl == null && !fileExist) {
         console.info(`modid:${param.modid} gameversion:${param.gameVersion} ${param.displayName} doesn't have download url`)
         return left(param.modid)
-    } else
-        return right(new URL(trimmed.downloadUrl))
+    } else if (trimmed.downloadUrl == null) {
+        return left('')
+    } else {
+        param.directUrl = trimmed.downloadUrl
+        if (param.displayName === '') param.displayName = getFileName(param.directUrl)
+        return right(param)
+    }
 }
 
 const getModFileUrls = (params: Array<ModSearchParam>) => {
     return params.map(getModFileUrl)
 }
 
-const trimJson = async (json: any, param: ModSearchParam) => {
+const trimJson = async (json: GetFiles, param: ModSearchParam) => {
     const pattern = param.fileNamePattern
-    return await json.then((data: any) => {
-        const single = data.data.find((j: any) => j.fileName.indexOf(pattern) != -1)
-        if (single == null)
-            console.error(`${param.modid} ${param.gameVersion} ${param.fileNamePattern} not found`)
-        return single
-    })
+
+    const single = json.data.find((data) => data.fileName.indexOf(pattern) != -1)
+    if (single === undefined)
+        console.error(`${param.modid} ${param.gameVersion} ${param.fileNamePattern} not found`)
+    return single
 }
 
 async function updateModCache() {
@@ -74,20 +87,19 @@ export async function isLatestMods() {
     } else return false
 }
 
-async function downloadModFile(url: URL) {
-    const fileName = getFileName(url.toString())
-    const filePath = path.join(modsDir, fileName)
+async function downloadModFile(param: ModSearchParam) {
+    const filePath = path.join(modsDir, param.fileName)
     setupLauncherDirs()
 
     if (!fs.existsSync(filePath)) {
         await pipeline(
-            (await fetch(url.toString())).body,
+            (await fetch(param.directUrl)).body,
             createWriteStream(filePath)
         ).then(() => {
-            console.log('downloaded: ' + fileName)
+            console.log('downloaded: ' + param.fileName)
         }).catch(err => {
             console.error(err)
-            console.error('failed: ' + fileName + ' ' + url.toString())
+            console.error('failed: ' + param.fileName + ' ' + param.directUrl.toString())
         })
     }
 }
@@ -99,13 +111,13 @@ export const downloadAllModFiles = async () => {
     const urls = await Promise.all(getModFileUrls(params))
     const manuallyFiles = [] as string[]
 
-    await Promise.all(urls.map(async (url: Either<string, URL>) => {
+    await Promise.all(urls.map(async (url: Either<string, ModSearchParam>, index) => {
         if (isRight(url)) {
-            await downloadModFile(url.right)
-        } else {
+            await downloadModFile(params[index])
+        } else if(url.left !== '') {
             manuallyFiles.push(url.left)
         }
-    })).then(() => rmModFiles(params, urls, ''))
+    })).then(() => rmModFiles(params, ''))
 
     await updateModCache()
 
@@ -122,11 +134,11 @@ export const downloadClientModFiles = async () => {
 
     await Promise.all(urls.map(async (url, index) => {
         if (isRight(url) && (params[index].side === 'CLIENT' || params[index].side == '')) {
-            await downloadModFile(url.right)
-        } else if(isLeft(url)) {
+            await downloadModFile(params[index])
+        } else if (isLeft(url)) {
             manuallyFiles.push(url.left)
         }
-    })).then(() => rmModFiles(params, urls, 'CLIENT'))
+    })).then(() => rmModFiles(params, 'CLIENT'))
 
     await updateModCache()
 
@@ -143,27 +155,26 @@ export const downloadServerModFiles = async () => {
 
     Promise.all(urls.map(async (url, index) => {
         if (isRight(url) && (params[index].side === 'SERVER' || params[index].side == '')) {
-            await downloadModFile(url.right)
-        } else if(isLeft(url)) {
+            await downloadModFile(params[index])
+        } else if (isLeft(url)) {
             manuallyFiles.push(url.left)
         }
-    })).then(() => rmModFiles(params, urls, 'SERVER'))
+    })).then(() => rmModFiles(params, 'SERVER'))
 
     await updateModCache()
 
     return manuallyFiles
 }
 
-async function rmModFiles(params: ModSearchParam[], urls: Either<string, URL>[], side: 'CLIENT' | 'SERVER' | '') {
+async function rmModFiles(params: ModSearchParam[], side: 'CLIENT' | 'SERVER' | '') {
     const files = fs.readdirSync(modsDir)
 
-    const remoteFiles = urls
+    const remoteFiles = params
+        .map(param => param.directUrl)
         .filter((url, index) =>
-            isRight(url) && (params[index].side === '' || params[index].side.includes(side)))
+            url != '' && (params[index].side === '' || params[index].side.includes(side)))
         .map((url) => {
-            if(isRight(url))
-                return getFileName(url.right.toString());
-            else return ""
+            return getFileName(url)
         })
 
     if (!fs.existsSync(namagomiIgnore)) mkEmptyNamagomiIgnore(namagomiIgnore)
@@ -187,7 +198,7 @@ function setupLauncherDirs() {
     if (!fs.existsSync(namagomiIgnore)) mkEmptyNamagomiIgnore(namagomiIgnore)
 }
 
-async function getWebsiteLink(modid: string){
+async function getWebsiteLink(modid: string) {
     const response = await fetch(`https://api.curseforge.com/v1/mods/${modid}`, curseForgeHeaders)
     const json = await response.json() as GetMod
     return json.data?.links?.websiteUrl
