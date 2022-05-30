@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import {AddMods} from "./AddMods";
+import {fetchJson} from "../namagomi/minecraft/api/mods/curseForge";
 
 export const App = () => {
     return (
@@ -11,14 +12,25 @@ export const App = () => {
     );
 };
 
-class Buttons extends React.Component<{}, { value: string, updateAvailable: boolean }> {
+type State = {
+    value: string,
+    updateAvailable: boolean,
+    manuallyMods: string[]
+}
+
+class Buttons extends React.Component<{}, State> {
     constructor(props: any) {
         super(props);
-        this.state = {value: '', updateAvailable: false};
+        this.state = {
+            value: '',
+            updateAvailable: false,
+            manuallyMods: []
+        };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.checkUpdate = this.checkUpdate.bind(this)
+        this.showManuallyMods = this.showManuallyMods.bind(this)
     }
 
     handleChange(event: any) {
@@ -40,10 +52,21 @@ class Buttons extends React.Component<{}, { value: string, updateAvailable: bool
         this.checkUpdate()
     }
 
+    async showManuallyMods(modids: Promise<string[]>) {
+        const websiteLinks = (await modids)
+            .map(modid => `https://www.nexusmods.com/minecraft/mods/${modid}`)
+        this.setState({manuallyMods: await modids})
+        console.log(this.state.manuallyMods)
+    }
+
+    async getWebsiteLink(modid: string){
+        const json = fetchJson(new URL(`https://api.curseforge.com/v1/mods${modid}`))
+    }
+
     render() {
         return (
             <div>
-                <button onClick={window.namagomiAPI.downloadAllModFiles}>DownloadAllModFiles</button>
+                <button onClick={()=>this.showManuallyMods(window.namagomiAPI.downloadAllModFiles())}>DownloadAllModFiles</button>
                 <button onClick={window.namagomiAPI.downloadClientModFiles}>DownloadClientModFiles</button>
                 <button onClick={window.namagomiAPI.downloadServerModFiles}>DownloadServerModFiles</button>
                 <button onClick={window.namagomiAPI.downloadAllConfigFiles}>DownloadAllConfigFile</button>
@@ -52,7 +75,17 @@ class Buttons extends React.Component<{}, { value: string, updateAvailable: bool
                 <button onClick={() => window.namagomiAPI.GetGitFileData(this.state.value)}>GetFileData</button>
                 <input type="text" id="filePath" value={this.state.value} onChange={this.handleChange}/>
                 <button onClick={window.namagomiAPI.OpenFolder}>OpenFolder</button>
-                <button onClick={this.checkUpdate}>updatable: {this.state.updateAvailable?'true':'false'}</button>
+                <button onClick={this.checkUpdate}>updatable: {this.state.updateAvailable?'true':'false'}</button><br/>
+                {
+                    this.state.manuallyMods != []
+                        ? <div></div>
+                        : <text>以下のmodは手動でダウンロードしてください</text>
+                }<br/>
+                {
+                    this.state.manuallyMods.map(mod =>
+                    <div>
+                        {mod}<br/>
+                    </div>)}
             </div>
         );
     }

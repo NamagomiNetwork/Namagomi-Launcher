@@ -15,8 +15,8 @@ export function eventHandlerRegistry () {
         setup()
     })
 
-    ipcMain.handle('downloadAllModFiles', async () => {
-        await downloadAllModFiles()
+    ipcMain.handle('downloadAllModFiles', () => {
+        return downloadAllModFiles()
     })
 
     ipcMain.handle('downloadClientModFiles', async () => {

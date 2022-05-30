@@ -1,5 +1,5 @@
 export interface IElectronAPI {
-    downloadAllModFiles: () => Promise<void>;
+    downloadAllModFiles: () => Promise<string[]>;
     downloadClientModFiles: () => Promise<void>;
     downloadServerModFiles: () => Promise<void>;
     downloadAllConfigFiles: () => Promise<void>;
