@@ -11,14 +11,25 @@ export const App = () => {
     );
 };
 
-class Buttons extends React.Component<{}, { value: string, updateAvailable: boolean }> {
+type State = {
+    value: string,
+    updateAvailable: boolean,
+    manuallyMods: string[]
+}
+
+class Buttons extends React.Component<{}, State> {
     constructor(props: any) {
         super(props);
-        this.state = {value: '', updateAvailable: false};
+        this.state = {
+            value: '',
+            updateAvailable: false,
+            manuallyMods: []
+        };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.checkUpdate = this.checkUpdate.bind(this)
+        this.showManuallyMods = this.showManuallyMods.bind(this)
     }
 
     handleChange(event: any) {
@@ -40,10 +51,14 @@ class Buttons extends React.Component<{}, { value: string, updateAvailable: bool
         this.checkUpdate()
     }
 
+    async showManuallyMods(modids: Promise<string[]>) {
+        this.setState({manuallyMods: await modids})
+    }
+
     render() {
         return (
             <div>
-                <button onClick={window.namagomiAPI.downloadAllModFiles}>DownloadAllModFiles</button>
+                <button onClick={()=>this.showManuallyMods(window.namagomiAPI.downloadAllModFiles())}>DownloadAllModFiles</button>
                 <button onClick={window.namagomiAPI.downloadClientModFiles}>DownloadClientModFiles</button>
                 <button onClick={window.namagomiAPI.downloadServerModFiles}>DownloadServerModFiles</button>
                 <button onClick={window.namagomiAPI.downloadAllConfigFiles}>DownloadAllConfigFile</button>
@@ -52,7 +67,17 @@ class Buttons extends React.Component<{}, { value: string, updateAvailable: bool
                 <button onClick={() => window.namagomiAPI.GetGitFileData(this.state.value)}>GetFileData</button>
                 <input type="text" id="filePath" value={this.state.value} onChange={this.handleChange}/>
                 <button onClick={window.namagomiAPI.OpenFolder}>OpenFolder</button>
-                <button onClick={this.checkUpdate}>updatable: {this.state.updateAvailable?'true':'false'}</button>
+                <button onClick={this.checkUpdate}>updatable: {this.state.updateAvailable?'true':'false'}</button><br/>
+                {
+                    this.state.manuallyMods.length === 0
+                        ? <div></div>
+                        : <text>以下のmodは手動でダウンロードしてください</text>
+                }<br/>
+                {
+                    this.state.manuallyMods.map(mod =>
+                    <a href={mod} target={"_blank"}>
+                        {mod}<br/>
+                    </a>)}
             </div>
         );
     }

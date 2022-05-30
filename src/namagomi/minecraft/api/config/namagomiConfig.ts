@@ -2,7 +2,7 @@ import {GitTree} from "../github/GitTree";
 import fs, {createWriteStream} from "fs";
 import {pipeline} from "stream/promises";
 import fetch from "electron-fetch";
-import {namagomiFileUrlBase} from "../../../settings/config";
+import {namagomiConfigFileUrlBase, namagomiFileUrlBase} from "../../../settings/config";
 import path from "path";
 import {configDir, namagomiCache} from "../../../settings/localPath";
 
@@ -29,16 +29,23 @@ export async function downloadAllConfigFiles() {
         if(cacheJson[fileName] !== sha) {
             const filePath = path.join(configDir, cfgPath)
 
-            await pipeline(
-                (await fetch(namagomiFileUrlBase(cfgPath))).body,
-                createWriteStream(filePath)
-            ).then(() => {
-                console.log('downloaded: ' + fileName)
-                cacheJson[fileName] = sha
-            }).catch(err => {
-                console.error(err)
-                console.log('failed: ' + fileName + ' ' + namagomiFileUrlBase(cfgPath).toString())
-            })
+            const fileContent = await fetch(namagomiConfigFileUrlBase(cfgPath))
+            switch (fileContent.status) {
+                case 200:
+                    await pipeline(await fileContent.text(),
+                        createWriteStream(filePath))
+                        .then(() => {
+                            console.log('downloaded: ' + fileName)
+                            cacheJson[fileName] = sha
+                        }).catch(err => {
+                            console.error(err)
+                            console.log('failed: ' + fileName + ' ' + namagomiFileUrlBase(cfgPath).toString())
+                        })
+                    break;
+                default:
+                    console.error('failed: ' + fileName + ' ' + namagomiFileUrlBase(cfgPath).toString())
+                    console.error(`status: ${fileContent.status}`)
+            }
         }
     }))
     fs.writeFileSync(namagomiCache, JSON.stringify(cacheJson))
