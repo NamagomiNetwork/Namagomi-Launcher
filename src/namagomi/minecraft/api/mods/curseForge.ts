@@ -11,6 +11,7 @@ import {getFileName} from "../../../settings/mappings";
 import {mkEmptyNamagomiIgnore, NamagomiIgnore} from "./NamagomiIgnore";
 import {GitTree} from "../github/GitTree";
 import {Either, isLeft, isRight, left, right} from "fp-ts/Either"
+import {GetMod} from "./CurseForgeAPIResponseTypes/GetMod";
 
 const curseForgeHeaders = {
     headers: {

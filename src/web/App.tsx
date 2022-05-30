@@ -69,15 +69,15 @@ class Buttons extends React.Component<{}, State> {
                 <button onClick={window.namagomiAPI.OpenFolder}>OpenFolder</button>
                 <button onClick={this.checkUpdate}>updatable: {this.state.updateAvailable?'true':'false'}</button><br/>
                 {
-                    this.state.manuallyMods != []
+                    this.state.manuallyMods.length === 0
                         ? <div></div>
                         : <text>以下のmodは手動でダウンロードしてください</text>
                 }<br/>
                 {
                     this.state.manuallyMods.map(mod =>
-                    <div>
+                    <a href={mod} target={"_blank"}>
                         {mod}<br/>
-                    </div>)}
+                    </a>)}
             </div>
         );
     }

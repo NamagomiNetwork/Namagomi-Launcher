@@ -1,4 +1,4 @@
-type GetMod = {
+export type GetMod = {
     "data"?: {
         "id"?: number,
         "gameId"?: number,
