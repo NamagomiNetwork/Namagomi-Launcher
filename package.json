@@ -1,8 +1,9 @@
 {
   "name": "namagomi-launcher",
+  "homepage": ".",
   "productName": "",
   "description": "",
-  "version": "1.6.6",
+  "version": "1.0.0",
   "license": "MIT",
   "main": "dist/main.js",
   "scripts": {
@@ -11,7 +12,10 @@
     "predev": "rimraf dist",
     "dev:tsc": "tsc -w -p tsconfig.main.json",
     "dev:webpack": "cross-env NODE_ENV=\"development\" webpack --progress",
-    "dev:electron": "wait-on ./dist/index.html && cross-env NODE_ENV=\"development\" electron ."
+    "dev:electron": "wait-on ./dist/index.html && cross-env NODE_ENV=\"development\" electron .",
+    "publish-win-x64": "npm run build && electron-builder --win --x64",
+    "publish-mac-x64": "npm run build && electron-builder --mac --x64",
+    "publish-linux": "npm run build && electron-builder --linux"
   },
   "dependencies": {
     "react": "^18.1.0",
@@ -45,21 +49,30 @@
     "fs-extra": "^10.1.0",
     "electron-dl": "3.3.1",
     "electron-fetch": "^1.7.4",
-    "electron-builder": "^23.0.3",
-    "electron-packager": "^7.0.0"
+    "electron-builder": "^23.0.3"
   },
   "build": {
+    "extends": null,
     "appId": "com.namagomi.launcher",
     "directories": {
-      "output": "dist"
+      "output": "assets/installer"
     },
     "files": [
-      "src",
-      "package.json",
-      "package-lock.json"
+      "dist/**/*"
     ],
     "mac": {
-      "icon" : "src"
+      "icon": "assets/resource/namagomi400x400.png",
+      "target": [
+        "dmg"
+      ]
+    },
+    "win": {
+      "icon": "assets/resource/namagomi400x400.png",
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
     }
   }
 }
