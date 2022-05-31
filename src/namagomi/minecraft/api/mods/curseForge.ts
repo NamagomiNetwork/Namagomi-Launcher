@@ -122,19 +122,19 @@ export async function downloadModFiles(side: 'CLIENT' | 'SERVER' | '') {
 
     await updateModCache()
 
-    return await Promise.all(manuallyFiles.map(getWebsiteLink))
+    return Promise.all(manuallyFiles.map(getWebsiteLink))
 }
 
 export const downloadAllModFiles = async () => {
-    await downloadModFiles('')
+    return await downloadModFiles('')
 }
 
 export const downloadClientModFiles = async () => {
-    await downloadModFiles('CLIENT')
+    return await downloadModFiles('CLIENT')
 }
 
 export const downloadServerModFiles = async () => {
-    await downloadModFiles('SERVER')
+    return await downloadModFiles('SERVER')
 }
 
 async function rmModFiles(params: ModSearchParam[], side: 'CLIENT' | 'SERVER' | '') {
