@@ -38,17 +38,17 @@ async function getModFileUrl(param: ModSearchParam): Promise<Either<string, ModS
     const json = await getFiles(url)
     const trimmed = await trimJson(json, param)
     if (isNone(trimmed)) return left(param.modId)
-    param.displayName = trimmed.value.displayName != null ? trimmed.value.displayName : ''
-    param.fileName = trimmed.value.fileName != null ? trimmed.value.fileName : ''
+    param.displayName = trimmed.value.displayName
+    param.fileName = trimmed.value.fileName
 
     const filePath = path.join(modsDir, param.fileName)
     const filePath2 = path.join(modsDir, param.fileName.replace(/\s+/g, '+'))
     const fileExist = fs.existsSync(filePath) || fs.existsSync(filePath2)
 
-    if (trimmed.value.downloadUrl == null && !fileExist) {
+    if (trimmed.value.downloadUrl === null && !fileExist) {
         console.info(`modId:${param.modId} gameVersion:${param.gameVersion} ${param.displayName} doesn't have download url`)
         return left(param.modId)
-    } else if (trimmed.value.downloadUrl == null) {
+    } else if (trimmed.value.downloadUrl === null) {
         return left('')
     } else {
         param.directUrl = trimmed.value.downloadUrl
