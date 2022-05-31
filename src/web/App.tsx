@@ -45,8 +45,8 @@ class Buttons extends React.Component<{}, State> {
         this.checkUpdate()
     }
 
-    async showManuallyMods(modids: Promise<string[]>) {
-        this.setState({manuallyMods: await modids})
+    async showManuallyMods(modIds: Promise<string[]>) {
+        this.setState({manuallyMods: await modIds})
     }
 
     render() {
