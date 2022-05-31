@@ -23,10 +23,10 @@ interface Data {
     fileDate: string;
     fileLength: number;
     downloadCount: number;
-    downloadUrl?: any;
+    downloadUrl?: string;
     gameVersions: string[];
     sortableGameVersions: SortableGameVersion[];
-    dependencies: any[];
+    dependencies: string[];
     alternateFileId: number;
     isServerPack: boolean;
     fileFingerprint: number;

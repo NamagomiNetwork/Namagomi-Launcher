@@ -18,27 +18,21 @@ type State = {
 }
 
 class Buttons extends React.Component<{}, State> {
-    constructor(props: any) {
+    constructor(props:{}) {
         super(props);
         this.state = {
             value: '',
             updateAvailable: false,
-            manuallyMods: []
+            manuallyMods: [] as string[]
         };
 
         this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
         this.checkUpdate = this.checkUpdate.bind(this)
         this.showManuallyMods = this.showManuallyMods.bind(this)
     }
 
-    handleChange(event: any) {
+    handleChange(event: React.ChangeEvent<HTMLInputElement>) {
         this.setState({value: event.target.value});
-    }
-
-    handleSubmit(event: any) {
-        alert('A name was submitted: ' + this.state.value);
-        event.preventDefault();
     }
 
     checkUpdate() {

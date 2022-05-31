@@ -11,9 +11,10 @@ import {getFileName} from "../../../settings/mappings";
 import {mkEmptyNamagomiIgnore, NamagomiIgnore} from "./NamagomiIgnore";
 import {GitTree} from "../github/GitTree";
 import {Either, isLeft, isRight, left, right} from "fp-ts/Either"
-import {GetMod} from "./CurseForgeAPIResponseTypes/GetMod";
-import {GetFiles} from "./CurseForgeAPIResponseTypes/GetFiles";
+import {GetMod} from "./JsonTypes/GetMod";
+import {GetFiles} from "./JsonTypes/GetFiles";
 import {NamagomiCache} from "../config/namagomiConfig";
+import {GetNamagomiModList} from "./JsonTypes/GetNamagomiModList";
 
 const curseForgeHeaders = {
     headers: {
@@ -22,20 +23,20 @@ const curseForgeHeaders = {
     }
 }
 
-export const getFiles = async (url: URL) => {
+export async function getFiles(url: URL) {
     const response = await fetch(url.toString(), curseForgeHeaders)
     return await response.json() as GetFiles
 }
 
-const getModFileUrl = async (param: ModSearchParam): Promise<Either<string, ModSearchParam>> => {
+async function getModFileUrl(param: ModSearchParam): Promise<Either<string, ModSearchParam>> {
     if (param.directUrl != '')
         return right(param)
 
-    const url = new URL(path.join(curseForgeApiBaseUrl, '/v1/mods', param.modid, 'files'))
+    const url = new URL(path.join(curseForgeApiBaseUrl, '/v1/mods', param.modId, 'files'))
 
     const json = await getFiles(url)
     const trimmed = await trimJson(json, param)
-    if (trimmed == undefined) return left(param.modid)
+    if (trimmed == undefined) return left(param.modId)
     param.displayName = trimmed.displayName != null ? trimmed.displayName : ''
     param.fileName = trimmed.fileName != null ? trimmed.fileName : ''
 
@@ -44,8 +45,8 @@ const getModFileUrl = async (param: ModSearchParam): Promise<Either<string, ModS
     const fileExist = fs.existsSync(filePath) || fs.existsSync(filePath2)
 
     if (trimmed.downloadUrl == null && !fileExist) {
-        console.info(`modid:${param.modid} gameversion:${param.gameVersion} ${param.displayName} doesn't have download url`)
-        return left(param.modid)
+        console.info(`modid:${param.modId} gameversion:${param.gameVersion} ${param.displayName} doesn't have download url`)
+        return left(param.modId)
     } else if (trimmed.downloadUrl == null) {
         return left('')
     } else {
@@ -55,16 +56,16 @@ const getModFileUrl = async (param: ModSearchParam): Promise<Either<string, ModS
     }
 }
 
-const getModFileUrls = (params: Array<ModSearchParam>) => {
-    return params.map(getModFileUrl)
+function getModFileUrls(params: Array<ModSearchParam>) {
+    return params.map(getModFileUrl);
 }
 
-const trimJson = async (json: GetFiles, param: ModSearchParam) => {
+async function trimJson(json: GetFiles, param: ModSearchParam) {
     const pattern = param.fileNamePattern
 
     const single = json.data.find((data) => data.fileName.indexOf(pattern) != -1)
     if (single === undefined)
-        console.error(`${param.modid} ${param.gameVersion} ${param.fileNamePattern} not found`)
+        console.error(`${param.modId} ${param.gameVersion} ${param.fileNamePattern} not found`)
     return single
 }
 
@@ -106,7 +107,7 @@ async function downloadModFile(param: ModSearchParam) {
 
 export async function downloadModFiles(side: 'CLIENT' | 'SERVER' | '') {
     setupLauncherDirs()
-    const jsonText = await (await fetch(namagomiModListUrl)).text()
+    const jsonText = await (await fetch(namagomiModListUrl)).json() as GetNamagomiModList
     const params = jsonToModSearchParams(jsonText)
     const urls = await Promise.all(getModFileUrls(params))
     const manuallyFiles = [] as string[]
@@ -121,19 +122,19 @@ export async function downloadModFiles(side: 'CLIENT' | 'SERVER' | '') {
 
     await updateModCache()
 
-    return await Promise.all(manuallyFiles.map(getWebsiteLink))
+    return Promise.all(manuallyFiles.map(getWebsiteLink))
 }
 
-export const downloadAllModFiles = async () => {
-    await downloadModFiles('')
+export async function downloadAllModFiles() {
+    return await downloadModFiles('')
 }
 
-export const downloadClientModFiles = async () => {
-    await downloadModFiles('CLIENT')
+export async function downloadClientModFiles() {
+    return await downloadModFiles('CLIENT')
 }
 
-export const downloadServerModFiles = async () => {
-    await downloadModFiles('SERVER')
+export async function downloadServerModFiles() {
+    return await downloadModFiles('SERVER')
 }
 
 async function rmModFiles(params: ModSearchParam[], side: 'CLIENT' | 'SERVER' | '') {
@@ -164,7 +165,7 @@ function setupLauncherDirs() {
     if (!fs.existsSync(mainDir)) fs.mkdirSync(mainDir)
     if (!fs.existsSync(modsDir)) fs.mkdirSync(modsDir)
     if (!fs.existsSync(configDir)) fs.mkdirSync(configDir)
-    if (!fs.existsSync(namagomiCache)) fs.writeFileSync(namagomiCache, JSON.stringify({data:[], mods:''}))
+    if (!fs.existsSync(namagomiCache)) fs.writeFileSync(namagomiCache, JSON.stringify({data: [], mods: ''}))
     if (!fs.existsSync(namagomiIgnore)) mkEmptyNamagomiIgnore(namagomiIgnore)
 }
 

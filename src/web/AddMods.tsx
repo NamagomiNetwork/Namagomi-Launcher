@@ -3,7 +3,7 @@ import {ModList} from "./ModList";
 import "./AddMods.css";
 
 export class AddMods extends React.Component<{}, { files: string[] }> {
-    constructor(props: any) {
+    constructor(props: {}) {
         super(props);
         this.onFileDrop = this.onFileDrop.bind(this);
         this.freshList = this.freshList.bind(this);

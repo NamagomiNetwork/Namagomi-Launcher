@@ -1,5 +1,6 @@
 import fetch from 'electron-fetch'
 import {IGitTree} from "./IGitTree";
+import {GetGitTrees} from "./GetGitTrees";
 
 export class GitTree implements IGitTree {
     data: { path: string, type: 'blob' | 'tree', sha: string, url: string }
@@ -26,12 +27,12 @@ export class GitTree implements IGitTree {
     }
 
     private async fetchTree(owner: string, repo: string, apiUrl: string) {
-        await fetch(apiUrl).then(p => p.json()).then(async json => {
-            await Promise.all(json['tree'].map(async (item: any) => {
-                const path = item['path']
-                const type = item['type']
-                const sha = item['sha']
-                const url = item['url']
+        await fetch(apiUrl).then(p => p.json()).then(async (json:GetGitTrees) => {
+            await Promise.all(json.tree.map(async (item) => {
+                const path = item.path
+                const type = item.type
+                const sha = item.sha
+                const url = item.url
                 this.children.push(await new GitTree().build(owner, repo, sha, path, type, url))
             }))
         })
