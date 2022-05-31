@@ -1,15 +1,16 @@
 import {ModSearchParam} from './mods/ModSearchParam'
+import {GetNamagomiModList} from "./mods/JsonTypes/GetNamagomiModList";
 
-export const jsonToModSearchParams = (json: string) => {
+export const jsonToModSearchParams = (json: GetNamagomiModList) => {
     const result: Array<ModSearchParam> = []
-    JSON.parse(json).map((item:any) =>
+    json.map((item) =>
     {
-        const modid = item['mod-id'] != null ? item['mod-id'].toString() : ''
-        const gameVersion = item['mc-version']
-        const fileNamePattern = 'mod-version' in item ? item['mod-version'] : ''
-        const directUrl = 'direct-url' in item ? item['direct-url'] : ''
-        const side = 'side' in item ? item['side'] : ''
-        result.push(new ModSearchParam(modid, gameVersion, fileNamePattern, directUrl, side))
+        const modId = item.modId != null ? item.modId.toString() : ''
+        const gameVersion = item.mcVersion
+        const fileNamePattern = item.modVersion !== undefined ? item.modVersion : ''
+        const directUrl = item.directUrl !== undefined ? item.directUrl : ''
+        const side = item.side !== undefined ? item.side : ''
+        result.push(new ModSearchParam(modId, gameVersion, fileNamePattern, directUrl, side))
     })
     return result
 }
