@@ -12,7 +12,7 @@ import {mkEmptyNamagomiIgnore, NamagomiIgnore} from "./NamagomiIgnore";
 import {GitTree} from "../github/GitTree";
 import {Either, isLeft, isRight, left, right} from "fp-ts/Either"
 import {GetMod} from "./JsonTypes/GetMod";
-import {GetFiles} from "./JsonTypes/GetFiles";
+import {Data, GetFiles} from "./JsonTypes/GetFiles";
 import {NamagomiCache} from "../config/namagomiConfig";
 import {GetNamagomiModList} from "./JsonTypes/GetNamagomiModList";
 import {isNone, none, some} from "fp-ts/Option";
@@ -64,7 +64,7 @@ function getModFileUrls(params: Array<ModSearchParam>) {
 async function trimJson(json: GetFiles, param: ModSearchParam) {
     const pattern = param.fileNamePattern
 
-    const single = json.data.find((data) => data.fileName.indexOf(pattern) != -1)
+    const single = json.data.find((data:Data) => data.fileName.indexOf(pattern) != -1)
     if (single === undefined) {
         console.error(`${param.modId} ${param.gameVersion} ${param.fileNamePattern} not found`)
         return none
