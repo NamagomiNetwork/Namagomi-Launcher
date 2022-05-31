@@ -23,12 +23,12 @@ const curseForgeHeaders = {
     }
 }
 
-export const getFiles = async (url: URL) => {
+export async function getFiles(url: URL) {
     const response = await fetch(url.toString(), curseForgeHeaders)
     return await response.json() as GetFiles
 }
 
-const getModFileUrl = async (param: ModSearchParam): Promise<Either<string, ModSearchParam>> => {
+async function getModFileUrl(param: ModSearchParam): Promise<Either<string, ModSearchParam>> {
     if (param.directUrl != '')
         return right(param)
 
@@ -56,11 +56,11 @@ const getModFileUrl = async (param: ModSearchParam): Promise<Either<string, ModS
     }
 }
 
-const getModFileUrls = (params: Array<ModSearchParam>) => {
+async function getModFileUrls(params: Array<ModSearchParam>) {
     return params.map(getModFileUrl)
 }
 
-const trimJson = async (json: GetFiles, param: ModSearchParam) => {
+async function trimJson(json: GetFiles, param: ModSearchParam) {
     const pattern = param.fileNamePattern
 
     const single = json.data.find((data) => data.fileName.indexOf(pattern) != -1)
@@ -125,15 +125,15 @@ export async function downloadModFiles(side: 'CLIENT' | 'SERVER' | '') {
     return Promise.all(manuallyFiles.map(getWebsiteLink))
 }
 
-export const downloadAllModFiles = async () => {
+export async function downloadAllModFiles() {
     return await downloadModFiles('')
 }
 
-export const downloadClientModFiles = async () => {
+export async function downloadClientModFiles() {
     return await downloadModFiles('CLIENT')
 }
 
-export const downloadServerModFiles = async () => {
+export async function downloadServerModFiles() {
     return await downloadModFiles('SERVER')
 }
 
@@ -165,7 +165,7 @@ function setupLauncherDirs() {
     if (!fs.existsSync(mainDir)) fs.mkdirSync(mainDir)
     if (!fs.existsSync(modsDir)) fs.mkdirSync(modsDir)
     if (!fs.existsSync(configDir)) fs.mkdirSync(configDir)
-    if (!fs.existsSync(namagomiCache)) fs.writeFileSync(namagomiCache, JSON.stringify({data:[], mods:''}))
+    if (!fs.existsSync(namagomiCache)) fs.writeFileSync(namagomiCache, JSON.stringify({data: [], mods: ''}))
     if (!fs.existsSync(namagomiIgnore)) mkEmptyNamagomiIgnore(namagomiIgnore)
 }
 
