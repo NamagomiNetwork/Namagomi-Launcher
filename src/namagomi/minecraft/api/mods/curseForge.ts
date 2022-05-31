@@ -15,6 +15,7 @@ import {GetMod} from "./JsonTypes/GetMod";
 import {GetFiles} from "./JsonTypes/GetFiles";
 import {NamagomiCache} from "../config/namagomiConfig";
 import {GetNamagomiModList} from "./JsonTypes/GetNamagomiModList";
+import {isNone, none, some} from "fp-ts/Option";
 
 const curseForgeHeaders = {
     headers: {
@@ -36,21 +37,21 @@ async function getModFileUrl(param: ModSearchParam): Promise<Either<string, ModS
 
     const json = await getFiles(url)
     const trimmed = await trimJson(json, param)
-    if (trimmed == undefined) return left(param.modId)
-    param.displayName = trimmed.displayName != null ? trimmed.displayName : ''
-    param.fileName = trimmed.fileName != null ? trimmed.fileName : ''
+    if (isNone(trimmed)) return left(param.modId)
+    param.displayName = trimmed.value.displayName != null ? trimmed.value.displayName : ''
+    param.fileName = trimmed.value.fileName != null ? trimmed.value.fileName : ''
 
     const filePath = path.join(modsDir, param.fileName)
     const filePath2 = path.join(modsDir, param.fileName.replace(/\s+/g, '+'))
     const fileExist = fs.existsSync(filePath) || fs.existsSync(filePath2)
 
-    if (trimmed.downloadUrl == null && !fileExist) {
-        console.info(`modid:${param.modId} gameversion:${param.gameVersion} ${param.displayName} doesn't have download url`)
+    if (trimmed.value.downloadUrl == null && !fileExist) {
+        console.info(`modId:${param.modId} gameVersion:${param.gameVersion} ${param.displayName} doesn't have download url`)
         return left(param.modId)
-    } else if (trimmed.downloadUrl == null) {
+    } else if (trimmed.value.downloadUrl == null) {
         return left('')
     } else {
-        param.directUrl = trimmed.downloadUrl
+        param.directUrl = trimmed.value.downloadUrl
         if (param.displayName === '') param.displayName = getFileName(param.directUrl)
         return right(param)
     }
@@ -64,9 +65,11 @@ async function trimJson(json: GetFiles, param: ModSearchParam) {
     const pattern = param.fileNamePattern
 
     const single = json.data.find((data) => data.fileName.indexOf(pattern) != -1)
-    if (single === undefined)
+    if (single === undefined) {
         console.error(`${param.modId} ${param.gameVersion} ${param.fileNamePattern} not found`)
-    return single
+        return none
+    }
+    else return some(single)
 }
 
 async function updateModCache() {
@@ -169,8 +172,8 @@ function setupLauncherDirs() {
     if (!fs.existsSync(namagomiIgnore)) mkEmptyNamagomiIgnore(namagomiIgnore)
 }
 
-async function getWebsiteLink(modid: string) {
-    const response = await fetch(`https://api.curseforge.com/v1/mods/${modid}`, curseForgeHeaders)
+async function getWebsiteLink(modId: string) {
+    const response = await fetch(`https://api.curseforge.com/v1/mods/${modId}`, curseForgeHeaders)
     const json = await response.json() as GetMod
     return json.data?.links?.websiteUrl
 }
