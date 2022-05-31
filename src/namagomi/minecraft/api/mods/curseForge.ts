@@ -104,7 +104,7 @@ async function downloadModFile(param: ModSearchParam) {
     }
 }
 
-export const downloadAllModFiles = async () => {
+export async function downloadModFiles(side: 'CLIENT' | 'SERVER' | '') {
     setupLauncherDirs()
     const jsonText = await (await fetch(namagomiModListUrl)).text()
     const params = jsonToModSearchParams(jsonText)
@@ -112,58 +112,28 @@ export const downloadAllModFiles = async () => {
     const manuallyFiles = [] as string[]
 
     await Promise.all(urls.map(async (url: Either<string, ModSearchParam>, index) => {
-        if (isRight(url)) {
+        if ((params[index].side.includes(side) || params[index].side == '') && isRight(url)) {
             await downloadModFile(params[index])
-        } else if(url.left !== '') {
+        } else if(isLeft(url) && url.left !== '' ){
             manuallyFiles.push(url.left)
         }
-    })).then(() => rmModFiles(params, ''))
+    })).then(() => rmModFiles(params, side))
 
     await updateModCache()
 
     return await Promise.all(manuallyFiles.map(getWebsiteLink))
 }
 
+export const downloadAllModFiles = async () => {
+    await downloadModFiles('')
+}
+
 export const downloadClientModFiles = async () => {
-    setupLauncherDirs()
-    const jsonText = await (await fetch(namagomiModListUrl)).text()
-    const params = jsonToModSearchParams(jsonText)
-    const urls = await Promise.all(getModFileUrls(params))
-
-    const manuallyFiles = [] as string[]
-
-    await Promise.all(urls.map(async (url, index) => {
-        if (isRight(url) && (params[index].side === 'CLIENT' || params[index].side == '')) {
-            await downloadModFile(params[index])
-        } else if (isLeft(url)) {
-            manuallyFiles.push(url.left)
-        }
-    })).then(() => rmModFiles(params, 'CLIENT'))
-
-    await updateModCache()
-
-    return manuallyFiles
+    await downloadModFiles('CLIENT')
 }
 
 export const downloadServerModFiles = async () => {
-    setupLauncherDirs()
-    const jsonText = await (await fetch(namagomiModListUrl)).text()
-    const params = jsonToModSearchParams(jsonText)
-    const urls = await Promise.all(getModFileUrls(params))
-
-    const manuallyFiles = [] as string[]
-
-    Promise.all(urls.map(async (url, index) => {
-        if (isRight(url) && (params[index].side === 'SERVER' || params[index].side == '')) {
-            await downloadModFile(params[index])
-        } else if (isLeft(url)) {
-            manuallyFiles.push(url.left)
-        }
-    })).then(() => rmModFiles(params, 'SERVER'))
-
-    await updateModCache()
-
-    return manuallyFiles
+    await downloadModFiles('SERVER')
 }
 
 async function rmModFiles(params: ModSearchParam[], side: 'CLIENT' | 'SERVER' | '') {
