@@ -75,7 +75,7 @@ class Buttons extends React.Component<{}, State> {
                 }<br/>
                 {
                     this.state.manuallyMods.map(mod =>
-                    <a href={mod} target={"_blank"}>
+                    <a href={mod} target={"_blank"} rel={"noopener nofollow"}>
                         {mod}<br/>
                     </a>)}
             </div>
