@@ -13,6 +13,7 @@ import {GitTree} from "../github/GitTree";
 import {Either, isLeft, isRight, left, right} from "fp-ts/Either"
 import {GetMod} from "./CurseForgeAPIResponseTypes/GetMod";
 import {GetFiles} from "./CurseForgeAPIResponseTypes/GetFiles";
+import {NamagomiCache} from "../config/namagomiConfig";
 
 const curseForgeHeaders = {
     headers: {
@@ -69,22 +70,21 @@ const trimJson = async (json: GetFiles, param: ModSearchParam) => {
 
 async function updateModCache() {
     setupLauncherDirs()
-    const cacheJson = JSON.parse(fs.readFileSync(namagomiCache, 'utf8'))
+    const cacheJson = JSON.parse(fs.readFileSync(namagomiCache, 'utf8')) as NamagomiCache
 
     const tree = await new GitTree().build('NamagomiNetwork', 'Namagomi-mod', 'main');
-    cacheJson['mods'] = tree.getData('mod/mod_list.json').data.sha
+    cacheJson.mods = tree.getData('mod/mod_list.json').data.sha
 
     fs.writeFileSync(namagomiCache, JSON.stringify(cacheJson))
 }
 
 export async function isLatestMods() {
     setupLauncherDirs()
-    const cacheJson = JSON.parse(fs.readFileSync(namagomiCache, 'utf8'))
+    const cacheJson = JSON.parse(fs.readFileSync(namagomiCache, 'utf8')) as NamagomiCache
 
-    if ('mods' in cacheJson) {
-        const tree = await new GitTree().build('NamagomiNetwork', 'Namagomi-mod', 'main');
-        return cacheJson['mods'] === tree.getData('mod/mod_list.json').data.sha
-    } else return false
+    const tree = await new GitTree().build('NamagomiNetwork', 'Namagomi-mod', 'main');
+    return cacheJson.mods === tree.getData('mod/mod_list.json').data.sha
+
 }
 
 async function downloadModFile(param: ModSearchParam) {
@@ -114,7 +114,7 @@ export async function downloadModFiles(side: 'CLIENT' | 'SERVER' | '') {
     await Promise.all(urls.map(async (url: Either<string, ModSearchParam>, index) => {
         if ((params[index].side.includes(side) || params[index].side == '') && isRight(url)) {
             await downloadModFile(params[index])
-        } else if(isLeft(url) && url.left !== '' ){
+        } else if (isLeft(url) && url.left !== '') {
             manuallyFiles.push(url.left)
         }
     })).then(() => rmModFiles(params, side))
@@ -164,7 +164,7 @@ function setupLauncherDirs() {
     if (!fs.existsSync(mainDir)) fs.mkdirSync(mainDir)
     if (!fs.existsSync(modsDir)) fs.mkdirSync(modsDir)
     if (!fs.existsSync(configDir)) fs.mkdirSync(configDir)
-    if (!fs.existsSync(namagomiCache)) fs.writeFileSync(namagomiCache, JSON.stringify({}))
+    if (!fs.existsSync(namagomiCache)) fs.writeFileSync(namagomiCache, JSON.stringify({data:[], mods:''}))
     if (!fs.existsSync(namagomiIgnore)) mkEmptyNamagomiIgnore(namagomiIgnore)
 }
 

@@ -6,6 +6,16 @@ import {namagomiConfigFileUrlBase, namagomiFileUrlBase} from "../../../settings/
 import path from "path";
 import {configDir, namagomiCache} from "../../../settings/localPath";
 
+export interface NamagomiCache {
+    data: [
+        {
+            name: string
+            sha: string
+        }
+    ],
+    mods: string
+}
+
 export async function downloadAllConfigFiles() {
     const tree = await new GitTree().build('NamagomiNetwork', 'Namagomi-mod', 'main');
     const configSha = (await tree.getData('config')).data.sha;
@@ -13,8 +23,8 @@ export async function downloadAllConfigFiles() {
     const configPaths = await configTree.getAllFilePaths()
     const configSubDirs = await configTree.getAllDirectoryPaths()
 
-    if(!fs.existsSync(namagomiCache)) createEmptyJson(namagomiCache)
-    const cacheJson = JSON.parse(fs.readFileSync(namagomiCache, 'utf8'))
+    if (!fs.existsSync(namagomiCache)) createEmptyJson(namagomiCache)
+    const cacheJson = JSON.parse(fs.readFileSync(namagomiCache, 'utf8')) as NamagomiCache
 
     await Promise.all(configPaths.map(async cfgPath => {
         const fileName = cfgPath.split('/').pop()!
@@ -25,8 +35,10 @@ export async function downloadAllConfigFiles() {
         })
 
         const sha = (await configTree.getData(cfgPath)).data.sha
-        if(!(fileName in cacheJson)) cacheJson[fileName] = ""
-        if(cacheJson[fileName] !== sha) {
+
+        const findIndex = cacheJson.data.findIndex((d: { name: string, sha: string }) => d.name === fileName)
+
+        if (findIndex === -1 || cacheJson.data[findIndex].sha !== sha) {
             const filePath = path.join(configDir, cfgPath)
 
             const fileContent = await fetch(namagomiConfigFileUrlBase(cfgPath))
@@ -36,7 +48,10 @@ export async function downloadAllConfigFiles() {
                         createWriteStream(filePath))
                         .then(() => {
                             console.log('downloaded: ' + fileName)
-                            cacheJson[fileName] = sha
+                            if(findIndex === -1)
+                                cacheJson.data.push({name:fileName, sha:sha})
+                            else
+                                cacheJson.data[findIndex].sha = sha
                         }).catch(err => {
                             console.error(err)
                             console.log('failed: ' + fileName + ' ' + namagomiFileUrlBase(cfgPath).toString())
@@ -51,6 +66,6 @@ export async function downloadAllConfigFiles() {
     fs.writeFileSync(namagomiCache, JSON.stringify(cacheJson))
 }
 
-function createEmptyJson(path:string) {
-    fs.writeFileSync(path, JSON.stringify({}))
+function createEmptyJson(path: string) {
+    fs.writeFileSync(path, JSON.stringify({data: [], mods:''}))
 }
