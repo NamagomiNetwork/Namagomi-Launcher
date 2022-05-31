@@ -56,8 +56,8 @@ async function getModFileUrl(param: ModSearchParam): Promise<Either<string, ModS
     }
 }
 
-async function getModFileUrls(params: Array<ModSearchParam>) {
-    return params.map(getModFileUrl)
+function getModFileUrls(params: Array<ModSearchParam>) {
+    return params.map(getModFileUrl);
 }
 
 async function trimJson(json: GetFiles, param: ModSearchParam) {
