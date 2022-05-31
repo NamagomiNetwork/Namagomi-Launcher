@@ -21,9 +21,9 @@ const curseForgeHeaders = {
     }
 }
 
-export const fetchJson = async (url: URL) => {
+export const getFiles = async (url: URL) => {
     const response = await fetch(url.toString(), curseForgeHeaders)
-    return await response.json()
+    return await response.json() as GetFiles
 }
 
 const getModFileUrl = async (param: ModSearchParam): Promise<Either<string, ModSearchParam>> => {
@@ -32,7 +32,7 @@ const getModFileUrl = async (param: ModSearchParam): Promise<Either<string, ModS
 
     const url = new URL(path.join(curseForgeApiBaseUrl, '/v1/mods', param.modid, 'files'))
 
-    const json = await fetchJson(url) as GetFiles
+    const json = await getFiles(url)
     const trimmed = await trimJson(json, param)
     if (trimmed == undefined) return left(param.modid)
     param.displayName = trimmed.displayName != null ? trimmed.displayName : ''
