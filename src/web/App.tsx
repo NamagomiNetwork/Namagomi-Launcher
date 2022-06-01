@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import {AddMods} from "./AddMods";
+import {AddMods} from './AddMods'
 
 export const App = () => {
     return (
@@ -64,9 +64,9 @@ class Buttons extends React.Component<{}, State> {
                 <button onClick={this.checkUpdate}>updatable: {this.state.updateAvailable?'true':'false'}</button><br/>
                 {
                     this.state.manuallyMods.length === 0
-                        ? <text></text>
-                        : <text>以下のmodは手動でダウンロードしてください</text>
-                }<br/>
+                        ? <p></p>
+                        : <p>以下のmodは手動でダウンロードしてください</p>
+                }
                 {
                     this.state.manuallyMods.map((mod, index) =>
                     <a key={index} href={mod} target={"_blank"} rel={"noopener nofollow"}>
