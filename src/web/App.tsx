@@ -64,12 +64,12 @@ class Buttons extends React.Component<{}, State> {
                 <button onClick={this.checkUpdate}>updatable: {this.state.updateAvailable?'true':'false'}</button><br/>
                 {
                     this.state.manuallyMods.length === 0
-                        ? <div></div>
+                        ? <text></text>
                         : <text>以下のmodは手動でダウンロードしてください</text>
                 }<br/>
                 {
-                    this.state.manuallyMods.map(mod =>
-                    <a href={mod} target={"_blank"} rel={"noopener nofollow"}>
+                    this.state.manuallyMods.map((mod, index) =>
+                    <a key={index} href={mod} target={"_blank"} rel={"noopener nofollow"}>
                         {mod}<br/>
                     </a>)}
             </div>
