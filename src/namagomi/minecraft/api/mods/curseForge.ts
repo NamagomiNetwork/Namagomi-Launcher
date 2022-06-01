@@ -52,16 +52,16 @@ async function getModFileUrl(namagomiMod: GetNamagomiMod): Promise<NamagomiMod> 
     const filePath2 = path.join(modsDir, trimmed.value.fileName.replace(/\s+/g, '+'))
     const fileExist = fs.existsSync(filePath) || fs.existsSync(filePath2)
 
-    if (trimmed.value.downloadUrl == null && !fileExist) {
+    if (trimmed.value.downloadUrl == null && !fileExist && namagomiMod.modId !== null && namagomiMod.modVersion !== null) {
         console.info(`modId:${namagomiMod.modId} gameVersion:${namagomiMod.mcVersion} ${trimmed.value.fileName} doesn't have download url`)
         return {
             side: namagomiMod.side,
             fileName: trimmed.value.fileName,
             downloadUrl: none,
             curseForge: some({
-                id: namagomiMod.modId!,
-                gameVersion: namagomiMod.mcVersion!,
-                modVersion: namagomiMod.modVersion!,
+                id: namagomiMod.modId,
+                gameVersion: namagomiMod.mcVersion,
+                modVersion: namagomiMod.modVersion,
                 hashes: trimmed.value.hashes
             })
         }
@@ -72,7 +72,7 @@ async function getModFileUrl(namagomiMod: GetNamagomiMod): Promise<NamagomiMod> 
             downloadUrl: none,
             curseForge: none
         }
-    } else {
+    } else if(namagomiMod.modId !== null && namagomiMod.modVersion !== null) {
         namagomiMod.directUrl = trimmed.value.downloadUrl
         if (trimmed.value.fileName === '')
             trimmed.value.fileName = getFileName(namagomiMod.directUrl)
@@ -81,11 +81,19 @@ async function getModFileUrl(namagomiMod: GetNamagomiMod): Promise<NamagomiMod> 
             fileName: trimmed.value.fileName,
             downloadUrl: some(trimmed.value.downloadUrl),
             curseForge: some({
-                id: namagomiMod.modId!,
+                id: namagomiMod.modId,
                 gameVersion: namagomiMod.mcVersion,
-                modVersion: namagomiMod.modVersion!,
+                modVersion: namagomiMod.modVersion,
                 hashes: trimmed.value.hashes
             })
+        }
+    }
+    else {
+        return {
+            side: '',
+            fileName: '',
+            downloadUrl: none,
+            curseForge: none
         }
     }
 }
