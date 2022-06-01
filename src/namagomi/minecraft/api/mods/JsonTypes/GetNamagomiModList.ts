@@ -1,11 +1,10 @@
-import {ModList} from "../../../../../web/ModList";
-export type GetNamagomiModList = ModList[]
+export type GetNamagomiModList = GetNamagomiMod[]
 
-interface ModList{
+export interface GetNamagomiMod {
     name?: string
-    modId: number
+    modId?: string
     mcVersion: string
     modVersion?: string
     directUrl?: string
-    side?: 'SERVER' | 'CLIENT' | ''
+    side: 'SERVER' | 'CLIENT' | ''
 }
