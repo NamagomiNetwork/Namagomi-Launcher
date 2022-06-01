@@ -28,7 +28,7 @@ export async function getFiles(url: URL) {
 }
 
 async function getModFileUrl(namagomiMod: GetNamagomiMod): Promise<NamagomiMod> {
-    if (namagomiMod.directUrl !== undefined) {
+    if (namagomiMod.directUrl !== null) {
         return {
             side: namagomiMod.side,
             fileName: getFileName(namagomiMod.directUrl),
@@ -74,8 +74,8 @@ async function getModFileUrl(namagomiMod: GetNamagomiMod): Promise<NamagomiMod> 
         }
     } else {
         namagomiMod.directUrl = trimmed.value.downloadUrl
-        if (trimmed.value.displayName === '')
-            trimmed.value.displayName = getFileName(namagomiMod.directUrl)
+        if (trimmed.value.fileName === '')
+            trimmed.value.fileName = getFileName(namagomiMod.directUrl)
         return {
             side: namagomiMod.side,
             fileName: trimmed.value.fileName,
@@ -192,8 +192,9 @@ async function rmModFiles(namagomiMods: NamagomiMod[], side: 'CLIENT' | 'SERVER'
         .filter((url, index) =>
             isSome(url) && (namagomiMods[index].side === '' || namagomiMods[index].side.includes(side)))
         .map((url) => {
-            if(isSome(url))
+            if(isSome(url)) {
                 return getFileName(url.value)
+            }
         })
 
     if (!fs.existsSync(namagomiIgnore)) mkEmptyNamagomiIgnore(namagomiIgnore)
