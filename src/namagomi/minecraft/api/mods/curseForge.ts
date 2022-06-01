@@ -89,12 +89,7 @@ async function getModFileUrl(namagomiMod: GetNamagomiMod): Promise<NamagomiMod> 
         }
     }
     else {
-        return {
-            side: '',
-            fileName: '',
-            downloadUrl: none,
-            curseForge: none
-        }
+        throw new Error(`unexpected json value error {}`)
     }
 }
 
