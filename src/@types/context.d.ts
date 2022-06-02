@@ -1,7 +1,7 @@
 export interface IElectronAPI {
     downloadAllModFiles: () => Promise<string[]>;
-    downloadClientModFiles: () => Promise<void>;
-    downloadServerModFiles: () => Promise<void>;
+    downloadClientModFiles: () => Promise<string[]>;
+    downloadServerModFiles: () => Promise<string[]>;
     downloadAllConfigFiles: () => Promise<void>;
     setupNamagomiLauncherProfile: () => Promise<void>;
     downloadModFilesDev: () => Promise<void>;

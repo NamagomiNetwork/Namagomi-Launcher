@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import {AddMods} from "./AddMods";
+import {AddMods} from './AddMods'
 
 export const App = () => {
     return (
@@ -45,16 +45,16 @@ class Buttons extends React.Component<{}, State> {
         this.checkUpdate()
     }
 
-    async showManuallyMods(modids: Promise<string[]>) {
-        this.setState({manuallyMods: await modids})
+    async showManuallyMods(modIds: Promise<string[]>) {
+        this.setState({manuallyMods: await modIds})
     }
 
     render() {
         return (
             <div>
                 <button onClick={()=>this.showManuallyMods(window.namagomiAPI.downloadAllModFiles())}>DownloadAllModFiles</button>
-                <button onClick={window.namagomiAPI.downloadClientModFiles}>DownloadClientModFiles</button>
-                <button onClick={window.namagomiAPI.downloadServerModFiles}>DownloadServerModFiles</button>
+                <button onClick={()=>this.showManuallyMods(window.namagomiAPI.downloadClientModFiles())}>DownloadClientModFiles</button>
+                <button onClick={()=>this.showManuallyMods(window.namagomiAPI.downloadServerModFiles())}>DownloadServerModFiles</button>
                 <button onClick={window.namagomiAPI.downloadAllConfigFiles}>DownloadAllConfigFile</button>
                 <button onClick={window.namagomiAPI.setupNamagomiLauncherProfile}>SetupNamagomiLauncherProfile</button>
                 <button onClick={window.namagomiAPI.BuildGitTree}>BuildGitTree</button>
@@ -64,12 +64,12 @@ class Buttons extends React.Component<{}, State> {
                 <button onClick={this.checkUpdate}>updatable: {this.state.updateAvailable?'true':'false'}</button><br/>
                 {
                     this.state.manuallyMods.length === 0
-                        ? <div></div>
-                        : <text>以下のmodは手動でダウンロードしてください</text>
-                }<br/>
+                        ? <p></p>
+                        : <p>以下のmodは手動でダウンロードしてください</p>
+                }
                 {
-                    this.state.manuallyMods.map(mod =>
-                    <a href={mod} target={"_blank"} rel={"noopener nofollow"}>
+                    this.state.manuallyMods.map((mod, index) =>
+                    <a key={index} href={mod} target={"_blank"} rel={"noopener nofollow"}>
                         {mod}<br/>
                     </a>)}
             </div>

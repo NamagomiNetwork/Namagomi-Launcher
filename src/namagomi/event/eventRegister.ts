@@ -19,12 +19,12 @@ export function eventHandlerRegistry () {
         return downloadAllModFiles()
     })
 
-    ipcMain.handle('downloadClientModFiles', async () => {
-        await downloadClientModFiles()
+    ipcMain.handle('downloadClientModFiles', () => {
+        return downloadClientModFiles()
     })
 
-    ipcMain.handle('downloadServerModFiles', async () => {
-        await downloadServerModFiles()
+    ipcMain.handle('downloadServerModFiles', () => {
+        return downloadServerModFiles()
     })
 
     ipcMain.handle('BuildGitTree', async () => {

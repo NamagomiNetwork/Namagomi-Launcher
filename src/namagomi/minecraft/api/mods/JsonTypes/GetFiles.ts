@@ -3,14 +3,14 @@ export interface GetFiles {
     pagination: Pagination;
 }
 
-interface Pagination {
+export interface Pagination {
     index: number;
     pageSize: number;
     resultCount: number;
     totalCount: number;
 }
 
-interface Data {
+export interface Data {
     id: number;
     gameId: number;
     modId: number;
@@ -33,12 +33,12 @@ interface Data {
     modules: Module[];
 }
 
-interface Module {
+export interface Module {
     name: string;
     fingerprint: number;
 }
 
-interface SortableGameVersion {
+export interface SortableGameVersion {
     gameVersionName: string;
     gameVersionPadded: string;
     gameVersion: string;
@@ -46,7 +46,7 @@ interface SortableGameVersion {
     gameVersionTypeId: number;
 }
 
-interface Hash {
+export interface Hash {
     value: string;
     algo: number;
 }

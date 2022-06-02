@@ -2,7 +2,7 @@ export interface GetMod {
     data: Data
 }
 
-interface Data {
+export interface Data {
     id: number
     gameId: number
     name: string
@@ -30,14 +30,14 @@ interface Data {
     thumbsUpCount: number
 }
 
-interface Links {
+export interface Links {
     websiteUrl: string
     wikiUrl: string
     issuesUrl: string
     sourceUrl: string
 }
 
-interface Category {
+export interface Category {
     id: number
     gameId: number
     name: string
@@ -51,13 +51,13 @@ interface Category {
     displayIndex: number
 }
 
-interface Author {
+export interface Author {
     id: number
     name: string
     url: string
 }
 
-interface Logo {
+export interface Logo {
     id: number
     modId: number
     title: string
@@ -66,7 +66,7 @@ interface Logo {
     url: string
 }
 
-interface Screenshot {
+export interface Screenshot {
     id: number
     modId: number
     title: string
@@ -75,7 +75,7 @@ interface Screenshot {
     url: string
 }
 
-interface LatestFile {
+export interface LatestFile {
     id: number
     gameId: number
     modId: number
@@ -101,12 +101,12 @@ interface LatestFile {
     modules: Module[]
 }
 
-interface Hash {
+export interface Hash {
     value: string
     algo: number
 }
 
-interface SortableGameVersion {
+export interface SortableGameVersion {
     gameVersionName: string
     gameVersionPadded: string
     gameVersion: string
@@ -114,17 +114,17 @@ interface SortableGameVersion {
     gameVersionTypeId: number
 }
 
-interface Dependency {
+export interface Dependency {
     modId: number
     relationType: number
 }
 
-interface Module {
+export interface Module {
     name: string
     fingerprint: number
 }
 
-interface LatestFilesIndex {
+export interface LatestFilesIndex {
     gameVersion: string
     fileId: number
     filename: string
