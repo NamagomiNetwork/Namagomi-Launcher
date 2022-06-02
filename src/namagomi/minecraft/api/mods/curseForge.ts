@@ -29,7 +29,7 @@ export async function getFiles(url: URL) {
 
 async function getModFileUrl(namagomiMod: GetNamagomiMod): Promise<NamagomiMod> {
     if (namagomiMod.directUrl !== null) {
-        return {
+        return { // directUrlがある場合
             side: namagomiMod.side,
             fileName: getFileName(namagomiMod.directUrl),
             downloadUrl: some(namagomiMod.directUrl),
@@ -41,7 +41,7 @@ async function getModFileUrl(namagomiMod: GetNamagomiMod): Promise<NamagomiMod> 
     const gotFiles = await getFiles(getFilesUrl)
     const trimmed = await trimJson(gotFiles, namagomiMod)
     if (isNone(trimmed))
-        return {
+        return { // curse forgeにmodがない場合
             side: namagomiMod.side,
             fileName: '',
             downloadUrl: none,
@@ -52,27 +52,27 @@ async function getModFileUrl(namagomiMod: GetNamagomiMod): Promise<NamagomiMod> 
     const filePath2 = path.join(modsDir, trimmed.value.fileName.replace(/\s+/g, '+'))
     const fileExist = fs.existsSync(filePath) || fs.existsSync(filePath2)
 
-    if (trimmed.value.downloadUrl == null && !fileExist && namagomiMod.modId !== null && namagomiMod.modVersion !== null) {
+    if (trimmed.value.downloadUrl == null && !fileExist && namagomiMod.modId !== null) {
         console.info(`modId:${namagomiMod.modId} gameVersion:${namagomiMod.mcVersion} ${trimmed.value.fileName} doesn't have download url`)
-        return {
+        return { // curse forgeにdownload urlがなく、ファイルがない場合
             side: namagomiMod.side,
             fileName: trimmed.value.fileName,
             downloadUrl: none,
             curseForge: some({
                 id: namagomiMod.modId,
                 gameVersion: namagomiMod.mcVersion,
-                modVersion: namagomiMod.modVersion,
+                modVersion: namagomiMod.modVersion ?? '',
                 hashes: trimmed.value.hashes
             })
         }
     } else if (trimmed.value.downloadUrl == null) {
-        return {
+        return { // curse forgeにdownload urlがなく、ファイルがある場合
             side: namagomiMod.side,
             fileName: trimmed.value.fileName,
             downloadUrl: none,
             curseForge: none
         }
-    } else if(namagomiMod.modId !== null && namagomiMod.modVersion !== null) {
+    } else if(namagomiMod.modId != null) {
         namagomiMod.directUrl = trimmed.value.downloadUrl
         if (trimmed.value.fileName === '')
             trimmed.value.fileName = getFileName(namagomiMod.directUrl)
@@ -83,13 +83,13 @@ async function getModFileUrl(namagomiMod: GetNamagomiMod): Promise<NamagomiMod> 
             curseForge: some({
                 id: namagomiMod.modId,
                 gameVersion: namagomiMod.mcVersion,
-                modVersion: namagomiMod.modVersion,
+                modVersion: namagomiMod.modVersion ?? '',
                 hashes: trimmed.value.hashes
             })
         }
     }
     else {
-        throw new Error(`unexpected json value error {}`)
+        throw new Error(`unexpected json value error ${trimmed.value.fileName} side:${namagomiMod.side} downloadUrl:${trimmed.value.downloadUrl} modId:${namagomiMod.modId} modVersion:${namagomiMod.modVersion}`)
     }
 }
 
@@ -101,7 +101,7 @@ async function trimJson(json: GetFiles, namagomiMod: GetNamagomiMod) {
     const pattern = namagomiMod.modVersion ?? ''
 
     const single = json.data.find((data) => data.fileName.indexOf(pattern) != -1)
-    if (single === undefined) {
+    if (single == undefined) {
         console.error(`${namagomiMod.modId} ${namagomiMod.mcVersion} ${namagomiMod.modVersion} not found`)
         return none
     } else return some(single)
