@@ -53,8 +53,8 @@ class Buttons extends React.Component<{}, State> {
         return (
             <div>
                 <button onClick={()=>this.showManuallyMods(window.namagomiAPI.downloadAllModFiles())}>DownloadAllModFiles</button>
-                <button onClick={window.namagomiAPI.downloadClientModFiles}>DownloadClientModFiles</button>
-                <button onClick={window.namagomiAPI.downloadServerModFiles}>DownloadServerModFiles</button>
+                <button onClick={()=>this.showManuallyMods(window.namagomiAPI.downloadClientModFiles())}>DownloadClientModFiles</button>
+                <button onClick={()=>this.showManuallyMods(window.namagomiAPI.downloadServerModFiles())}>DownloadServerModFiles</button>
                 <button onClick={window.namagomiAPI.downloadAllConfigFiles}>DownloadAllConfigFile</button>
                 <button onClick={window.namagomiAPI.setupNamagomiLauncherProfile}>SetupNamagomiLauncherProfile</button>
                 <button onClick={window.namagomiAPI.BuildGitTree}>BuildGitTree</button>
