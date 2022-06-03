@@ -47,8 +47,8 @@ export async function downloadAllDataFiles(branch: string) {
                         createWriteStream(filePath))
                         .then(() => {
                             console.log('downloaded: ' + cfgPath)
-                            if(findIndex === -1)
-                                cacheJson.data.push({name:cfgPath, sha:sha})
+                            if (findIndex === -1)
+                                cacheJson.data.push({name: cfgPath, sha: sha})
                             else
                                 cacheJson.data[findIndex].sha = sha
                         }).catch(err => {
@@ -63,8 +63,28 @@ export async function downloadAllDataFiles(branch: string) {
         }
     }))
     fs.writeFileSync(namagomiCache, JSON.stringify(cacheJson))
+
+    deleteFiles(dataTree)
 }
 
 function createEmptyJson(path: string) {
-    fs.writeFileSync(path, JSON.stringify({data: [], mods:''}))
+    fs.writeFileSync(path, JSON.stringify({data: [], mods: ''}))
+}
+
+function deleteFiles(dataTree: GitTree) {
+    if (!fs.existsSync(namagomiCache)) createEmptyJson(namagomiCache)
+    const cacheJson = JSON.parse(fs.readFileSync(namagomiCache, 'utf8')) as NamagomiCache
+
+    const newCacheJson = {mods: cacheJson.mods} as NamagomiCache
+
+    cacheJson.data.map((data) => {
+        if (!dataTree.exists(data.name)) {
+            const filePath = path.join(mainDir, data.name)
+            fs.rmSync(filePath)
+        } else {
+            newCacheJson.data.push(data)
+        }
+    })
+
+    fs.writeFileSync(namagomiCache, JSON.stringify(newCacheJson))
 }

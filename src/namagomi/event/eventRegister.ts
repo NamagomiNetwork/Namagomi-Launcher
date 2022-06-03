@@ -5,7 +5,7 @@ import {
     downloadClientModFiles,
     downloadServerModFiles, isLatestMods
 } from "../minecraft/api/mods/curseForge";
-import {downloadAllDataFiles} from "../minecraft/api/config/namagomiData";
+import {downloadAllDataFiles} from "../minecraft/api/data/namagomiData";
 import {mainDir} from "../settings/localPath";
 import {addMods, getIgnoreList, removeMods} from "../minecraft/api/mods/addMod";
 

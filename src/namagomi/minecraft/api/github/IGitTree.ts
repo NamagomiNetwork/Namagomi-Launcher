@@ -8,4 +8,5 @@ export interface IGitTree {
     getAllFilePaths(): Promise<string[]>
     getAllDirectoryPaths(): Promise<string[]>
     getData(path: string): GitTree
+    exists(path: string): boolean
 }

@@ -100,4 +100,13 @@ export class GitTree implements IGitTree {
                 }
             }, this)
     }
+
+    public exists(path: string) {
+        try{
+            this.getData(path)
+            return true
+        } catch (e) {
+            return false
+        }
+    }
 }
