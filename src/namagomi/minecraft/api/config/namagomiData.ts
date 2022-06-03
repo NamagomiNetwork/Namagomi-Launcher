@@ -18,7 +18,7 @@ export interface NamagomiCache {
 
 export async function downloadAllDataFiles(branch: string) {
     const tree = await new GitTree().build('NamagomiNetwork', 'Namagomi-mod', branch);
-    const dataSha = (await tree.getData('data')).data.sha;
+    const dataSha = tree.getData('data').data.sha;
     const dataTree = await new GitTree().build('NamagomiNetwork', 'Namagomi-mod', dataSha);
     const dataPaths = await dataTree.getAllFilePaths()
     const dataSubDirs = await dataTree.getAllDirectoryPaths()
