@@ -1,7 +1,7 @@
 import {curseForgeApiBaseUrl, curseForgeApiKey, namagomiModListUrl} from '../../../settings/config'
 import path from "path";
 import fetch from 'electron-fetch'
-import {configDir, mainDir, minecraftDir, modsDir, namagomiCache, namagomiIgnore} from '../../../settings/localPath'
+import {mainDir, minecraftDir, modsDir, namagomiCache, namagomiIgnore} from '../../../settings/localPath'
 import {pipeline} from "stream/promises";
 import * as fs from "fs";
 import {createWriteStream} from "fs";
@@ -216,7 +216,6 @@ function setupLauncherDirs() {
     if (!fs.existsSync(minecraftDir)) fs.mkdirSync(minecraftDir)
     if (!fs.existsSync(mainDir)) fs.mkdirSync(mainDir)
     if (!fs.existsSync(modsDir)) fs.mkdirSync(modsDir)
-    if (!fs.existsSync(configDir)) fs.mkdirSync(configDir)
     if (!fs.existsSync(namagomiCache)) fs.writeFileSync(namagomiCache, JSON.stringify({data: [], mods: ''}))
     if (!fs.existsSync(namagomiIgnore)) mkEmptyNamagomiIgnore(namagomiIgnore)
 }
