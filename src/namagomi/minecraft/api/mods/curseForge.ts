@@ -10,7 +10,7 @@ import {mkEmptyNamagomiIgnore, NamagomiIgnore} from "./NamagomiIgnore";
 import {GitTree} from "../github/GitTree";
 import {GetMod} from "./JsonTypes/GetMod";
 import {GetFiles} from "./JsonTypes/GetFiles";
-import {NamagomiCache} from "../config/namagomiConfig";
+import {NamagomiCache} from "../config/namagomiData";
 import {GetNamagomiModList, GetNamagomiMod} from "./JsonTypes/GetNamagomiModList";
 import {isNone, isSome, none, some, match as matchO} from "fp-ts/Option";
 import {NamagomiMod} from "./NamagomiMod";

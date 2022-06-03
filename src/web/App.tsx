@@ -57,9 +57,6 @@ class Buttons extends React.Component<{}, State> {
                 <button onClick={()=>this.showManuallyMods(window.namagomiAPI.downloadServerModFiles())}>DownloadServerModFiles</button>
                 <button onClick={window.namagomiAPI.downloadAllConfigFiles}>DownloadAllConfigFile</button>
                 <button onClick={window.namagomiAPI.setupNamagomiLauncherProfile}>SetupNamagomiLauncherProfile</button>
-                <button onClick={window.namagomiAPI.BuildGitTree}>BuildGitTree</button>
-                <button onClick={() => window.namagomiAPI.GetGitFileData(this.state.value)}>GetFileData</button>
-                <input type="text" id="filePath" value={this.state.value} onChange={this.handleChange}/>
                 <button onClick={window.namagomiAPI.OpenFolder}>OpenFolder</button>
                 <button onClick={this.checkUpdate}>updatable: {this.state.updateAvailable?'true':'false'}</button><br/>
                 {

@@ -5,8 +5,7 @@ import {
     downloadClientModFiles,
     downloadServerModFiles, isLatestMods
 } from "../minecraft/api/mods/curseForge";
-import {GitTree} from '../minecraft/api/github/GitTree';
-import {downloadAllConfigFiles} from "../minecraft/api/config/namagomiConfig";
+import {downloadAllDataFiles} from "../minecraft/api/config/namagomiData";
 import {mainDir} from "../settings/localPath";
 import {addMods, getIgnoreList, removeMods} from "../minecraft/api/mods/addMod";
 
@@ -27,28 +26,8 @@ export function eventHandlerRegistry () {
         return downloadServerModFiles()
     })
 
-    ipcMain.handle('BuildGitTree', async () => {
-        new GitTree().build('NamagomiNetwork', 'Namagomi-mod', 'main')
-            .then(tree => {
-                tree.getAllPaths().then(paths => {
-                    paths.map(path => {
-                        console.log(path)
-                    })
-                })
-            })
-    })
-
-    ipcMain.on('GetGitFileData', async (event, arg) => {
-        const tree = await new GitTree().build('NamagomiNetwork', 'Namagomi-mod', 'main')
-        const data = await tree.getData(arg)
-        console.log(`path: ${data.data.path}`)
-        console.log(`type: ${data.data.type}`)
-        console.log(`sha: ${data.data.sha}`)
-        console.log(`url: ${data.data.url}`)
-    })
-
     ipcMain.handle('downloadAllConfigFiles', async () => {
-        await downloadAllConfigFiles()
+        await downloadAllDataFiles('main')
     })
 
     ipcMain.handle('OpenFolder', async () => {
