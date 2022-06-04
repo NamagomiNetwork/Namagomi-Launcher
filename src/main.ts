@@ -1,6 +1,7 @@
 import path from 'path';
 import { searchDevtools } from 'electron-search-devtools';
 import { BrowserWindow, app, ipcMain, session } from 'electron';
+import {eventHandlerRegistry} from "./namagomi/event/eventRegister";
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -36,10 +37,14 @@ const createWindow = () => {
       .catch((err) => console.log(err));
 
     mainWindow.webContents.openDevTools({ mode: 'detach' });
+
+    mainWindow.setMenu(null)
   }
 
-  mainWindow.loadFile('dist/index.html');
+  mainWindow.loadFile('dist/index.html').then();
 };
 
 app.whenReady().then(createWindow);
 app.once('window-all-closed', () => app.quit());
+
+eventHandlerRegistry()

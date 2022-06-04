@@ -1,9 +1,19 @@
 export interface IElectronAPI {
-  update: (count: number) => void;
+    downloadAllModFiles: () => Promise<string[]>;
+    downloadClientModFiles: () => Promise<string[]>;
+    downloadServerModFiles: () => Promise<string[]>;
+    downloadAllConfigFiles: () => Promise<void>;
+    setupNamagomiLauncherProfile: () => Promise<void>;
+    downloadModFilesDev: () => Promise<void>;
+    OpenFolder: () => Promise<void>;
+    addMods: (paths:string[], names:string[]) => Promise<void>;
+    getIgnoreList: () => Promise<string[]>;
+    removeMods: (mods:string[]) => Promise<void>;
+    isLatestMods: () => Promise<boolean>;
 }
 
 declare global {
   interface Window {
-    myAPI: IElectronAPI;
+    namagomiAPI: IElectronAPI
   }
 }
