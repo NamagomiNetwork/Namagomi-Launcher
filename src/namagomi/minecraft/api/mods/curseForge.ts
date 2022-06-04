@@ -38,6 +38,9 @@ async function getModFileUrl(namagomiMod: GetNamagomiMod): Promise<NamagomiMod> 
     }
 
     const getFilesUrl = new URL(path.join(curseForgeApiBaseUrl, '/v1/mods', namagomiMod.modId!, 'files'))
+    if (!getFilesUrl.searchParams.has('gameVersion'))
+        getFilesUrl.searchParams.append('gameVersion', namagomiMod.mcVersion)
+
     const gotFiles = await getFiles(getFilesUrl)
     const trimmed = await trimJson(gotFiles, namagomiMod)
     if (isNone(trimmed))
