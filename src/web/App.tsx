@@ -60,8 +60,8 @@ class Buttons extends React.Component<{}, State> {
         return (
             <div>
                 <button onClick={this.setupAll}>Update</button>
-                <button onClick={window.namagomiAPI.OpenFolder}>OpenFolder</button>
                 <button onClick={this.checkUpdate}>updatable: {this.state.updateAvailable ? '更新可能' : '最新の状態です'}</button>
+                <button onClick={window.namagomiAPI.OpenFolder}>OpenFolder</button>
                 <br/>
                 {
                     this.state.manuallyMods.length === 0
