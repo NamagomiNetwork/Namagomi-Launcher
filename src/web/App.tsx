@@ -54,6 +54,7 @@ class Buttons extends React.Component<{}, State> {
         await this.showManuallyMods(window.namagomiAPI.downloadClientModFiles())
         await window.namagomiAPI.downloadAllConfigFiles()
         await window.namagomiAPI.setupNamagomiLauncherProfile()
+        this.checkUpdate()
     }
 
     render() {
