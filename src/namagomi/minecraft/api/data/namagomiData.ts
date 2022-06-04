@@ -7,12 +7,10 @@ import path from "path";
 import {mainDir, namagomiCache} from "../../../settings/localPath";
 
 export interface NamagomiCache {
-    data: [
-        {
-            name: string
-            sha: string
-        }
-    ],
+    data: {
+        name: string
+        sha: string
+    }[]
     mods: string
 }
 
@@ -75,12 +73,15 @@ function deleteFiles(dataTree: GitTree) {
     if (!fs.existsSync(namagomiCache)) createEmptyJson(namagomiCache)
     const cacheJson = JSON.parse(fs.readFileSync(namagomiCache, 'utf8')) as NamagomiCache
 
-    const newCacheJson = {mods: cacheJson.mods} as NamagomiCache
+    const newCacheJson = {data: [], mods: cacheJson.mods} as NamagomiCache
 
     cacheJson.data.map((data) => {
         if (!dataTree.exists(data.name)) {
             const filePath = path.join(mainDir, data.name)
-            fs.rmSync(filePath)
+            if (fs.existsSync(filePath)) {
+                console.log(`delete: ${filePath}`)
+                fs.rmSync(filePath)
+            }
         } else {
             newCacheJson.data.push(data)
         }
