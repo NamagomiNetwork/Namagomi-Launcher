@@ -5,8 +5,6 @@ export interface IElectronAPI {
     downloadAllConfigFiles: () => Promise<void>;
     setupNamagomiLauncherProfile: () => Promise<void>;
     downloadModFilesDev: () => Promise<void>;
-    BuildGitTree: () => Promise<void>;
-    GetGitFileData: (path: string) => Promise<void>;
     OpenFolder: () => Promise<void>;
     addMods: (paths:string[], names:string[]) => Promise<void>;
     getIgnoreList: () => Promise<string[]>;

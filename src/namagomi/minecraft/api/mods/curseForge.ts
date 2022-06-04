@@ -1,7 +1,7 @@
 import {curseForgeApiBaseUrl, curseForgeApiKey, namagomiModListUrl} from '../../../settings/config'
 import path from "path";
 import fetch from 'electron-fetch'
-import {configDir, mainDir, minecraftDir, modsDir, namagomiCache, namagomiIgnore} from '../../../settings/localPath'
+import {mainDir, minecraftDir, modsDir, namagomiCache, namagomiIgnore} from '../../../settings/localPath'
 import {pipeline} from "stream/promises";
 import * as fs from "fs";
 import {createWriteStream} from "fs";
@@ -10,7 +10,7 @@ import {mkEmptyNamagomiIgnore, NamagomiIgnore} from "./NamagomiIgnore";
 import {GitTree} from "../github/GitTree";
 import {GetMod} from "./JsonTypes/GetMod";
 import {GetFiles} from "./JsonTypes/GetFiles";
-import {NamagomiCache} from "../config/namagomiConfig";
+import {NamagomiCache} from "../data/namagomiData";
 import {GetNamagomiModList, GetNamagomiMod} from "./JsonTypes/GetNamagomiModList";
 import {isNone, isSome, none, some, match as matchO} from "fp-ts/Option";
 import {NamagomiMod} from "./NamagomiMod";
@@ -38,6 +38,9 @@ async function getModFileUrl(namagomiMod: GetNamagomiMod): Promise<NamagomiMod> 
     }
 
     const getFilesUrl = new URL(path.join(curseForgeApiBaseUrl, '/v1/mods', namagomiMod.modId!, 'files'))
+    if (!getFilesUrl.searchParams.has('gameVersion'))
+        getFilesUrl.searchParams.append('gameVersion', namagomiMod.mcVersion)
+
     const gotFiles = await getFiles(getFilesUrl)
     const trimmed = await trimJson(gotFiles, namagomiMod)
     if (isNone(trimmed))
@@ -216,7 +219,6 @@ function setupLauncherDirs() {
     if (!fs.existsSync(minecraftDir)) fs.mkdirSync(minecraftDir)
     if (!fs.existsSync(mainDir)) fs.mkdirSync(mainDir)
     if (!fs.existsSync(modsDir)) fs.mkdirSync(modsDir)
-    if (!fs.existsSync(configDir)) fs.mkdirSync(configDir)
     if (!fs.existsSync(namagomiCache)) fs.writeFileSync(namagomiCache, JSON.stringify({data: [], mods: ''}))
     if (!fs.existsSync(namagomiIgnore)) mkEmptyNamagomiIgnore(namagomiIgnore)
 }
