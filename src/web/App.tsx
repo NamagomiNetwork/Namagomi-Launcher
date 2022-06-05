@@ -6,7 +6,8 @@ export const App = () => {
     return (
         <div className="container">
             <Buttons/><br/>
-            <AddMods/>
+            <AddMods side={'CLIENT'}/>
+            <AddMods side={'SERVER'}/>
         </div>
     );
 };
@@ -80,11 +81,15 @@ class Buttons extends React.Component<{}, State> {
         return (
             <div>
                 <button onClick={this.setupClient}>Update</button>
-                <button onClick={this.checkUpdateClient}>updatable: {this.state.updateAvailableClient ? '更新可能' : '最新の状態です'}</button>
-                <button onClick={()=>window.namagomiAPI.OpenFolder('CLIENT')}>OpenFolder</button><br/>
+                <button
+                    onClick={this.checkUpdateClient}>updatable: {this.state.updateAvailableClient ? '更新可能' : '最新の状態です'}</button>
+                <button onClick={() => window.namagomiAPI.OpenFolder('CLIENT')}>OpenFolder</button>
+                <br/>
                 <button onClick={this.setupServer}>Update Server</button>
-                <button onClick={this.checkUpdateServer}>updatable: {this.state.updateAvailableServer ? '更新可能' : '最新の状態です'}</button>
-                <button onClick={()=>window.namagomiAPI.OpenFolder('SERVER')}>OpenFolder</button><br/>
+                <button
+                    onClick={this.checkUpdateServer}>updatable: {this.state.updateAvailableServer ? '更新可能' : '最新の状態です'}</button>
+                <button onClick={() => window.namagomiAPI.OpenFolder('SERVER')}>OpenFolder</button>
+                <br/>
 
                 <br/>
                 {
@@ -97,6 +102,7 @@ class Buttons extends React.Component<{}, State> {
                         <a key={index} href={mod} target={"_blank"} rel={"noopener nofollow"}>
                             {mod}<br/>
                         </a>)}
+
             </div>
         );
     }
