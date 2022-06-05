@@ -1,6 +1,11 @@
 # Namagomi Launcher
 生ゴミ鯖のランチャー
 
+# How to use
+1. `update`ボタンをクリックします
+2. 手動でダウンロードする必要のあるmodが表示されたらダウンロードして、`mod files drop here (CLIENT)`にドロップします
+3. クライアント用のmodを追加したい場合は`mod files drop here (CLIENT)`にmodsファイルをドロップします（modsフォルダーに直接入れるとアップデート時に消えます）
+
 # build
 
 ## Environment
