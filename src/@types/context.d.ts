@@ -2,14 +2,14 @@ export interface IElectronAPI {
     downloadAllModFiles: () => Promise<string[]>;
     downloadClientModFiles: () => Promise<string[]>;
     downloadServerModFiles: () => Promise<string[]>;
-    downloadAllConfigFiles: () => Promise<void>;
-    setupNamagomiLauncherProfile: () => Promise<void>;
+    downloadAllConfigFiles: (side: string) => Promise<void>;
+    setupNamagomiLauncherProfile: (side: string) => Promise<void>;
     downloadModFilesDev: () => Promise<void>;
-    OpenFolder: () => Promise<void>;
+    OpenFolder: (side: string) => Promise<void>;
     addMods: (paths:string[], names:string[]) => Promise<void>;
     getIgnoreList: () => Promise<string[]>;
     removeMods: (mods:string[]) => Promise<void>;
-    isLatestMods: () => Promise<boolean>;
+    isLatestMods: (side: string) => Promise<boolean>;
 }
 
 declare global {
