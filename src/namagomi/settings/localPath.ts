@@ -3,7 +3,7 @@ import path from "path";
 
 export const userDir = app.getPath('userData')
 export const minecraftDir = path.join(userDir, 'minecraft')
-export const mainDir = path.join(minecraftDir, 'main')
-export const modsDir = path.join(mainDir, 'mods')
-export const namagomiCache = path.join(mainDir, '.namagomi-cache')
-export const namagomiIgnore = path.join(mainDir, '.namagomi-ignore')
+export const mainDir = (side: string) => path.join(minecraftDir, `main-${side}`)
+export const modsDir = (side: string) => path.join(mainDir(side), 'mods')
+export const namagomiCache = (side: string) =>  path.join(mainDir(side), '.namagomi-cache')
+export const namagomiIgnore = (side: string) =>  path.join(mainDir(side), '.namagomi-ignore')

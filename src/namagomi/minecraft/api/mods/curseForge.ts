@@ -27,7 +27,7 @@ export async function getFiles(url: URL) {
     return await response.json() as GetFiles
 }
 
-async function getModFileUrl(namagomiMod: GetNamagomiMod): Promise<NamagomiMod> {
+async function getModFileUrl(namagomiMod: GetNamagomiMod, side: string): Promise<NamagomiMod> {
     if (namagomiMod.directUrl !== null) {
         return { // directUrlがある場合
             side: namagomiMod.side,
@@ -51,8 +51,8 @@ async function getModFileUrl(namagomiMod: GetNamagomiMod): Promise<NamagomiMod> 
             curseForge: none
         }
 
-    const filePath = path.join(modsDir, trimmed.value.fileName)
-    const filePath2 = path.join(modsDir, trimmed.value.fileName.replace(/\s+/g, '+'))
+    const filePath = path.join(modsDir(side), trimmed.value.fileName)
+    const filePath2 = path.join(modsDir(side), trimmed.value.fileName.replace(/\s+/g, '+'))
     const fileExist = fs.existsSync(filePath) || fs.existsSync(filePath2)
 
     if (trimmed.value.downloadUrl == null && !fileExist && namagomiMod.modId !== null) {
@@ -96,8 +96,8 @@ async function getModFileUrl(namagomiMod: GetNamagomiMod): Promise<NamagomiMod> 
     }
 }
 
-function getModFileUrls(namagomiModList: GetNamagomiModList) {
-    return namagomiModList.map(getModFileUrl);
+function getModFileUrls(namagomiModList: GetNamagomiModList, side: string) {
+    return namagomiModList.map((n)=>getModFileUrl(n, side));
 }
 
 async function trimJson(json: GetFiles, namagomiMod: GetNamagomiMod) {
@@ -110,28 +110,28 @@ async function trimJson(json: GetFiles, namagomiMod: GetNamagomiMod) {
     } else return some(single)
 }
 
-async function updateModCache() {
-    setupLauncherDirs()
-    const cacheJson = JSON.parse(fs.readFileSync(namagomiCache, 'utf8')) as NamagomiCache
+async function updateModCache(side: string) {
+    setupLauncherDirs(side)
+    const cacheJson = JSON.parse(fs.readFileSync(namagomiCache(side), 'utf8')) as NamagomiCache
 
     const tree = await new GitTree().build('NamagomiNetwork', 'Namagomi-mod', 'main');
     cacheJson.mods = tree.getData('mod/mod_list.json').data.sha
 
-    fs.writeFileSync(namagomiCache, JSON.stringify(cacheJson))
+    fs.writeFileSync(namagomiCache(side), JSON.stringify(cacheJson))
 }
 
-export async function isLatestMods() {
-    setupLauncherDirs()
-    const cacheJson = JSON.parse(fs.readFileSync(namagomiCache, 'utf8')) as NamagomiCache
+export async function isLatestMods(side: string) {
+    setupLauncherDirs(side)
+    const cacheJson = JSON.parse(fs.readFileSync(namagomiCache(side), 'utf8')) as NamagomiCache
 
     const tree = await new GitTree().build('NamagomiNetwork', 'Namagomi-mod', 'main');
     return cacheJson.mods === tree.getData('mod/mod_list.json').data.sha
 
 }
 
-async function downloadModFile(namagomiMod: NamagomiMod) {
-    const filePath = path.join(modsDir, namagomiMod.fileName)
-    setupLauncherDirs()
+async function downloadModFile(namagomiMod: NamagomiMod, side: string) {
+    const filePath = path.join(modsDir(side), namagomiMod.fileName)
+    setupLauncherDirs(side)
 
     if (!fs.existsSync(filePath) && isSome(namagomiMod.downloadUrl)) {
         await pipeline(
@@ -154,9 +154,9 @@ async function downloadModFile(namagomiMod: NamagomiMod) {
 }
 
 export async function downloadModFiles(side: 'CLIENT' | 'SERVER' | '') {
-    setupLauncherDirs()
+    setupLauncherDirs(side)
     const namagomiModList = await (await fetch(namagomiModListUrl)).json() as GetNamagomiModList
-    const namagomiMods = await Promise.all(getModFileUrls(namagomiModList))
+    const namagomiMods = await Promise.all(getModFileUrls(namagomiModList, side))
     const manuallyFiles = [] as string[]
 
     await Promise.all(
@@ -168,12 +168,12 @@ export async function downloadModFiles(side: 'CLIENT' | 'SERVER' | '') {
                 },
                 async () => {
                     if ((namagomiMod.side.includes(side) || namagomiMod.side === '')) {
-                        await downloadModFile(namagomiMod)
+                        await downloadModFile(namagomiMod, side)
                     }
                 })(namagomiMod.downloadUrl)
         })).then(() => rmModFiles(namagomiMods, side))
 
-    await updateModCache()
+    await updateModCache(side)
 
     return Promise.all(manuallyFiles.map(getWebsiteLink))
 }
@@ -191,7 +191,7 @@ export async function downloadServerModFiles() {
 }
 
 async function rmModFiles(namagomiMods: NamagomiMod[], side: 'CLIENT' | 'SERVER' | '') {
-    const files = fs.readdirSync(modsDir)
+    const files = fs.readdirSync(modsDir(side))
 
     const remoteFiles = namagomiMods
         .map(namagomiMod => namagomiMod.downloadUrl)
@@ -203,24 +203,24 @@ async function rmModFiles(namagomiMods: NamagomiMod[], side: 'CLIENT' | 'SERVER'
             }
         })
 
-    if (!fs.existsSync(namagomiIgnore)) mkEmptyNamagomiIgnore(namagomiIgnore)
+    if (!fs.existsSync(namagomiIgnore(side))) mkEmptyNamagomiIgnore(namagomiIgnore(side))
     const ignoreFiles =
-        JSON.parse(fs.readFileSync(namagomiIgnore, 'utf8')) as NamagomiIgnore
+        JSON.parse(fs.readFileSync(namagomiIgnore(side), 'utf8')) as NamagomiIgnore
 
     await Promise.all(files.map((file) => {
-        if (!(remoteFiles.includes(file) || ignoreFiles.includes(file) || fs.statSync(path.join(modsDir, file)).isDirectory())) {
-            fs.rmSync(path.join(modsDir, file))
+        if (!(remoteFiles.includes(file) || ignoreFiles.includes(file) || fs.statSync(path.join(modsDir(side), file)).isDirectory())) {
+            fs.rmSync(path.join(modsDir(side), file))
             console.log('delete: ' + file)
         }
     }))
 }
 
-function setupLauncherDirs() {
+function setupLauncherDirs(side: string) {
     if (!fs.existsSync(minecraftDir)) fs.mkdirSync(minecraftDir)
-    if (!fs.existsSync(mainDir)) fs.mkdirSync(mainDir)
-    if (!fs.existsSync(modsDir)) fs.mkdirSync(modsDir)
-    if (!fs.existsSync(namagomiCache)) fs.writeFileSync(namagomiCache, JSON.stringify({data: [], mods: ''}))
-    if (!fs.existsSync(namagomiIgnore)) mkEmptyNamagomiIgnore(namagomiIgnore)
+    if (!fs.existsSync(mainDir(side))) fs.mkdirSync(mainDir(side))
+    if (!fs.existsSync(modsDir(side))) fs.mkdirSync(modsDir(side))
+    if (!fs.existsSync(namagomiCache(side))) fs.writeFileSync(namagomiCache(side), JSON.stringify({data: [], mods: ''}))
+    if (!fs.existsSync(namagomiIgnore(side))) mkEmptyNamagomiIgnore(namagomiIgnore(side))
 }
 
 async function getWebsiteLink(modId: string) {

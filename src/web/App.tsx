@@ -13,7 +13,8 @@ export const App = () => {
 
 type State = {
     value: string,
-    updateAvailable: boolean,
+    updateAvailableClient: boolean,
+    updateAvailableServer: boolean,
     manuallyMods: string[]
 }
 
@@ -22,46 +23,69 @@ class Buttons extends React.Component<{}, State> {
         super(props);
         this.state = {
             value: '',
-            updateAvailable: false,
+            updateAvailableClient: false,
+            updateAvailableServer: false,
             manuallyMods: [] as string[]
         };
 
         this.handleChange = this.handleChange.bind(this);
-        this.checkUpdate = this.checkUpdate.bind(this)
+        this.checkUpdateClient = this.checkUpdateClient.bind(this)
+        this.checkUpdateServer = this.checkUpdateServer.bind(this)
         this.showManuallyMods = this.showManuallyMods.bind(this)
-        this.setupAll = this.setupAll.bind(this)
+        this.setupClient = this.setupClient.bind(this)
+        this.setupServer = this.setupServer.bind(this)
     }
 
     handleChange(event: React.ChangeEvent<HTMLInputElement>) {
         this.setState({value: event.target.value});
     }
 
-    checkUpdate() {
-        window.namagomiAPI.isLatestMods().then(isLatest => {
-            this.setState({updateAvailable: !isLatest})
+    checkUpdateClient() {
+        window.namagomiAPI.isLatestMods('CLIENT').then(isLatest => {
+            this.setState({updateAvailableClient: !isLatest})
+        })
+    }
+
+    checkUpdateServer() {
+        window.namagomiAPI.isLatestMods('SERVER').then(isLatest => {
+            this.setState({updateAvailableServer: !isLatest})
         })
     }
 
     componentDidMount() {
-        this.checkUpdate()
+        this.checkUpdateClient()
+        this.checkUpdateServer()
     }
 
     async showManuallyMods(modIds: Promise<string[]>) {
         this.setState({manuallyMods: await modIds})
     }
 
-    async setupAll() {
+    async setupClient() {
+        const side = 'CLIENT'
         await this.showManuallyMods(window.namagomiAPI.downloadClientModFiles())
-        await window.namagomiAPI.downloadAllConfigFiles()
-        await window.namagomiAPI.setupNamagomiLauncherProfile()
+        await window.namagomiAPI.downloadAllConfigFiles(side)
+        await window.namagomiAPI.setupNamagomiLauncherProfile(side)
+        this.checkUpdateClient()
+    }
+
+    async setupServer() {
+        const side = 'SERVER'
+        await this.showManuallyMods(window.namagomiAPI.downloadServerModFiles())
+        await window.namagomiAPI.downloadAllConfigFiles(side)
+        this.checkUpdateServer()
     }
 
     render() {
         return (
             <div>
-                <button onClick={this.setupAll}>Update</button>
-                <button onClick={this.checkUpdate}>updatable: {this.state.updateAvailable ? '更新可能' : '最新の状態です'}</button>
-                <button onClick={window.namagomiAPI.OpenFolder}>OpenFolder</button>
+                <button onClick={this.setupClient}>Update</button>
+                <button onClick={this.checkUpdateClient}>updatable: {this.state.updateAvailableClient ? '更新可能' : '最新の状態です'}</button>
+                <button onClick={()=>window.namagomiAPI.OpenFolder('CLIENT')}>OpenFolder</button><br/>
+                <button onClick={this.setupServer}>Update Server</button>
+                <button onClick={this.checkUpdateServer}>updatable: {this.state.updateAvailableServer ? '更新可能' : '最新の状態です'}</button>
+                <button onClick={()=>window.namagomiAPI.OpenFolder('SERVER')}>OpenFolder</button><br/>
+
                 <br/>
                 {
                     this.state.manuallyMods.length === 0

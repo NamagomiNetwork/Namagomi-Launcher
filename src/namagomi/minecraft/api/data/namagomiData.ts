@@ -14,20 +14,20 @@ export interface NamagomiCache {
     mods: string
 }
 
-export async function downloadAllDataFiles(branch: string) {
+export async function downloadAllDataFiles(branch: string, side: string) {
     const tree = await new GitTree().build('NamagomiNetwork', 'Namagomi-mod', branch);
     const dataSha = tree.getData('data').data.sha;
     const dataTree = await new GitTree().build('NamagomiNetwork', 'Namagomi-mod', dataSha);
     const dataPaths = await dataTree.getAllFilePaths()
     const dataSubDirs = await dataTree.getAllDirectoryPaths()
 
-    if (!fs.existsSync(namagomiCache)) createEmptyJson(namagomiCache)
-    const cacheJson = JSON.parse(fs.readFileSync(namagomiCache, 'utf8')) as NamagomiCache
+    if (!fs.existsSync(namagomiCache(side))) createEmptyJson(namagomiCache(side))
+    const cacheJson = JSON.parse(fs.readFileSync(namagomiCache(side), 'utf8')) as NamagomiCache
 
     await Promise.all(dataPaths.map(async cfgPath => {
-        if (!fs.existsSync(mainDir)) fs.mkdirSync(mainDir)
+        if (!fs.existsSync(mainDir(side))) fs.mkdirSync(mainDir(side))
         dataSubDirs.map(async (dir) => {
-            const absDir = path.join(mainDir, dir)
+            const absDir = path.join(mainDir(side), dir)
             if (!fs.existsSync(absDir)) fs.mkdirSync(absDir)
         })
 
@@ -36,7 +36,7 @@ export async function downloadAllDataFiles(branch: string) {
         const findIndex = cacheJson.data.findIndex((d: { name: string, sha: string }) => d.name === cfgPath)
 
         if (findIndex === -1 || cacheJson.data[findIndex].sha !== sha) {
-            const filePath = path.join(mainDir, cfgPath)
+            const filePath = path.join(mainDir(side), cfgPath)
 
             const fileContent = await fetch(namagomiDataFileUrlBase(branch, cfgPath))
             switch (fileContent.status) {
@@ -60,24 +60,24 @@ export async function downloadAllDataFiles(branch: string) {
             }
         }
     }))
-    fs.writeFileSync(namagomiCache, JSON.stringify(cacheJson))
+    fs.writeFileSync(namagomiCache(side), JSON.stringify(cacheJson))
 
-    deleteFiles(dataTree)
+    deleteFiles(dataTree, side)
 }
 
 function createEmptyJson(path: string) {
     fs.writeFileSync(path, JSON.stringify({data: [], mods: ''}))
 }
 
-function deleteFiles(dataTree: GitTree) {
-    if (!fs.existsSync(namagomiCache)) createEmptyJson(namagomiCache)
-    const cacheJson = JSON.parse(fs.readFileSync(namagomiCache, 'utf8')) as NamagomiCache
+function deleteFiles(dataTree: GitTree, side: string) {
+    if (!fs.existsSync(namagomiCache(side))) createEmptyJson(namagomiCache(side))
+    const cacheJson = JSON.parse(fs.readFileSync(namagomiCache(side), 'utf8')) as NamagomiCache
 
     const newCacheJson = {data: [], mods: cacheJson.mods} as NamagomiCache
 
     cacheJson.data.map((data) => {
         if (!dataTree.exists(data.name)) {
-            const filePath = path.join(mainDir, data.name)
+            const filePath = path.join(mainDir(side), data.name)
             if (fs.existsSync(filePath)) {
                 console.log(`delete: ${filePath}`)
                 fs.rmSync(filePath)
@@ -87,5 +87,5 @@ function deleteFiles(dataTree: GitTree) {
         }
     })
 
-    fs.writeFileSync(namagomiCache, JSON.stringify(newCacheJson))
+    fs.writeFileSync(namagomiCache(side), JSON.stringify(newCacheJson))
 }

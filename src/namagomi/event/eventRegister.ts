@@ -10,8 +10,8 @@ import {mainDir} from "../settings/localPath";
 import {addMods, getIgnoreList, removeMods} from "../minecraft/api/mods/addMod";
 
 export function eventHandlerRegistry () {
-    ipcMain.handle('setupNamagomiLauncherProfile', async () => {
-        setup()
+    ipcMain.handle('setupNamagomiLauncherProfile', async (e, side: string) => {
+        setup(side)
     })
 
     ipcMain.handle('downloadAllModFiles', () => {
@@ -26,27 +26,27 @@ export function eventHandlerRegistry () {
         return downloadServerModFiles()
     })
 
-    ipcMain.handle('downloadAllConfigFiles', async () => {
-        await downloadAllDataFiles('main')
+    ipcMain.handle('downloadAllConfigFiles', async (e, side: string) => {
+        await downloadAllDataFiles('main', side)
     })
 
-    ipcMain.handle('OpenFolder', async () => {
-        await shell.openPath(mainDir)
+    ipcMain.handle('OpenFolder', async (e, side: string) => {
+        await shell.openPath(mainDir(side))
     })
 
     ipcMain.handle('addMods', (event, paths:string[], names:string[]) => {
-        addMods(paths, names)
+        addMods(paths, names, 'CLIENT')
     })
 
     ipcMain.handle('getIgnoreList', () => {
-        return getIgnoreList()
+        return getIgnoreList('CLIENT')
     })
 
     ipcMain.handle('removeMods', (event, mods:string[]) => {
-        removeMods(mods)
+        removeMods(mods, 'CLIENT')
     })
 
-    ipcMain.handle('isLatestMods', async () => {
-        return await isLatestMods()
+    ipcMain.handle('isLatestMods', async (e, side: string) => {
+        return await isLatestMods(side)
     })
 }
