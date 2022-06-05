@@ -34,16 +34,16 @@ export function eventHandlerRegistry () {
         await shell.openPath(mainDir(side))
     })
 
-    ipcMain.handle('addMods', (event, paths:string[], names:string[]) => {
-        addMods(paths, names, 'CLIENT')
+    ipcMain.handle('addMods', (event, paths:string[], names:string[], side: string) => {
+        addMods(paths, names, side)
     })
 
-    ipcMain.handle('getIgnoreList', () => {
-        return getIgnoreList('CLIENT')
+    ipcMain.handle('getIgnoreList', (e, side: string) => {
+        return getIgnoreList(side)
     })
 
-    ipcMain.handle('removeMods', (event, mods:string[]) => {
-        removeMods(mods, 'CLIENT')
+    ipcMain.handle('removeMods', (event, mods:string[], side: string) => {
+        removeMods(mods, side)
     })
 
     ipcMain.handle('isLatestMods', async (e, side: string) => {

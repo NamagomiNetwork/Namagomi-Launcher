@@ -3,13 +3,14 @@ import React from "react";
 type Props = {
     files: string[]
     freshList: () => void
+    side: string
 }
 
-function removeMod(mod: string) {
-    window.namagomiAPI.removeMods([mod]).then()
+function removeMod(mod: string, side: string) {
+    window.namagomiAPI.removeMods([mod], side).then()
 }
 
-export const ModList: React.FC<Props> = ({files, freshList}) => (
+export const ModList: React.FC<Props> = ({files, freshList, side}) => (
     <div id="mod list">
         <table>
             <tbody>
@@ -19,7 +20,7 @@ export const ModList: React.FC<Props> = ({files, freshList}) => (
                     <td>{file}</td>
                     <td>
                         <input type={"submit"} value={"delete"} onClick={() => {
-                            removeMod(file)
+                            removeMod(file, side)
                             freshList()
                         }}/>
                     </td>

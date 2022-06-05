@@ -6,9 +6,9 @@ export interface IElectronAPI {
     setupNamagomiLauncherProfile: (side: string) => Promise<void>;
     downloadModFilesDev: () => Promise<void>;
     OpenFolder: (side: string) => Promise<void>;
-    addMods: (paths:string[], names:string[]) => Promise<void>;
-    getIgnoreList: () => Promise<string[]>;
-    removeMods: (mods:string[]) => Promise<void>;
+    addMods: (paths:string[], names:string[], side: string) => Promise<void>;
+    getIgnoreList: (side: string) => Promise<string[]>;
+    removeMods: (mods:string[], side: string) => Promise<void>;
     isLatestMods: (side: string) => Promise<boolean>;
 }
 
