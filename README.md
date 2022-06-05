@@ -1,6 +1,10 @@
 # Namagomi Launcher
 生ゴミ鯖のランチャー
 
+# Download
+[ここ](https://github.com/NamagomiNetwork/Namagomi-Launcher/releases)から最新版をダウンロードしてインストール
+色々警告が出ますが私を信頼するなら実行してください
+
 # How to use
 1. `update`ボタンをクリックします
 2. 手動でダウンロードする必要のあるmodが表示されたらダウンロードして、`mod files drop here (CLIENT)`にドロップします
