@@ -1,20 +1,20 @@
 import {curseForgeApiBaseUrl, curseForgeApiKey, namagomiModListUrl} from '../../../settings/config'
-import path from "path";
+import path from "path"
 import fetch from 'electron-fetch'
 import {mainDir, minecraftDir, modsDir, namagomiCache, namagomiIgnore} from '../../../settings/localPath'
-import {pipeline} from "stream/promises";
-import * as fs from "fs";
-import {createWriteStream} from "fs";
-import {getFileName} from "../../../settings/mappings";
-import {mkEmptyNamagomiIgnore, NamagomiIgnore} from "./NamagomiIgnore";
-import {GitTree} from "../github/GitTree";
-import {GetMod} from "./JsonTypes/GetMod";
-import {GetFiles} from "./JsonTypes/GetFiles";
-import {NamagomiCache} from "../data/namagomiData";
-import {GetNamagomiModList, GetNamagomiMod} from "./JsonTypes/GetNamagomiModList";
-import {isNone, isSome, none, some, match as matchO} from "fp-ts/Option";
-import {NamagomiMod} from "./NamagomiMod";
-import {log} from "../../../../log";
+import {pipeline} from "stream/promises"
+import * as fs from "fs"
+import {createWriteStream} from "fs"
+import {getFileName} from "../../../settings/mappings"
+import {mkEmptyNamagomiIgnore, NamagomiIgnore} from "./NamagomiIgnore"
+import {GitTree} from "../github/GitTree"
+import {GetMod} from "./JsonTypes/GetMod"
+import {GetFiles} from "./JsonTypes/GetFiles"
+import {NamagomiCache} from "../data/namagomiData"
+import {GetNamagomiModList, GetNamagomiMod} from "./JsonTypes/GetNamagomiModList"
+import {isNone, isSome, none, some, match as matchO} from "fp-ts/Option"
+import {NamagomiMod} from "./NamagomiMod"
+const log = require('electron-log')
 
 const curseForgeHeaders = {
     headers: {
@@ -98,7 +98,7 @@ async function getModFileUrl(namagomiMod: GetNamagomiMod, side: string): Promise
 }
 
 function getModFileUrls(namagomiModList: GetNamagomiModList, side: string) {
-    return namagomiModList.map((n)=>getModFileUrl(n, side));
+    return namagomiModList.map((n)=>getModFileUrl(n, side))
 }
 
 async function trimJson(json: GetFiles, namagomiMod: GetNamagomiMod) {
@@ -115,7 +115,7 @@ async function updateModCache(side: string) {
     setupLauncherDirs(side)
     const cacheJson = JSON.parse(fs.readFileSync(namagomiCache(side), 'utf8')) as NamagomiCache
 
-    const tree = await new GitTree().build('NamagomiNetwork', 'Namagomi-mod', 'main');
+    const tree = await new GitTree().build('NamagomiNetwork', 'Namagomi-mod', 'main')
     cacheJson.mods = tree.getData('mod/mod_list.json').data.sha
 
     fs.writeFileSync(namagomiCache(side), JSON.stringify(cacheJson))
@@ -125,7 +125,7 @@ export async function isLatestMods(side: string) {
     setupLauncherDirs(side)
     const cacheJson = JSON.parse(fs.readFileSync(namagomiCache(side), 'utf8')) as NamagomiCache
 
-    const tree = await new GitTree().build('NamagomiNetwork', 'Namagomi-mod', 'main');
+    const tree = await new GitTree().build('NamagomiNetwork', 'Namagomi-mod', 'main')
     return cacheJson.mods === tree.getData('mod/mod_list.json').data.sha
 
 }
