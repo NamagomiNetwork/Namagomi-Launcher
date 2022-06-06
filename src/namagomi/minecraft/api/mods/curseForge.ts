@@ -180,7 +180,7 @@ export async function downloadModFiles(side: 'CLIENT' | 'SERVER' | '') {
     return Promise.all(manuallyFiles.map(getWebsiteLink))
 }
 
-async function rmModFiles(namagomiMods: NamagomiMod[], side: 'CLIENT' | 'SERVER' | '') {
+function rmModFiles(namagomiMods: NamagomiMod[], side: 'CLIENT' | 'SERVER' | '') {
     const files = fs.readdirSync(modsDir(side))
 
     const remoteFiles = namagomiMods
@@ -197,12 +197,12 @@ async function rmModFiles(namagomiMods: NamagomiMod[], side: 'CLIENT' | 'SERVER'
     const ignoreFiles =
         JSON.parse(fs.readFileSync(namagomiIgnore(side), 'utf8')) as NamagomiIgnore
 
-    await Promise.all(files.map((file) => {
+    files.map((file) => {
         if (!(remoteFiles.includes(file) || ignoreFiles.includes(file) || fs.statSync(path.join(modsDir(side), file)).isDirectory())) {
             fs.rmSync(path.join(modsDir(side), file))
             log.info('delete: ' + file)
         }
-    }))
+    })
 }
 
 function setupLauncherDirs(side: string) {
