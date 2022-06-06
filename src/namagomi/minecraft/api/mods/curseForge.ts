@@ -14,6 +14,7 @@ import {NamagomiCache} from "../data/namagomiData";
 import {GetNamagomiModList, GetNamagomiMod} from "./JsonTypes/GetNamagomiModList";
 import {isNone, isSome, none, some, match as matchO} from "fp-ts/Option";
 import {NamagomiMod} from "./NamagomiMod";
+import {error, log} from "electron-log";
 
 const curseForgeHeaders = {
     headers: {
@@ -56,7 +57,7 @@ async function getModFileUrl(namagomiMod: GetNamagomiMod, side: string): Promise
     const fileExist = fs.existsSync(filePath) || fs.existsSync(filePath2)
 
     if (trimmed.value.downloadUrl == null && !fileExist && namagomiMod.modId !== null) {
-        console.info(`modId:${namagomiMod.modId} gameVersion:${namagomiMod.mcVersion} ${trimmed.value.fileName} doesn't have download url`)
+        log(`modId:${namagomiMod.modId} gameVersion:${namagomiMod.mcVersion} ${trimmed.value.fileName} doesn't have download url`)
         return { // curse forgeにdownload urlがなく、ファイルがない場合
             side: namagomiMod.side,
             fileName: trimmed.value.fileName,
@@ -105,7 +106,7 @@ async function trimJson(json: GetFiles, namagomiMod: GetNamagomiMod) {
 
     const single = json.data.find((data) => data.fileName.indexOf(pattern) != -1)
     if (single == undefined) {
-        console.error(`${namagomiMod.modId} ${namagomiMod.mcVersion} ${namagomiMod.modVersion} not found`)
+        error(`${namagomiMod.modId} ${namagomiMod.mcVersion} ${namagomiMod.modVersion} not found`)
         return none
     } else return some(single)
 }
@@ -138,15 +139,15 @@ async function downloadModFile(namagomiMod: NamagomiMod, side: string) {
             (await fetch(namagomiMod.downloadUrl.value)).body,
             createWriteStream(filePath)
         ).then(() => {
-            console.log('downloaded: ' + namagomiMod.fileName)
+            log('downloaded: ' + namagomiMod.fileName)
         }).catch(err => {
-            console.error(err)
+            error(err)
             matchO(
                 () => {
-                    console.error('failed: ' + namagomiMod.fileName + ' None')
+                    error('failed: ' + namagomiMod.fileName + ' None')
                 },
                 (url: string) => {
-                    console.error('failed: ' + namagomiMod.fileName + ' ' + url)
+                    error('failed: ' + namagomiMod.fileName + ' ' + url)
                 },
             )(namagomiMod.downloadUrl)
         })
@@ -210,7 +211,7 @@ async function rmModFiles(namagomiMods: NamagomiMod[], side: 'CLIENT' | 'SERVER'
     await Promise.all(files.map((file) => {
         if (!(remoteFiles.includes(file) || ignoreFiles.includes(file) || fs.statSync(path.join(modsDir(side), file)).isDirectory())) {
             fs.rmSync(path.join(modsDir(side), file))
-            console.log('delete: ' + file)
+            log('delete: ' + file)
         }
     }))
 }

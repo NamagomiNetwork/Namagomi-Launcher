@@ -2,6 +2,7 @@ import path from 'path';
 import { searchDevtools } from 'electron-search-devtools';
 import { BrowserWindow, app, ipcMain, session } from 'electron';
 import {eventHandlerRegistry} from "./namagomi/event/eventRegister";
+import {log} from "electron-log";
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -34,7 +35,7 @@ const createWindow = () => {
           allowFileAccess: true,
         });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => log(err));
 
     mainWindow.webContents.openDevTools({ mode: 'detach' });
 

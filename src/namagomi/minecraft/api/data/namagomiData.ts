@@ -1,10 +1,11 @@
-import {GitTree} from "../github/GitTree";
-import fs, {createWriteStream} from "fs";
-import {pipeline} from "stream/promises";
-import fetch from "electron-fetch";
-import {namagomiDataFileUrlBase, namagomiFileUrlBase} from "../../../settings/config";
-import path from "path";
-import {mainDir, namagomiCache} from "../../../settings/localPath";
+import {GitTree} from "../github/GitTree"
+import fs, {createWriteStream} from "fs"
+import {pipeline} from "stream/promises"
+import fetch from "electron-fetch"
+import {namagomiDataFileUrlBase, namagomiFileUrlBase} from "../../../settings/config"
+import path from "path"
+import {mainDir, namagomiCache} from "../../../settings/localPath"
+import {log, error} from "electron-log"
 
 export interface NamagomiCache {
     data: {
@@ -15,9 +16,9 @@ export interface NamagomiCache {
 }
 
 export async function downloadAllDataFiles(branch: string, side: string) {
-    const tree = await new GitTree().build('NamagomiNetwork', 'Namagomi-mod', branch);
-    const dataSha = tree.getData('data').data.sha;
-    const dataTree = await new GitTree().build('NamagomiNetwork', 'Namagomi-mod', dataSha);
+    const tree = await new GitTree().build('NamagomiNetwork', 'Namagomi-mod', branch)
+    const dataSha = tree.getData('data').data.sha
+    const dataTree = await new GitTree().build('NamagomiNetwork', 'Namagomi-mod', dataSha)
     const dataPaths = await dataTree.getAllFilePaths()
     const dataSubDirs = await dataTree.getAllDirectoryPaths()
 
@@ -44,19 +45,19 @@ export async function downloadAllDataFiles(branch: string, side: string) {
                     await pipeline(await fileContent.text(),
                         createWriteStream(filePath))
                         .then(() => {
-                            console.log('downloaded: ' + cfgPath)
+                            log('downloaded: ' + cfgPath)
                             if (findIndex === -1)
                                 cacheJson.data.push({name: cfgPath, sha: sha})
                             else
                                 cacheJson.data[findIndex].sha = sha
                         }).catch(err => {
-                            console.error(err)
-                            console.log('failed: ' + cfgPath + ' ' + namagomiFileUrlBase(branch, cfgPath))
+                            error(err)
+                            log('failed: ' + cfgPath + ' ' + namagomiFileUrlBase(branch, cfgPath))
                         })
-                    break;
+                    break
                 default:
-                    console.error('failed: ' + cfgPath + ' ' + namagomiFileUrlBase(branch, cfgPath))
-                    console.error(`status: ${fileContent.status}`)
+                    error('failed: ' + cfgPath + ' ' + namagomiFileUrlBase(branch, cfgPath))
+                    error(`status: ${fileContent.status}`)
             }
         }
     }))
@@ -79,7 +80,7 @@ function deleteFiles(dataTree: GitTree, side: string) {
         if (!dataTree.exists(data.name)) {
             const filePath = path.join(mainDir(side), data.name)
             if (fs.existsSync(filePath)) {
-                console.log(`delete: ${filePath}`)
+                log(`delete: ${filePath}`)
                 fs.rmSync(filePath)
             }
         } else {
