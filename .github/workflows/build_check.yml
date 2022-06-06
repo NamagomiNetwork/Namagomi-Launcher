@@ -25,6 +25,8 @@ jobs:
         run: npm run publish-linux
       - name: debug-file checks
         run: ls assets/installer
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   mac_build:
     runs-on: macos-latest
@@ -44,6 +46,8 @@ jobs:
         run: npm run publish-mac-x64
       - name: debug-file checks
         run: ls assets/installer
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   win_build:
     runs-on: macos-latest
@@ -63,3 +67,5 @@ jobs:
         run: npm run publish-win-x64
       - name: debug-file checks
         run: ls assets/installer
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
