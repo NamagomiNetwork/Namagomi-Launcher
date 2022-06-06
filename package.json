@@ -67,16 +67,24 @@
       "icon": "assets/resource/namagomi400x400.png",
       "target": [
         "dmg"
-      ]
+      ],
+      "artifactName": "Namagomi-Launcher.dmg"
     },
     "win": {
       "icon": "assets/resource/namagomi400x400.png",
       "target": "nsis",
-      "publisherName":  "Namagomi-Network"
+      "artifactName": "Namagomi-Launcher.exe"
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
+    },
+    "linux": {
+      "icon": "assets/resource/namagomi400x400.png",
+      "target": [
+        "AppImage"
+      ],
+      "artifactName": "Namagomi-Launcher.AppImage"
     }
   }
 }
