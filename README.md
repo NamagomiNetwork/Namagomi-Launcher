@@ -2,7 +2,7 @@
 生ゴミ鯖のランチャー
 
 # Download
-[ここ](https://github.com/NamagomiNetwork/Namagomi-Launcher/releases)から最新版をダウンロードしてインストール
+[ここ](https://github.com/NamagomiNetwork/Namagomi-Launcher/releases)から最新版をダウンロードしてインストール  
 色々警告が出ますが私を信頼するなら実行してください
 
 # How to use
