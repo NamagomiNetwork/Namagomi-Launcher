@@ -1,0 +1,65 @@
+name: Launcher Build
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  ubntu_build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Nodejs  
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: npm
+      - name: npm install
+        run: npm install
+      - name: install TypeScript
+        run: npm install -g typescript
+      - name: Build Launcher
+        run: npm run publish-linux
+      - name: debug-file checks
+        run: ls assets/installer
+
+  mac_build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Nodejs  
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: npm
+      - name: npm install
+        run: npm install
+      - name: install TypeScript
+        run: npm install -g typescript
+      - name: Build Launcher
+        run: npm run publish-mac-x64
+      - name: debug-file checks
+        run: ls assets/installer
+
+  win_build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Nodejs  
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: npm
+      - name: npm install
+        run: npm install
+      - name: install TypeScript
+        run: npm install -g typescript
+      - name: Build Launcher
+        run: npm run publish-win-x64
+      - name: debug-file checks
+        run: ls assets/installer
