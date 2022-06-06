@@ -1,8 +1,9 @@
 {
   "name": "namagomi-launcher",
   "homepage": ".",
-  "productName": "",
-  "description": "",
+  "productName": "Namagomi-Network",
+  "author": "Namagomi-Network",
+  "description": "This is Namagomi-Launcher",
   "version": "1.1.1",
   "license": "MIT",
   "main": "dist/main.js",
@@ -70,7 +71,8 @@
     },
     "win": {
       "icon": "assets/resource/namagomi400x400.png",
-      "target": "nsis"
+      "target": "nsis",
+      "publisherName":  "Namagomi-Network"
     },
     "nsis": {
       "oneClick": false,
