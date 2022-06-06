@@ -64,7 +64,7 @@
       "dist/**/*"
     ],
     "mac": {
-      "icon": "assets/resource/namagomi400x400.png",
+      "icon": "assets/resource/namagomi512x512.png",
       "target": [
         "dmg"
       ],
