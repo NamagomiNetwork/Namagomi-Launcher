@@ -59,7 +59,6 @@ jobs:
         with:
           files: 'assets/installer/Namagomi-Launcher.AppImage'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          release-tag: ${{ env.RELEASE_VERSION }}
 
   mac_build:
     runs-on: macos-latest
