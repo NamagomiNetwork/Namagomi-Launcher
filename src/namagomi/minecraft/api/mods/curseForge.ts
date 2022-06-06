@@ -14,7 +14,7 @@ import {NamagomiCache} from "../data/namagomiData";
 import {GetNamagomiModList, GetNamagomiMod} from "./JsonTypes/GetNamagomiModList";
 import {isNone, isSome, none, some, match as matchO} from "fp-ts/Option";
 import {NamagomiMod} from "./NamagomiMod";
-import {error, log} from "electron-log";
+import {log} from "../../../../log";
 
 const curseForgeHeaders = {
     headers: {
@@ -57,7 +57,7 @@ async function getModFileUrl(namagomiMod: GetNamagomiMod, side: string): Promise
     const fileExist = fs.existsSync(filePath) || fs.existsSync(filePath2)
 
     if (trimmed.value.downloadUrl == null && !fileExist && namagomiMod.modId !== null) {
-        log(`modId:${namagomiMod.modId} gameVersion:${namagomiMod.mcVersion} ${trimmed.value.fileName} doesn't have download url`)
+        log.info(`modId:${namagomiMod.modId} gameVersion:${namagomiMod.mcVersion} ${trimmed.value.fileName} doesn't have download url`)
         return { // curse forgeにdownload urlがなく、ファイルがない場合
             side: namagomiMod.side,
             fileName: trimmed.value.fileName,
@@ -106,7 +106,7 @@ async function trimJson(json: GetFiles, namagomiMod: GetNamagomiMod) {
 
     const single = json.data.find((data) => data.fileName.indexOf(pattern) != -1)
     if (single == undefined) {
-        error(`${namagomiMod.modId} ${namagomiMod.mcVersion} ${namagomiMod.modVersion} not found`)
+        log.error(`${namagomiMod.modId} ${namagomiMod.mcVersion} ${namagomiMod.modVersion} not found`)
         return none
     } else return some(single)
 }
@@ -139,15 +139,15 @@ async function downloadModFile(namagomiMod: NamagomiMod, side: string) {
             (await fetch(namagomiMod.downloadUrl.value)).body,
             createWriteStream(filePath)
         ).then(() => {
-            log('downloaded: ' + namagomiMod.fileName)
+            log.info('downloaded: ' + namagomiMod.fileName)
         }).catch(err => {
-            error(err)
+            log.error(err)
             matchO(
                 () => {
-                    error('failed: ' + namagomiMod.fileName + ' None')
+                    log.error('failed: ' + namagomiMod.fileName + ' None')
                 },
                 (url: string) => {
-                    error('failed: ' + namagomiMod.fileName + ' ' + url)
+                    log.error('failed: ' + namagomiMod.fileName + ' ' + url)
                 },
             )(namagomiMod.downloadUrl)
         })
@@ -176,19 +176,8 @@ export async function downloadModFiles(side: 'CLIENT' | 'SERVER' | '') {
 
     await updateModCache(side)
 
+    log.info('complete: downloadModFiles')
     return Promise.all(manuallyFiles.map(getWebsiteLink))
-}
-
-export async function downloadAllModFiles() {
-    return await downloadModFiles('')
-}
-
-export async function downloadClientModFiles() {
-    return await downloadModFiles('CLIENT')
-}
-
-export async function downloadServerModFiles() {
-    return await downloadModFiles('SERVER')
 }
 
 async function rmModFiles(namagomiMods: NamagomiMod[], side: 'CLIENT' | 'SERVER' | '') {
@@ -211,17 +200,32 @@ async function rmModFiles(namagomiMods: NamagomiMod[], side: 'CLIENT' | 'SERVER'
     await Promise.all(files.map((file) => {
         if (!(remoteFiles.includes(file) || ignoreFiles.includes(file) || fs.statSync(path.join(modsDir(side), file)).isDirectory())) {
             fs.rmSync(path.join(modsDir(side), file))
-            log('delete: ' + file)
+            log.info('delete: ' + file)
         }
     }))
 }
 
 function setupLauncherDirs(side: string) {
-    if (!fs.existsSync(minecraftDir)) fs.mkdirSync(minecraftDir)
-    if (!fs.existsSync(mainDir(side))) fs.mkdirSync(mainDir(side))
-    if (!fs.existsSync(modsDir(side))) fs.mkdirSync(modsDir(side))
-    if (!fs.existsSync(namagomiCache(side))) fs.writeFileSync(namagomiCache(side), JSON.stringify({data: [], mods: ''}))
-    if (!fs.existsSync(namagomiIgnore(side))) mkEmptyNamagomiIgnore(namagomiIgnore(side))
+    if (!fs.existsSync(minecraftDir)) {
+        fs.mkdirSync(minecraftDir)
+        log.info('create: ' + minecraftDir)
+    }
+    if (!fs.existsSync(mainDir(side))) {
+        fs.mkdirSync(mainDir(side))
+        log.info('create: ' + mainDir(side))
+    }
+    if (!fs.existsSync(modsDir(side))) {
+        fs.mkdirSync(modsDir(side))
+        log.info('create: ' + modsDir(side))
+    }
+    if (!fs.existsSync(namagomiCache(side))) {
+        fs.writeFileSync(namagomiCache(side), JSON.stringify({data: [], mods: ''}))
+        log.info('create: ' + namagomiCache(side))
+    }
+    if (!fs.existsSync(namagomiIgnore(side))) {
+        mkEmptyNamagomiIgnore(namagomiIgnore(side))
+        log.info('create: ' + namagomiIgnore(side))
+    }
 }
 
 async function getWebsiteLink(modId: string) {

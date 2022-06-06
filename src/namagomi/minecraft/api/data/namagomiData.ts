@@ -5,7 +5,7 @@ import fetch from "electron-fetch"
 import {namagomiDataFileUrlBase, namagomiFileUrlBase} from "../../../settings/config"
 import path from "path"
 import {mainDir, namagomiCache} from "../../../settings/localPath"
-import {log, error} from "electron-log"
+import {log} from "../../../../log";
 
 export interface NamagomiCache {
     data: {
@@ -45,19 +45,19 @@ export async function downloadAllDataFiles(branch: string, side: string) {
                     await pipeline(await fileContent.text(),
                         createWriteStream(filePath))
                         .then(() => {
-                            log('downloaded: ' + cfgPath)
+                            log.info('downloaded: ' + cfgPath)
                             if (findIndex === -1)
                                 cacheJson.data.push({name: cfgPath, sha: sha})
                             else
                                 cacheJson.data[findIndex].sha = sha
                         }).catch(err => {
-                            error(err)
-                            log('failed: ' + cfgPath + ' ' + namagomiFileUrlBase(branch, cfgPath))
+                            log.error(err)
+                            log.info('failed: ' + cfgPath + ' ' + namagomiFileUrlBase(branch, cfgPath))
                         })
                     break
                 default:
-                    error('failed: ' + cfgPath + ' ' + namagomiFileUrlBase(branch, cfgPath))
-                    error(`status: ${fileContent.status}`)
+                    log.error('failed: ' + cfgPath + ' ' + namagomiFileUrlBase(branch, cfgPath))
+                    log.error(`status: ${fileContent.status}`)
             }
         }
     }))
@@ -80,7 +80,7 @@ function deleteFiles(dataTree: GitTree, side: string) {
         if (!dataTree.exists(data.name)) {
             const filePath = path.join(mainDir(side), data.name)
             if (fs.existsSync(filePath)) {
-                log(`delete: ${filePath}`)
+                log.info(`delete: ${filePath}`)
                 fs.rmSync(filePath)
             }
         } else {
