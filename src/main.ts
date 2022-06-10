@@ -1,7 +1,8 @@
-import path from 'path';
-import { searchDevtools } from 'electron-search-devtools';
-import { BrowserWindow, app, ipcMain, session } from 'electron';
-import {eventHandlerRegistry} from "./namagomi/event/eventRegister";
+import path from 'path'
+import { searchDevtools } from 'electron-search-devtools'
+import { BrowserWindow, app, ipcMain, session } from 'electron'
+import {eventHandlerRegistry} from "./namagomi/event/eventRegister"
+const log = require('electron-log');
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -34,12 +35,12 @@ const createWindow = () => {
           allowFileAccess: true,
         });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => log.error(err));
 
     mainWindow.webContents.openDevTools({ mode: 'detach' });
-
-    mainWindow.setMenu(null)
   }
+
+  mainWindow.setMenu(null)
 
   mainWindow.loadFile('dist/index.html').then();
 };

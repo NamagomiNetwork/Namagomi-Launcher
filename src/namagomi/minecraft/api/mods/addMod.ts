@@ -1,7 +1,8 @@
-import {modsDir, namagomiIgnore} from "../../../settings/localPath";
-import fs from "fs";
-import {NamagomiIgnore} from "./NamagomiIgnore";
-import path from "path";
+import {modsDir, namagomiIgnore} from "../../../settings/localPath"
+import fs from "fs"
+import {NamagomiIgnore} from "./NamagomiIgnore"
+import path from "path"
+const log = require('electron-log')
 
 export function addMods(paths: string[], names: string[], side: string) {
     const namagomiIgnoreJson = getIgnoreList(side)
@@ -11,6 +12,7 @@ export function addMods(paths: string[], names: string[], side: string) {
             if(!namagomiIgnoreJson.includes(names[index]))
                 namagomiIgnoreJson.push(names[index])
             fs.copyFileSync(pPath, path.join(modsDir(side), names[index]))
+            log.info('copied: ' + names[index])
         })
 
     fs.writeFileSync(namagomiIgnore(side), JSON.stringify(namagomiIgnoreJson))
@@ -19,6 +21,7 @@ export function addMods(paths: string[], names: string[], side: string) {
 
 function mkEmptyJson(path: string) {
     fs.writeFileSync(path, JSON.stringify([]))
+    log.info('create: ' + path)
 }
 
 export function getIgnoreList(side: string) {
@@ -32,5 +35,6 @@ export function removeMods(mods: string[], side: string) {
     fs.writeFileSync(namagomiIgnore(side), JSON.stringify(newIgnore))
     mods.map(mod => {
         fs.rmSync(path.join(modsDir(side), mod))
+        log.info(`delete: ${mod}`)
     })
 }
