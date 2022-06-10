@@ -6,7 +6,7 @@ import {pipeline} from "stream/promises"
 import * as fs from "fs"
 import {createWriteStream} from "fs"
 import {getFileName} from "../../../settings/mappings"
-import {mkEmptyNamagomiIgnore, NamagomiIgnore} from "./NamagomiIgnore"
+import {NamagomiIgnore} from "./NamagomiIgnore"
 import {GitTree} from "../github/GitTree"
 import {GetMod} from "./JsonTypes/GetMod"
 import {Data, GetFiles} from "./JsonTypes/GetFiles"
@@ -223,7 +223,7 @@ function rmModFiles(namagomiMods: NamagomiMod[], side: 'CLIENT' | 'SERVER' | '')
             }
         })
 
-    if (!fs.existsSync(namagomiIgnore(side))) mkEmptyNamagomiIgnore(namagomiIgnore(side))
+    if (!fs.existsSync(namagomiIgnore(side))) mkfile(namagomiIgnore(side), JSON.stringify([]))
     const ignoreFiles =
         JSON.parse(fs.readFileSync(namagomiIgnore(side), 'utf8')) as NamagomiIgnore
 
@@ -235,27 +235,25 @@ function rmModFiles(namagomiMods: NamagomiMod[], side: 'CLIENT' | 'SERVER' | '')
     })
 }
 
+const mkdir = (path: string) => {
+    if (!fs.existsSync(path)) {
+        fs.mkdirSync(path)
+        log.info('create: ' + path)
+    }
+}
+const mkfile = (path: string, content: string) => {
+    if (!fs.existsSync(namagomiCache(path))) {
+        fs.writeFileSync(namagomiCache(path), content)
+        log.info('create: ' + namagomiCache(path))
+    }
+}
+
 function setupLauncherDirs(side: string) {
-    if (!fs.existsSync(minecraftDir)) {
-        fs.mkdirSync(minecraftDir)
-        log.info('create: ' + minecraftDir)
-    }
-    if (!fs.existsSync(mainDir(side))) {
-        fs.mkdirSync(mainDir(side))
-        log.info('create: ' + mainDir(side))
-    }
-    if (!fs.existsSync(modsDir(side))) {
-        fs.mkdirSync(modsDir(side))
-        log.info('create: ' + modsDir(side))
-    }
-    if (!fs.existsSync(namagomiCache(side))) {
-        fs.writeFileSync(namagomiCache(side), JSON.stringify({data: [], mods: ''}))
-        log.info('create: ' + namagomiCache(side))
-    }
-    if (!fs.existsSync(namagomiIgnore(side))) {
-        mkEmptyNamagomiIgnore(namagomiIgnore(side))
-        log.info('create: ' + namagomiIgnore(side))
-    }
+    mkdir(minecraftDir)
+    mkdir(mainDir(side))
+    mkdir(modsDir(side))
+    mkfile(namagomiCache(side), JSON.stringify({data: [], mods: ''}))
+    mkfile(namagomiIgnore(side), JSON.stringify([]))
 }
 
 async function getWebsiteLink(modId: string) {
