@@ -24,12 +24,11 @@ export function tryCastGetNamagomiModList(json: any): Option<GetNamagomiModList>
                 return true
             else if (typeof namagomiMod.directUrl !== 'undefined')
                 return false
-            if (typeof namagomiMod.name === 'string' &&
+            return typeof namagomiMod.name === 'string' &&
                 typeof namagomiMod.modId === 'string' &&
                 (typeof namagomiMod.fileId === 'string' ||
-                 typeof namagomiMod.fileId === 'undefined'))
-                return true
-            return false
+                    typeof namagomiMod.fileId === 'undefined');
+
         }
         else return false
     }, true)
