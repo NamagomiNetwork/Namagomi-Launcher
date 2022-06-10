@@ -29,12 +29,12 @@ const curseForgeHeaders = {
 
 export async function getFiles(url: URL) {
     const response = await fetch(url.toString(), curseForgeHeaders)
-    return await response.json() as GetFiles
+    return await response.json<GetFiles>()
 }
 
 async function getModFileUrl(namagomiMod: GetNamagomiMod, side: string): Promise<NamagomiMod> {
     if (namagomiMod.directUrl != null) {
-        return { // directUrlがある場合
+        return {
             side: namagomiMod.side,
             fileName: getFileName(namagomiMod.directUrl),
             downloadUrl: some(namagomiMod.directUrl),
