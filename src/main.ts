@@ -38,9 +38,9 @@ const createWindow = () => {
       .catch((err) => log.error(err));
 
     mainWindow.webContents.openDevTools({ mode: 'detach' });
-
-    mainWindow.setMenu(null)
   }
+
+  mainWindow.setMenu(null)
 
   mainWindow.loadFile('dist/index.html').then();
 };
