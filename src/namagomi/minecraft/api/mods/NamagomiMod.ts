@@ -10,7 +10,7 @@ export interface NamagomiMod{
 export interface CurseForge{
     id: string
     gameVersion: string
-    modVersion: string
+    fileId: string
     hashes: Hash[]
 }
 
