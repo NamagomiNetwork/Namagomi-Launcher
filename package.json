@@ -37,7 +37,7 @@
     "electron-dl": "3.3.1",
     "electron-fetch": "^1.7.4",
     "electron-reload": "latest",
-    "electron-search-devtools": "1.8.4",
+    "electron-search-devtools": "1.8.5",
     "fp-ts": "^2.12.1",
     "fs-extra": "^10.1.0",
     "html-webpack-plugin": "5.5.0",
