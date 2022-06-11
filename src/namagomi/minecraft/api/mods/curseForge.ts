@@ -17,6 +17,7 @@ import {
 } from "./JsonTypes/GetNamagomiModList"
 import {isNone, isSome, none, some, match as matchO} from "fp-ts/Option"
 import {NamagomiMod} from "./NamagomiMod"
+import {checkSum} from "./checkSum";
 
 const log = require('electron-log')
 
@@ -92,7 +93,7 @@ async function getModFileUrl(namagomiMod: GetNamagomiMod, side: string): Promise
         const getFileUrl = path.join(curseForgeApiBaseUrl, '/v1/mods', namagomiMod.modId!, 'files', namagomiMod.fileId)
         const gotFile = await (await fetch(getFileUrl)).json<Data>()
 
-        if(gotFile.downloadUrl == null){
+        if (gotFile.downloadUrl == null) {
             const filePath = path.join(modsDir(side), gotFile.fileName)
             const filePath2 = path.join(modsDir(side), gotFile.fileName.replace(/\s+/g, '+'))
             const fileExist = fs.existsSync(filePath) || fs.existsSync(filePath2)
@@ -163,7 +164,22 @@ async function downloadModFile(namagomiMod: NamagomiMod, side: string) {
         await pipeline(
             (await fetch(namagomiMod.downloadUrl.value)).body,
             createWriteStream(filePath)
-        ).then(() => {
+        ).then(async () => {
+            if (isSome(namagomiMod.curseForge)) {
+                const isMatch = await namagomiMod.curseForge.value.hashes.reduce(async (result, hash) => {
+                    if (await result) {
+                        switch (hash.algo) {
+                            case 1:
+                                return checkSum(filePath, hash.value, 'sha1')
+                            case 2:
+                                return checkSum(filePath, hash.value, 'md5')
+                        }
+                    }
+                    return Promise.resolve(false)
+                }, Promise.resolve(true))
+                if (!isMatch)
+                    log.error(`hash miss match: ${namagomiMod.fileName}`)
+            }
             log.info('downloaded: ' + namagomiMod.fileName)
         }).catch(err => {
             log.error(err)
@@ -204,8 +220,7 @@ export async function downloadModFiles(side: 'CLIENT' | 'SERVER' | '') {
 
         log.info('complete: downloadModFiles')
         return Promise.all(manuallyFiles.map(getWebsiteLink))
-    }
-    else {
+    } else {
         return []
     }
 }
