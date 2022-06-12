@@ -9,7 +9,7 @@ export interface IElectronAPI {
     addMods: (paths:string[], names:string[], side: string) => Promise<void>;
     getIgnoreList: (side: string) => Promise<string[]>;
     removeMods: (mods:string[], side: string) => Promise<void>;
-    isLatestMods: (side: string) => Promise<boolean>;
+    isLatestMods: (side: 'CLIENT' | 'SERVER' | '') => Promise<boolean>;
 }
 
 declare global {

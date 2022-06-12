@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react"
 import {ModList} from "../ModList"
+import '../AddMods.css'
 
 type Props = {}
 
@@ -11,8 +12,10 @@ export const AddMods = ({}: Props) => {
     })
 
     function freshList() {
-        window.namagomiAPI.getIgnoreList('CLIENT')
-            .then(files => setFiles(files))
+        (async () => {
+            const ignoreList = await window.namagomiAPI.getIgnoreList('CLIENT')
+            setFiles(ignoreList)
+        })()
     }
 
     function onFileDrop(e: React.DragEvent<HTMLDivElement>) {

@@ -147,13 +147,12 @@ async function updateModCache(side: string) {
     fs.writeFileSync(namagomiCache(side), JSON.stringify(cacheJson))
 }
 
-export async function isLatestMods(side: string) {
+export async function isLatestMods(side: 'CLIENT' | 'SERVER' | '') {
     setupLauncherDirs(side)
     const cacheJson = JSON.parse(fs.readFileSync(namagomiCache(side), 'utf8')) as NamagomiCache
 
     const tree = await new GitTree().build('NamagomiNetwork', 'Namagomi-mod', 'main')
     return cacheJson.mods === tree.getData('mod/mod_list.json').data.sha
-
 }
 
 async function downloadModFile(namagomiMod: NamagomiMod, side: string) {
@@ -257,9 +256,9 @@ const mkdir = (path: string) => {
     }
 }
 const mkfile = (path: string, content: string) => {
-    if (!fs.existsSync(namagomiCache(path))) {
-        fs.writeFileSync(namagomiCache(path), content)
-        log.info('create: ' + namagomiCache(path))
+    if (!fs.existsSync(path)) {
+        fs.writeFileSync(path, content)
+        log.info('create: ' + path)
     }
 }
 

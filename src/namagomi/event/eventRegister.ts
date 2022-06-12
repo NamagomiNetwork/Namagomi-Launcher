@@ -44,7 +44,7 @@ export function eventHandlerRegistry () {
         removeMods(mods, side)
     })
 
-    ipcMain.handle('isLatestMods', async (e, side: string) => {
+    ipcMain.handle('isLatestMods', async (e, side: 'CLIENT' | 'SERVER' | '') => {
         return await isLatestMods(side)
     })
 }
