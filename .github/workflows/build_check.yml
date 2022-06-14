@@ -46,7 +46,7 @@ jobs:
       - name: install TypeScript
         run: npm install -g typescript
       - name: Build Launcher
-        run: npm run publish-mac-x64
+        run: npm run publish-mac
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload artifact
