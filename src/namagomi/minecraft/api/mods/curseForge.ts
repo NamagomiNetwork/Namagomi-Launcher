@@ -206,7 +206,10 @@ export async function downloadModFiles(side: 'CLIENT' | 'SERVER' | '') {
             namagomiMods.map(async (namagomiMod: NamagomiMod) => {
                 matchO<string, void>(
                     () => {
-                        if (isSome(namagomiMod.curseForge) && namagomiMod.curseForge.value.id !== '')
+                        const filePath = path.join(modsDir(side), namagomiMod.fileName)
+                        const filePath2 = path.join(modsDir(side), namagomiMod.fileName.replace(/\s+/g, '+'))
+                        const fileExist = fs.existsSync(filePath) || fs.existsSync(filePath2)
+                        if (isSome(namagomiMod.curseForge) && namagomiMod.curseForge.value.id !== '' && !fileExist)
                             manuallyFiles.push(namagomiMod.curseForge.value.id)
                     },
                     async () => {
