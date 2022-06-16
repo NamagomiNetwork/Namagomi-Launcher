@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
 contextBridge.exposeInMainWorld('namagomiAPI', {
+    downloadModFiles: (side: string) => ipcRenderer.invoke('downloadModFiles', side),
     downloadAllModFiles: () => ipcRenderer.invoke('downloadAllModFiles'),
     downloadClientModFiles: () => ipcRenderer.invoke('downloadClientModFiles'),
     downloadServerModFiles: () => ipcRenderer.invoke('downloadServerModFiles'),

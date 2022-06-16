@@ -12,6 +12,10 @@ export function eventHandlerRegistry () {
         setup(side)
     })
 
+    ipcMain.handle('downloadModFiles', async (e, side: 'CLIENT' | 'SERVER' | '') => {
+        return downloadModFiles(side)
+    })
+
     ipcMain.handle('downloadAllModFiles', () => {
         return downloadModFiles('')
     })
@@ -44,7 +48,7 @@ export function eventHandlerRegistry () {
         removeMods(mods, side)
     })
 
-    ipcMain.handle('isLatestMods', async (e, side: string) => {
+    ipcMain.handle('isLatestMods', async (e, side: 'CLIENT' | 'SERVER' | '') => {
         return await isLatestMods(side)
     })
 }

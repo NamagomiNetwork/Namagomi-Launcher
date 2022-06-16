@@ -90,37 +90,38 @@ async function getModFileUrl(namagomiMod: GetNamagomiMod, side: string): Promise
             }
         }
     } else {
-        const getFileUrl = path.join(curseForgeApiBaseUrl, '/v1/mods', namagomiMod.modId!, 'files', namagomiMod.fileId)
-        const gotFile = await (await fetch(getFileUrl)).json<Data>()
+        const getFileUrl = `${curseForgeApiBaseUrl}/v1/mods/${namagomiMod.modId!}/files/${namagomiMod.fileId}`
+        const file = await fetch(getFileUrl, curseForgeHeaders)
+        const gotFile = await (file).json<{ data: Data }>()
 
-        if (gotFile.downloadUrl == null) {
-            const filePath = path.join(modsDir(side), gotFile.fileName)
-            const filePath2 = path.join(modsDir(side), gotFile.fileName.replace(/\s+/g, '+'))
+        if (gotFile.data.downloadUrl == null) {
+            const filePath = path.join(modsDir(side), gotFile.data.fileName)
+            const filePath2 = path.join(modsDir(side), gotFile.data.fileName.replace(/\s+/g, '+'))
             const fileExist = fs.existsSync(filePath) || fs.existsSync(filePath2)
             if (!fileExist)
-                log.info(`modId:${namagomiMod.modId} gameVersion:${namagomiMod.mcVersion} ${gotFile.fileName} doesn't have download url`)
+                log.info(`modId:${namagomiMod.modId} gameVersion:${namagomiMod.mcVersion} ${gotFile.data.fileName} doesn't have download url`)
 
             return {
                 side: namagomiMod.side,
-                fileName: gotFile.fileName,
+                fileName: gotFile.data.fileName,
                 downloadUrl: none,
                 curseForge: some({
                     id: namagomiMod.modId!,
                     gameVersion: namagomiMod.mcVersion,
-                    fileId: gotFile.id.toString(),
-                    hashes: gotFile.hashes
+                    fileId: gotFile.data.id.toString(),
+                    hashes: gotFile.data.hashes
                 })
             }
         } else {
             return {
                 side: namagomiMod.side,
-                fileName: gotFile.fileName,
-                downloadUrl: some(gotFile.downloadUrl),
+                fileName: gotFile.data.fileName,
+                downloadUrl: some(gotFile.data.downloadUrl),
                 curseForge: some({
                     id: namagomiMod.modId!,
                     gameVersion: namagomiMod.mcVersion,
-                    fileId: gotFile.id.toString(),
-                    hashes: gotFile.hashes
+                    fileId: gotFile.data.id.toString(),
+                    hashes: gotFile.data.hashes
                 })
             }
         }
@@ -147,13 +148,12 @@ async function updateModCache(side: string) {
     fs.writeFileSync(namagomiCache(side), JSON.stringify(cacheJson))
 }
 
-export async function isLatestMods(side: string) {
+export async function isLatestMods(side: 'CLIENT' | 'SERVER' | '') {
     setupLauncherDirs(side)
     const cacheJson = JSON.parse(fs.readFileSync(namagomiCache(side), 'utf8')) as NamagomiCache
 
     const tree = await new GitTree().build('NamagomiNetwork', 'Namagomi-mod', 'main')
     return cacheJson.mods === tree.getData('mod/mod_list.json').data.sha
-
 }
 
 async function downloadModFile(namagomiMod: NamagomiMod, side: string) {
@@ -201,12 +201,15 @@ export async function downloadModFiles(side: 'CLIENT' | 'SERVER' | '') {
     if (isSome(namagomiModList)) {
         const namagomiMods = await Promise.all(namagomiModList.value.map((n) => getModFileUrl(n, side)))
         const manuallyFiles = [] as string[]
-
+        log.info('namagomiMods')
         await Promise.all(
             namagomiMods.map(async (namagomiMod: NamagomiMod) => {
                 matchO<string, void>(
                     () => {
-                        if (isSome(namagomiMod.curseForge) && namagomiMod.curseForge.value.id !== '')
+                        const filePath = path.join(modsDir(side), namagomiMod.fileName)
+                        const filePath2 = path.join(modsDir(side), namagomiMod.fileName.replace(/\s+/g, '+'))
+                        const fileExist = fs.existsSync(filePath) || fs.existsSync(filePath2)
+                        if (isSome(namagomiMod.curseForge) && namagomiMod.curseForge.value.id !== '' && !fileExist)
                             manuallyFiles.push(namagomiMod.curseForge.value.id)
                     },
                     async () => {
@@ -257,9 +260,9 @@ const mkdir = (path: string) => {
     }
 }
 const mkfile = (path: string, content: string) => {
-    if (!fs.existsSync(namagomiCache(path))) {
-        fs.writeFileSync(namagomiCache(path), content)
-        log.info('create: ' + namagomiCache(path))
+    if (!fs.existsSync(path)) {
+        fs.writeFileSync(path, content)
+        log.info('create: ' + path)
     }
 }
 
