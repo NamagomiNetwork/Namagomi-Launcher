@@ -10,7 +10,7 @@ function removeMod(mod: string, side: string) {
     window.namagomiAPI.removeMods([mod], side).then()
 }
 
-export const ModList: React.FC<Props> = ({files, freshList, side}) => (
+export const ModList = ({files, freshList, side}: Props) => (
     <div id="mod list">
         <table>
             <tbody>

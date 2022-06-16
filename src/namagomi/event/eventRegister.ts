@@ -1,9 +1,7 @@
 import {ipcMain, shell} from "electron";
 import {setup} from "../minecraft/launcher/setupNamagomiLauncherProfile";
 import {
-    downloadAllModFiles,
-    downloadClientModFiles,
-    downloadServerModFiles, isLatestMods
+    downloadModFiles, isLatestMods
 } from "../minecraft/api/mods/curseForge";
 import {downloadAllDataFiles} from "../minecraft/api/data/namagomiData";
 import {mainDir} from "../settings/localPath";
@@ -14,16 +12,20 @@ export function eventHandlerRegistry () {
         setup(side)
     })
 
+    ipcMain.handle('downloadModFiles', async (e, side: 'CLIENT' | 'SERVER' | '') => {
+        return downloadModFiles(side)
+    })
+
     ipcMain.handle('downloadAllModFiles', () => {
-        return downloadAllModFiles()
+        return downloadModFiles('')
     })
 
     ipcMain.handle('downloadClientModFiles', () => {
-        return downloadClientModFiles()
+        return downloadModFiles('CLIENT')
     })
 
     ipcMain.handle('downloadServerModFiles', () => {
-        return downloadServerModFiles()
+        return downloadModFiles('SERVER')
     })
 
     ipcMain.handle('downloadAllConfigFiles', async (e, side: string) => {
@@ -46,7 +48,7 @@ export function eventHandlerRegistry () {
         removeMods(mods, side)
     })
 
-    ipcMain.handle('isLatestMods', async (e, side: string) => {
+    ipcMain.handle('isLatestMods', async (e, side: 'CLIENT' | 'SERVER' | '') => {
         return await isLatestMods(side)
     })
 }
