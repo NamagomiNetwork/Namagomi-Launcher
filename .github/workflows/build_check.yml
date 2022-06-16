@@ -43,6 +43,8 @@ jobs:
           cache: npm
       - name: npm install
         run: npm install
+      - name: install dmg-license
+        run: npm i dmg-license
       - name: install TypeScript
         run: npm install -g typescript
       - name: Build Launcher
