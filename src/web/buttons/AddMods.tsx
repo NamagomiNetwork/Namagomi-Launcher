@@ -2,9 +2,9 @@ import React, {useEffect, useState} from "react"
 import {ModList} from "../ModList"
 import '../AddMods.css'
 
-type Props = {}
+type Props = {side: string}
 
-export const AddMods = ({}: Props) => {
+export const AddMods = ({side}: Props) => {
     const [files, setFiles] = useState<string[]>([])
 
     useEffect(() => {
@@ -13,7 +13,7 @@ export const AddMods = ({}: Props) => {
 
     function freshList() {
         (async () => {
-            const ignoreList = await window.namagomiAPI.getIgnoreList('CLIENT')
+            const ignoreList = await window.namagomiAPI.getIgnoreList(side)
             setFiles(ignoreList)
         })()
     }
@@ -23,14 +23,14 @@ export const AddMods = ({}: Props) => {
 
         const paths = Array.from(e.dataTransfer.files).map(file => file.path)
         const names = Array.from(e.dataTransfer.files).map(file => file.name)
-        window.namagomiAPI.addMods(paths, names, 'CLIENT')
+        window.namagomiAPI.addMods(paths, names, side)
             .then(() => freshList())
     }
 
     return (
         <div>
             <span onDrop={onFileDrop} id="drop">mod files drop here</span><br/>
-            <ModList files={files} freshList={freshList} side={"CLIENT"}/>
+            <ModList files={files} freshList={freshList} side={side}/>
         </div>
     )
 }

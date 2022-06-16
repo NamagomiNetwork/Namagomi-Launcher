@@ -12,6 +12,10 @@ export function eventHandlerRegistry () {
         setup(side)
     })
 
+    ipcMain.handle('downloadModFiles', async (e, side: 'CLIENT' | 'SERVER' | '') => {
+        return downloadModFiles(side)
+    })
+
     ipcMain.handle('downloadAllModFiles', () => {
         return downloadModFiles('')
     })

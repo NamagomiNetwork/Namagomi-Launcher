@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {AddMods} from "./AddMods";
 
-type Props = {}
+type Props = {side: string}
 
-export const Buttons = ({}: Props) => {
+export const Buttons = ({side}: Props) => {
     const [updateAvailable, setUpdateAvailable] = useState(false)
     const [manuallyMods, setManuallyMods] = useState<string[]>([])
 
@@ -12,8 +12,7 @@ export const Buttons = ({}: Props) => {
     })
 
     function setup() {
-        const side = 'CLIENT'
-        window.namagomiAPI.downloadClientModFiles().then((mods)=>{
+        window.namagomiAPI.downloadModFiles(side).then((mods)=>{
             setManuallyMods(mods)
             return window.namagomiAPI.downloadAllConfigFiles(side)
         }).then(() => {
@@ -38,7 +37,7 @@ export const Buttons = ({}: Props) => {
             <button
                 onClick={() => checkUpdate()}>updatable: {updateAvailable ? '更新可能' : '最新の状態です'}</button>
 
-            <button onClick={() => window.namagomiAPI.OpenFolder('CLIENT')}>OpenFolder</button>
+            <button onClick={() => window.namagomiAPI.OpenFolder(side)}>OpenFolder</button>
 
             <br/>
             {
@@ -52,7 +51,7 @@ export const Buttons = ({}: Props) => {
                         {mod}<br/>
                     </a>)}
 
-            <AddMods/>
+            <AddMods side={side}/>
         </div>
     )
 }

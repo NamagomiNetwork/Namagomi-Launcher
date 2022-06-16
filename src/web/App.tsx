@@ -1,12 +1,12 @@
 import React from 'react';
 import './App.css'
-import {Buttons} from './client/Buttons'
 import {Version} from './Version'
+import {Switch} from "./Switch";
 
 export const App = () => {
     return (
         <div className="container">
-            <Buttons/>
+            <Switch/>
             <Version/>
         </div>
     )
