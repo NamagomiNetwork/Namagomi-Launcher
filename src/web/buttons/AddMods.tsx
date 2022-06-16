@@ -12,10 +12,11 @@ export const AddMods = ({side}: Props) => {
     })
 
     function freshList() {
-        (async () => {
+        const fresh = async () => {
             const ignoreList = await window.namagomiAPI.getIgnoreList(side)
             setFiles(ignoreList)
-        })()
+        }
+        fresh().then()
     }
 
     function onFileDrop(e: React.DragEvent<HTMLDivElement>) {
