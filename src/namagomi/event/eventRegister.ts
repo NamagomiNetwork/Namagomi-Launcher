@@ -16,18 +16,6 @@ export function eventHandlerRegistry () {
         return downloadModFiles(side)
     })
 
-    ipcMain.handle('downloadAllModFiles', () => {
-        return downloadModFiles('')
-    })
-
-    ipcMain.handle('downloadClientModFiles', () => {
-        return downloadModFiles('CLIENT')
-    })
-
-    ipcMain.handle('downloadServerModFiles', () => {
-        return downloadModFiles('SERVER')
-    })
-
     ipcMain.handle('downloadAllConfigFiles', async (e, side: string) => {
         await downloadAllDataFiles('main', side)
     })
