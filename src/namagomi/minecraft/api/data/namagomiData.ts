@@ -1,10 +1,11 @@
-import {GitTree} from "../github/GitTree"
-import fs, {createWriteStream} from "fs"
-import {pipeline} from "stream/promises"
-import fetch from "electron-fetch"
-import {namagomiDataFileUrlBase, namagomiFileUrlBase} from "../../../settings/config"
-import path from "path"
-import {mainDir, namagomiCache} from "../../../settings/localPath"
+import {GitTree} from '../github/GitTree'
+import fs, {createWriteStream} from 'fs'
+import {pipeline} from 'stream/promises'
+import fetch from 'electron-fetch'
+import {namagomiDataFileUrlBase, namagomiFileUrlBase} from '../../../settings/config'
+import path from 'path'
+import {mainDir, namagomiCache} from '../../../settings/localPath'
+
 const log = require('electron-log')
 
 export interface NamagomiCache {

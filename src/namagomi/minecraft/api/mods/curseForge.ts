@@ -1,23 +1,23 @@
 import {curseForgeApiBaseUrl, curseForgeApiKey, namagomiModListUrl} from '../../../settings/config'
-import path from "path"
+import path from 'path'
 import fetch from 'electron-fetch'
 import {mainDir, minecraftDir, modsDir, namagomiCache, namagomiIgnore} from '../../../settings/localPath'
-import {pipeline} from "stream/promises"
-import * as fs from "fs"
-import {createWriteStream} from "fs"
-import {getFileName} from "../../../settings/mappings"
-import {NamagomiIgnore} from "./NamagomiIgnore"
-import {GitTree} from "../github/GitTree"
-import {GetMod} from "./JsonTypes/GetMod"
-import {Data, GetFiles} from "./JsonTypes/GetFiles"
-import {NamagomiCache} from "../data/namagomiData"
+import {pipeline} from 'stream/promises'
+import * as fs from 'fs'
+import {createWriteStream} from 'fs'
+import {getFileName} from '../../../settings/mappings'
+import {NamagomiIgnore} from './NamagomiIgnore'
+import {GitTree} from '../github/GitTree'
+import {GetMod} from './JsonTypes/GetMod'
+import {Data, GetFiles} from './JsonTypes/GetFiles'
+import {NamagomiCache} from '../data/namagomiData'
 import {
     GetNamagomiMod,
     tryCastGetNamagomiModList
-} from "./JsonTypes/GetNamagomiModList"
-import {isNone, isSome, none, some, match as matchO} from "fp-ts/Option"
-import {NamagomiMod} from "./NamagomiMod"
-import {checkSum} from "./checkSum";
+} from './JsonTypes/GetNamagomiModList'
+import {isNone, isSome, none, some, match as matchO} from 'fp-ts/Option'
+import {NamagomiMod} from './NamagomiMod'
+import {checkSum} from './checkSum'
 
 const log = require('electron-log')
 
@@ -189,7 +189,7 @@ async function downloadModFile(namagomiMod: NamagomiMod, side: string) {
                 },
                 (url: string) => {
                     log.error('failed: ' + namagomiMod.fileName + ' ' + url)
-                },
+                }
             )(namagomiMod.downloadUrl)
         })
     }

@@ -1,4 +1,4 @@
-import React from "react"
+import React from 'react'
 import './Version.css'
 import * as packageInfo from '../../package.json'
 

@@ -1,7 +1,8 @@
 import UUID from 'uuidjs'
 import path from 'path'
 import {app} from 'electron'
-import * as fs from "fs"
+import * as fs from 'fs'
+
 const log = require('electron-log')
 
 type SetPattern =
@@ -170,7 +171,7 @@ export function set(key: SetPattern, value: string) {
 }
 
 export function build(profile: LauncherProfile) {
-    const builtJson = JSON.parse("{}")
+    const builtJson = JSON.parse('{}')
     builtJson['created'] = profile.created
     builtJson['gameDir'] = profile.gameDir
     builtJson['icon'] = profile.icon
@@ -180,11 +181,11 @@ export function build(profile: LauncherProfile) {
     builtJson['name'] = profile.name
     builtJson['type'] = profile.type
 
-    if(fs.existsSync(getProfilePath())) {
+    if (fs.existsSync(getProfilePath())) {
         const launcherProfiles = JSON.parse(fs.readFileSync(getProfilePath(), 'utf8'))
         launcherProfiles['profiles'][profile.uniqueId] = builtJson
         fs.writeFileSync(getProfilePath(), JSON.stringify(launcherProfiles))
-    }else {
+    } else {
         log.error(`${getProfilePath()} is not exists`)
     }
 }

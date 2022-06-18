@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from "react"
-import {ModList} from "../ModList"
+import React, {useEffect, useState} from 'react'
+import {ModList} from '../ModList'
 import '../AddMods.css'
 
-type Props = {side: string}
+type Props = { side: string }
 
 export const AddMods = ({side}: Props) => {
     const [files, setFiles] = useState<string[]>([])

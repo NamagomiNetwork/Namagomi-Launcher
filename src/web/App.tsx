@@ -1,7 +1,7 @@
-import React from 'react';
+import React from 'react'
 import './App.css'
 import {Version} from './Version'
-import {Switch} from "./Switch";
+import {Switch} from './Switch'
 
 export const App = () => {
     return (
