@@ -1,6 +1,6 @@
-import {none, Option, some} from "fp-ts/Option";
+import {none, Option, some} from 'fp-ts/Option'
 
-const log = require("electron-log");
+const log = require('electron-log')
 
 export type GetNamagomiModList = GetNamagomiMod[]
 

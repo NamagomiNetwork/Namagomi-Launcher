@@ -1,92 +1,191 @@
 import UUID from 'uuidjs'
 import path from 'path'
 import {app} from 'electron'
-import * as fs from "fs";
+import * as fs from 'fs'
 
-type SetPattern = 'uniqueId' | 'created' | 'gameDir' | 'icon' | 'javaArgs' | 'lastUsed' | 'lastVersionId' | 'name' | 'type'
+const log = require('electron-log')
 
-export class LauncherProfileBuilder {
-    private uniqueId: string
-    private created: string
-    private gameDir: string
-    private icon: string
-    private javaArgs: string
-    private lastUsed: string
-    private lastVersionId: string
-    private name: string
-    private type: string
+type SetPattern =
+    'uniqueId'
+    | 'created'
+    | 'gameDir'
+    | 'icon'
+    | 'javaArgs'
+    | 'lastUsed'
+    | 'lastVersionId'
+    | 'name'
+    | 'type'
 
-    constructor() {
-        this.uniqueId = UUID.generate()
-        this.created = new Date().toISOString()
-        this.gameDir = ''
-        this.icon = 'Furnace'
-        this.javaArgs = '-Xmx8G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M'
-        this.lastUsed = new Date().toISOString()
-        this.lastVersionId = ''
-        this.name = 'new profile'
-        this.type = 'custom'
+export type LauncherProfile = {
+    uniqueId: string
+    created: string
+    gameDir: string
+    icon: string
+    javaArgs: string
+    lastUsed: string
+    lastVersionId: string
+    name: string
+    type: string
+}
+
+export function apply(): LauncherProfile {
+    return {
+        uniqueId: UUID.generate(),
+        created: new Date().toISOString(),
+        gameDir: '',
+        icon: '',
+        javaArgs: '-Xmx8G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M',
+        lastUsed: new Date().toISOString(),
+        lastVersionId: '',
+        name: 'new profile',
+        type: 'custom'
     }
+}
 
-    private static getProfilePath () {
-        switch (process.platform){
-            case 'win32':
-                return path.join(app.getPath('appData'),'.minecraft\\launcher_profiles.json')
-            case 'darwin':
-                return path.join(app.getPath('appData'),'minecraft/launcher_profiles.json')
-            case 'linux':
-                return path.join(app.getPath('home'), '.minecraft/launcher_profiles.json')
-            default:
-                return path.join(app.getPath('appData'),'.minecraft\\launcher_profiles.json')
-        }
+function getProfilePath() {
+    switch (process.platform) {
+        case 'win32':
+            return path.join(app.getPath('appData'), '.minecraft\\launcher_profiles.json')
+        case 'darwin':
+            return path.join(app.getPath('appData'), 'minecraft/launcher_profiles.json')
+        case 'linux':
+            return path.join(app.getPath('home'), '.minecraft/launcher_profiles.json')
+        default:
+            return path.join(app.getPath('appData'), '.minecraft\\launcher_profiles.json')
     }
+}
 
-    public set(key: SetPattern , value: string): LauncherProfileBuilder {
+export function set(key: SetPattern, value: string) {
+    return (profile: LauncherProfile): LauncherProfile => {
         switch (key) {
             case 'uniqueId':
-                this.uniqueId = value
-                break
+                return {
+                    uniqueId: value,
+                    created: profile.created,
+                    gameDir: profile.gameDir,
+                    icon: profile.icon,
+                    javaArgs: profile.javaArgs,
+                    lastUsed: profile.lastUsed,
+                    lastVersionId: profile.lastVersionId,
+                    name: profile.name,
+                    type: profile.type
+                }
             case 'created':
-                this.created = value
-                break
+                return {
+                    uniqueId: profile.uniqueId,
+                    created: value,
+                    gameDir: profile.gameDir,
+                    icon: profile.icon,
+                    javaArgs: profile.javaArgs,
+                    lastUsed: profile.lastUsed,
+                    lastVersionId: profile.lastVersionId,
+                    name: profile.name,
+                    type: profile.type
+                }
             case 'gameDir':
-                this.gameDir = value
-                break
+                return {
+                    uniqueId: profile.uniqueId,
+                    created: profile.created,
+                    gameDir: value,
+                    icon: profile.icon,
+                    javaArgs: profile.javaArgs,
+                    lastUsed: profile.lastUsed,
+                    lastVersionId: profile.lastVersionId,
+                    name: profile.name,
+                    type: profile.type
+                }
             case 'icon':
-                this.icon = value
-                break
+                return {
+                    uniqueId: profile.uniqueId,
+                    created: profile.created,
+                    gameDir: profile.gameDir,
+                    icon: value,
+                    javaArgs: profile.javaArgs,
+                    lastUsed: profile.lastUsed,
+                    lastVersionId: profile.lastVersionId,
+                    name: profile.name,
+                    type: profile.type
+                }
             case 'javaArgs':
-                this.javaArgs = value
-                break
+                return {
+                    uniqueId: profile.uniqueId,
+                    created: profile.created,
+                    gameDir: profile.gameDir,
+                    icon: profile.icon,
+                    javaArgs: value,
+                    lastUsed: profile.lastUsed,
+                    lastVersionId: profile.lastVersionId,
+                    name: profile.name,
+                    type: profile.type
+                }
             case 'lastUsed':
-                this.lastUsed = value
-                break
+                return {
+                    uniqueId: profile.uniqueId,
+                    created: profile.created,
+                    gameDir: profile.gameDir,
+                    icon: profile.icon,
+                    javaArgs: profile.javaArgs,
+                    lastUsed: value,
+                    lastVersionId: profile.lastVersionId,
+                    name: profile.name,
+                    type: profile.type
+                }
             case 'lastVersionId':
-                this.lastVersionId = value
-                break
+                return {
+                    uniqueId: profile.uniqueId,
+                    created: profile.created,
+                    gameDir: profile.gameDir,
+                    icon: profile.icon,
+                    javaArgs: profile.javaArgs,
+                    lastUsed: profile.lastUsed,
+                    lastVersionId: value,
+                    name: profile.name,
+                    type: profile.type
+                }
             case 'name':
-                this.name = value
-                break
+                return {
+                    uniqueId: profile.uniqueId,
+                    created: profile.created,
+                    gameDir: profile.gameDir,
+                    icon: profile.icon,
+                    javaArgs: profile.javaArgs,
+                    lastUsed: profile.lastUsed,
+                    lastVersionId: profile.lastVersionId,
+                    name: value,
+                    type: profile.type
+                }
             case 'type':
-                this.type = value
-                break
+                return {
+                    uniqueId: profile.uniqueId,
+                    created: profile.created,
+                    gameDir: profile.gameDir,
+                    icon: profile.icon,
+                    javaArgs: profile.javaArgs,
+                    lastUsed: profile.lastUsed,
+                    lastVersionId: profile.lastVersionId,
+                    name: profile.name,
+                    type: value
+                }
         }
-        return this
     }
+}
 
-    public build() {
-        const builtJson = JSON.parse("{}")
-        builtJson['created'] = this.created
-        builtJson['gameDir'] = this.gameDir
-        builtJson['icon'] = this.icon
-        builtJson['javaArgs'] = this.javaArgs
-        builtJson['lastUsed'] = this.lastUsed
-        builtJson['lastVersionId'] = this.lastVersionId
-        builtJson['name'] = this.name
-        builtJson['type'] = this.type
+export function build(profile: LauncherProfile) {
+    const builtJson = JSON.parse('{}')
+    builtJson['created'] = profile.created
+    builtJson['gameDir'] = profile.gameDir
+    builtJson['icon'] = profile.icon
+    builtJson['javaArgs'] = profile.javaArgs
+    builtJson['lastUsed'] = profile.lastUsed
+    builtJson['lastVersionId'] = profile.lastVersionId
+    builtJson['name'] = profile.name
+    builtJson['type'] = profile.type
 
-        const launcherProfiles = JSON.parse(fs.readFileSync(LauncherProfileBuilder.getProfilePath(), 'utf8'))
-        launcherProfiles['profiles'][this.uniqueId] = builtJson
-        fs.writeFileSync(LauncherProfileBuilder.getProfilePath(), JSON.stringify(launcherProfiles))
+    if (fs.existsSync(getProfilePath())) {
+        const launcherProfiles = JSON.parse(fs.readFileSync(getProfilePath(), 'utf8'))
+        launcherProfiles['profiles'][profile.uniqueId] = builtJson
+        fs.writeFileSync(getProfilePath(), JSON.stringify(launcherProfiles))
+    } else {
+        log.error(`${getProfilePath()} is not exists`)
     }
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 
 type Props = {
     files: string[]
@@ -16,10 +16,10 @@ export const ModList = ({files, freshList, side}: Props) => (
             <tbody>
             {files.map((file: string, index: number) => {
                 return <tr key={index}>
-                    <td><input type={"checkbox"}/></td>
+                    <td><input type={'checkbox'}/></td>
                     <td>{file}</td>
                     <td>
-                        <input type={"submit"} value={"delete"} onClick={() => {
+                        <input type={'submit'} value={'delete'} onClick={() => {
                             removeMod(file, side)
                             freshList()
                         }}/>
