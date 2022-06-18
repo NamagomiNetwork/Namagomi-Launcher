@@ -180,7 +180,7 @@ export function build(profile: LauncherProfile) {
     builtJson['name'] = profile.name
     builtJson['type'] = profile.type
 
-    if(!fs.existsSync(getProfilePath())) {
+    if(fs.existsSync(getProfilePath())) {
         const launcherProfiles = JSON.parse(fs.readFileSync(getProfilePath(), 'utf8'))
         launcherProfiles['profiles'][profile.uniqueId] = builtJson
         fs.writeFileSync(getProfilePath(), JSON.stringify(launcherProfiles))
