@@ -6,18 +6,19 @@ type Props = {side: string}
 export const Buttons = ({side}: Props) => {
     const [updateAvailable, setUpdateAvailable] = useState(false)
     const [manuallyMods, setManuallyMods] = useState<string[]>([])
+    const [disable, setDisable] = useState(false)
 
     useEffect(() => {
         checkUpdate()
     })
 
-    function setup() {
-        window.namagomiAPI.downloadModFiles(side).then((mods)=>{
-            setManuallyMods(mods)
-            return window.namagomiAPI.downloadAllConfigFiles(side)
-        }).then(() => {
-            return window.namagomiAPI.setupNamagomiLauncherProfile(side)
-        })
+    async function setup() {
+        setDisable(true)
+        const mods = await window.namagomiAPI.downloadModFiles(side)
+        setManuallyMods(mods)
+        await window.namagomiAPI.downloadAllConfigFiles(side)
+        await window.namagomiAPI.setupNamagomiLauncherProfile(side)
+        setDisable(false)
     }
 
     function checkUpdate() {
@@ -29,9 +30,9 @@ export const Buttons = ({side}: Props) => {
     return (
         <div id={"buttons"}>
             <button onClick={async () => {
-                setup()
+                await setup()
                 checkUpdate()
-            }}>Update
+            }} disabled={disable}>Update
             </button>
 
             <button
