@@ -14,10 +14,10 @@ export const Buttons = ({side}: Props) => {
 
     async function setup() {
         setDisable(true)
+        window.namagomiAPI.setupNamagomiLauncherProfile(side)
         const mods = await window.namagomiAPI.downloadModFiles(side)
         setManuallyMods(mods)
         await window.namagomiAPI.downloadAllConfigFiles(side)
-        await window.namagomiAPI.setupNamagomiLauncherProfile(side)
         setDisable(false)
     }
 
