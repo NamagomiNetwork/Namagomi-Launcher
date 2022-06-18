@@ -8,5 +8,6 @@ contextBridge.exposeInMainWorld('namagomiAPI', {
     addMods: (paths:string[], names:string[], side: string) => ipcRenderer.invoke('addMods', paths, names, side),
     getIgnoreList: (side: string) => ipcRenderer.invoke('getIgnoreList', side),
     removeMods: (mods:string[], side: string) => ipcRenderer.invoke('removeMods', mods, side),
-    isLatestMods: (side: string) => ipcRenderer.invoke('isLatestMods', side)
+    isLatestMods: (side: string) => ipcRenderer.invoke('isLatestMods', side),
+    openLogsFolder: () => ipcRenderer.invoke('openLogsFolder')
 })

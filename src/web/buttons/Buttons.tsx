@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from "react";
-import {AddMods} from "./AddMods";
+import React, {useEffect, useState} from 'react'
+import {AddMods} from './AddMods'
 
-type Props = {side: string}
+type Props = { side: string }
 
 export const Buttons = ({side}: Props) => {
     const [updateAvailable, setUpdateAvailable] = useState(false)
@@ -22,13 +22,13 @@ export const Buttons = ({side}: Props) => {
     }
 
     function checkUpdate() {
-        window.namagomiAPI.isLatestMods('CLIENT').then((isLatest)=>{
+        window.namagomiAPI.isLatestMods('CLIENT').then((isLatest) => {
             setUpdateAvailable(!isLatest)
         })
     }
 
     return (
-        <div id={"buttons"}>
+        <div id={'buttons'}>
             <button onClick={async () => {
                 await setup()
                 checkUpdate()
@@ -39,6 +39,7 @@ export const Buttons = ({side}: Props) => {
                 onClick={() => checkUpdate()}>updatable: {updateAvailable ? '更新可能' : '最新の状態です'}</button>
 
             <button onClick={() => window.namagomiAPI.OpenFolder(side)}>OpenFolder</button>
+            <button onClick={window.namagomiAPI.openLogsFolder}>OpenLogs</button>
 
             <br/>
             {
@@ -48,7 +49,7 @@ export const Buttons = ({side}: Props) => {
             }
             {
                 manuallyMods.map((mod, index) =>
-                    <a key={index} href={mod} target={"_blank"} rel={"noopener nofollow"}>
+                    <a key={index} href={mod} target={'_blank'} rel={'noopener nofollow'}>
                         {mod}<br/>
                     </a>)}
 

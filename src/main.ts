@@ -1,9 +1,10 @@
 import path from 'path'
 import {searchDevtools} from 'electron-search-devtools'
 import {BrowserWindow, app, ipcMain, session} from 'electron'
-import {eventHandlerRegistry} from "./namagomi/event/eventRegister"
+import {apiRegistry} from './namagomi/api/apiRegister'
 
 const log = require('electron-log')
+log.transports.file.archiveLog(log.transports.file.getFile().path)
 
 const isDev = process.env.NODE_ENV === 'development'
 
@@ -14,30 +15,30 @@ if (isDev) {
             : '../node_modules/.bin/electron'
 
     require('electron-reload')(__dirname, {
-        electron: path.resolve(__dirname, execPath),
+        electron: path.resolve(__dirname, execPath)
     })
 }
 
 const createWindow = () => {
     const mainWindow = new BrowserWindow({
         webPreferences: {
-            preload: path.join(__dirname, 'preload.js'),
-        },
+            preload: path.join(__dirname, 'preload.js')
+        }
     })
 
     ipcMain.on('update-title', (_e, arg) => {
         mainWindow.setTitle(`Electron React TypeScript: ${arg}`)
     })
 
-    if (isDev) {
-        searchDevtools('REACT')
-            .then((devtools) => {
-                session.defaultSession.loadExtension(devtools, {
-                    allowFileAccess: true,
-                })
+    searchDevtools('REACT')
+        .then((devtools) => {
+            session.defaultSession.loadExtension(devtools, {
+                allowFileAccess: true
             })
-            .catch((err) => log.error(err))
+        })
+        .catch((err) => log.error(err))
 
+    if (isDev) {
         mainWindow.webContents.openDevTools({mode: 'detach'})
     }
 
@@ -49,4 +50,4 @@ const createWindow = () => {
 app.whenReady().then(createWindow)
 app.once('window-all-closed', () => app.quit())
 
-eventHandlerRegistry()
+apiRegistry()

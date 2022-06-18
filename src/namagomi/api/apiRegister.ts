@@ -1,13 +1,14 @@
-import {ipcMain, shell} from "electron";
-import {setup} from "../minecraft/launcher/setupNamagomiLauncherProfile";
+import {ipcMain, shell} from 'electron'
+import {setup} from '../minecraft/launcher/setupNamagomiLauncherProfile'
 import {
     downloadModFiles, isLatestMods
-} from "../minecraft/api/mods/curseForge";
-import {downloadAllDataFiles} from "../minecraft/api/data/namagomiData";
-import {mainDir} from "../settings/localPath";
-import {addMods, getIgnoreList, removeMods} from "../minecraft/api/mods/addMod";
+} from '../minecraft/api/mods/curseForge'
+import {downloadAllDataFiles} from '../minecraft/api/data/namagomiData'
+import {mainDir} from '../settings/localPath'
+import {addMods, getIgnoreList, removeMods} from '../minecraft/api/mods/addMod'
+import {openLogsFolder} from './logs'
 
-export function eventHandlerRegistry () {
+export function apiRegistry() {
     ipcMain.handle('setupNamagomiLauncherProfile', async (e, side: string) => {
         setup(side)
     })
@@ -24,7 +25,7 @@ export function eventHandlerRegistry () {
         await shell.openPath(mainDir(side))
     })
 
-    ipcMain.handle('addMods', (event, paths:string[], names:string[], side: string) => {
+    ipcMain.handle('addMods', (event, paths: string[], names: string[], side: string) => {
         addMods(paths, names, side)
     })
 
@@ -32,11 +33,13 @@ export function eventHandlerRegistry () {
         return getIgnoreList(side)
     })
 
-    ipcMain.handle('removeMods', (event, mods:string[], side: string) => {
+    ipcMain.handle('removeMods', (event, mods: string[], side: string) => {
         removeMods(mods, side)
     })
 
     ipcMain.handle('isLatestMods', async (e, side: 'CLIENT' | 'SERVER' | '') => {
         return await isLatestMods(side)
     })
+
+    ipcMain.handle('openLogsFolder', openLogsFolder)
 }
