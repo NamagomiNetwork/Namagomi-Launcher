@@ -1,7 +1,7 @@
 import path from 'path'
 import {searchDevtools} from 'electron-search-devtools'
 import {BrowserWindow, app, ipcMain, session} from 'electron'
-import {apiRegistry} from './namagomi/api/apiRegister'
+import {mainApiRegistry} from './namagomi/api/apiRegister'
 
 const log = require('electron-log')
 log.transports.file.archiveLog(log.transports.file.getFile().path)
@@ -50,4 +50,4 @@ const createWindow = () => {
 app.whenReady().then(createWindow)
 app.once('window-all-closed', () => app.quit())
 
-apiRegistry()
+mainApiRegistry()

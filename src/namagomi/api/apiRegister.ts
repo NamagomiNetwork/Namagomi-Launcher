@@ -8,8 +8,8 @@ import {mainDir} from '../settings/localPath'
 import {addMods, getIgnoreList, removeMods} from '../minecraft/api/mods/addMod'
 import {openLogsFolder} from './logs'
 
-export function apiRegistry() {
-    ipcMain.handle('setupNamagomiLauncherProfile', async (e, side: string) => {
+export function mainApiRegistry() {
+    ipcMain.on('setupNamagomiLauncherProfile', (e, side: string) => {
         setup(side)
     })
 
@@ -17,15 +17,15 @@ export function apiRegistry() {
         return downloadModFiles(side)
     })
 
-    ipcMain.handle('downloadAllConfigFiles', async (e, side: string) => {
+    ipcMain.on('downloadAllConfigFiles', async (e, side: string) => {
         await downloadAllDataFiles('main', side)
     })
 
-    ipcMain.handle('OpenFolder', async (e, side: string) => {
+    ipcMain.on('OpenFolder', async (e, side: string) => {
         await shell.openPath(mainDir(side))
     })
 
-    ipcMain.handle('addMods', (event, paths: string[], names: string[], side: string) => {
+    ipcMain.on('addMods', (event, paths: string[], names: string[], side: string) => {
         addMods(paths, names, side)
     })
 
@@ -33,7 +33,7 @@ export function apiRegistry() {
         return getIgnoreList(side)
     })
 
-    ipcMain.handle('removeMods', (event, mods: string[], side: string) => {
+    ipcMain.on('removeMods', (event, mods: string[], side: string) => {
         removeMods(mods, side)
     })
 
@@ -41,5 +41,5 @@ export function apiRegistry() {
         return await isLatestMods(side)
     })
 
-    ipcMain.handle('openLogsFolder', openLogsFolder)
+    ipcMain.on('openLogsFolder', openLogsFolder)
 }
