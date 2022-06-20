@@ -3,7 +3,7 @@ import './Log.css'
 import IpcRendererEvent = Electron.IpcRendererEvent
 
 export const Log = () => {
-    const [log, setLog] = React.useState<string>('Logだよ～ん\n|log|log|log|log|\nlogはこちらです')
+    const [log, setLog] = React.useState<string>('Logだよ～ん\n|log|log|log|log|\nlogはこちらです\nうるさかったですか？すみません')
 
     useEffect(() => {
         window.namagomiAPI.log((event: IpcRendererEvent, level: string, contents: string) => {
