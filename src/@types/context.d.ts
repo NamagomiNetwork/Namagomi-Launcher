@@ -8,9 +8,10 @@ export interface IElectronAPI {
     addMods: (paths: string[], names: string[], side: string) => void
     getIgnoreList: (side: string) => Promise<string[]>
     removeMods: (mods: string[], side: string) => void
-    isLatestMods: (side: 'CLIENT' | 'SERVER' | '') => Promise<boolean>
     openLogsFolder: () => Promise<void>
+    checkUpdate: (side: string) => Promise<void>
     log: (f: (event: IpcRendererEvent, level: string, contents: string) => void) => void
+    checkUpdateBack: (f: (event: IpcRendererEvent, updatable: boolean) => void) => void
 }
 
 declare global {

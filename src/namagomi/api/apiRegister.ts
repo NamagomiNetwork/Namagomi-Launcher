@@ -1,15 +1,16 @@
 import {ipcMain, shell} from 'electron'
 import {setup} from '../minecraft/launcher/setupNamagomiLauncherProfile'
 import {
-    downloadModFiles, isLatestMods
+    downloadModFiles, checkUpdate
 } from '../minecraft/api/mods/curseForge'
 import {downloadAllDataFiles} from '../minecraft/api/data/namagomiData'
 import {mainDir} from '../settings/localPath'
 import {addMods, getIgnoreList, removeMods} from '../minecraft/api/mods/addMod'
 import {openLogsFolder} from './logs'
+import BrowserWindow = Electron.BrowserWindow
 
-export function mainApiRegistry() {
-    ipcMain.on('setupNamagomiLauncherProfile', (e, side: string) => {
+export function mainApiRegistry(mainWindow: BrowserWindow) {
+    ipcMain.on('setupNamagomiLauncherProfile', (e, side: 'CLIENT' | 'SERVER' | '') => {
         setup(side)
     })
 
@@ -37,9 +38,9 @@ export function mainApiRegistry() {
         removeMods(mods, side)
     })
 
-    ipcMain.handle('isLatestMods', async (e, side: 'CLIENT' | 'SERVER' | '') => {
-        return await isLatestMods(side)
-    })
-
     ipcMain.on('openLogsFolder', openLogsFolder)
+
+    ipcMain.on('checkUpdate', async (e, side: 'CLIENT' | 'SERVER' | '') => {
+        mainWindow.webContents.send('checkUpdateBack', await checkUpdate(side))
+    })
 }

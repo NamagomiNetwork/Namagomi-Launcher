@@ -29,6 +29,8 @@ const createWindow = () => {
 
     log.mainWindow = mainWindow
 
+    mainApiRegistry(mainWindow)
+
     ipcMain.on('update-title', (_e, arg) => {
         mainWindow.setTitle(`Electron React TypeScript: ${arg}`)
     })
@@ -52,5 +54,3 @@ const createWindow = () => {
 
 app.whenReady().then(createWindow)
 app.once('window-all-closed', () => app.quit())
-
-mainApiRegistry()

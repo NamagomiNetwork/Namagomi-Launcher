@@ -11,5 +11,7 @@ contextBridge.exposeInMainWorld('namagomiAPI', {
     removeMods: (mods: string[], side: string) => ipcRenderer.send('removeMods', mods, side),
     isLatestMods: (side: string) => ipcRenderer.invoke('isLatestMods', side),
     openLogsFolder: () => ipcRenderer.send('openLogsFolder'),
-    log: (callback: (event: IpcRendererEvent, level: string, contents: string) => void) => ipcRenderer.on('log', callback)
+    log: (callback: (event: IpcRendererEvent, level: string, contents: string) => void) => ipcRenderer.on('log', callback),
+    checkUpdate: (side: string) => ipcRenderer.send('checkUpdate', side),
+    checkUpdateBack: (callback: (event: IpcRendererEvent, updatable: boolean) => void) => ipcRenderer.on('checkUpdateBack', callback)
 })
