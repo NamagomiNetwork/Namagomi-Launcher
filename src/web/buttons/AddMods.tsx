@@ -25,7 +25,7 @@ export const AddMods = ({side}: Props) => {
         const paths = Array.from(e.dataTransfer.files).map(file => file.path)
         const names = Array.from(e.dataTransfer.files).map(file => file.name)
         window.namagomiAPI.addMods(paths, names, side)
-            .then(() => freshList())
+        freshList()
     }
 
     return (
