@@ -9,7 +9,7 @@ export const AddMods = ({side}: Props) => {
 
     useEffect(() => {
         freshList()
-    })
+    }, [])
 
     function freshList() {
         const fresh = async () => {
