@@ -3,11 +3,14 @@ import './Log.css'
 import IpcRendererEvent = Electron.IpcRendererEvent
 
 export const Log = () => {
-    const [log, setLog] = React.useState<string>('Logだよ～ん\nlogです\nlogはいます')
+    const [log, setLog] = React.useState<string>('Logだよ～ん\nlogはこちらです')
 
     window.namagomiAPI.log((event: IpcRendererEvent, level: string, contents: string) => {
         const built =  buildLog(level, contents)
-        setLog(log + '\n' + built)
+        const concat = `${log}\n${built}`
+        setLog(concat)
+        console.log(built)
+        console.log(concat)
     })
 
     return (
