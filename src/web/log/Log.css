@@ -3,16 +3,16 @@
     left: 50%;
     top: 0;
     right: 0;
-    bottom: 0;
+    bottom: 20px;
 }
 
 textarea {
     position: absolute;
     resize: none;
-    color: white;
     width: 100%;
-    top: 0;
-    bottom: 20px;
+    height: 100%;
+    color: white;
     background: #000000;
     outline: none;
+    overflow-y: scroll;
 }
