@@ -6,24 +6,23 @@ export class log {
     public static mainWindow: BrowserWindow
     static send = (level: string, contents: string) => log.mainWindow.webContents.send('log', level, contents)
 
-    public static info(params: string) {
+    public static info(params: any) {
         electronLog.info(params)
-        log.send('INFO', params)
+        log.send('INFO', params.toString())
     }
 
-    public static warn(params: string) {
+    public static warn(params: any) {
         electronLog.warn(params)
-        log.send('WARN', params)
+        log.send('WARN', params.toString())
     }
 
-    public static error(params: string) {
+    public static error(params: any) {
         electronLog.error(params)
-        log.send('ERROR', params)
+        log.send('ERROR', params.toString())
     }
 
-    public static debug(params: string) {
+    public static debug(params: any) {
         electronLog.debug(params)
-        log.send('DEBUG', params)
+        log.send('DEBUG', params.toString())
     }
 }
-
