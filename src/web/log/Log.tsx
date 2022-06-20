@@ -13,8 +13,7 @@ export const Log = () => {
 
     return (
         <div className="log">
-            <textarea readOnly={true} value={log}>
-            </textarea>
+            <textarea readOnly={true} value={log}></textarea>
         </div>
     )
 }
