@@ -6,17 +6,14 @@ export const Log = () => {
     const [log, setLog] = React.useState<string>('Logだよ～ん\nlogはこちらです')
 
     window.namagomiAPI.log((event: IpcRendererEvent, level: string, contents: string) => {
-        const built =  buildLog(level, contents)
-        const concat = `${log}\n${built}`
-        setLog(concat)
-        console.log(built)
-        console.log(concat)
-    })
+            const built = buildLog(level, contents)
+            setLog((l) => `${l}\n${built}`)
+        }
+    )
 
     return (
         <div className="log">
-            <textarea readOnly={true}>
-                {log}
+            <textarea readOnly={true} value={log}>
             </textarea>
         </div>
     )
@@ -27,7 +24,7 @@ function buildLog(level: string, contents: string) {
     return `${now}[${level}] ${contents}`
 }
 
-function getNow(){
+function getNow() {
     const date = new Date()
     const y = date.getFullYear()
     const m = date.getMonth()
