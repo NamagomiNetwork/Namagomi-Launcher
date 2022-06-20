@@ -3,7 +3,7 @@ import './Log.css'
 import IpcRendererEvent = Electron.IpcRendererEvent
 
 export const Log = () => {
-    const [log, setLog] = React.useState<string>('Logだよ～ん')
+    const [log, setLog] = React.useState<string>('Logだよ～ん\nlogです\nlogはいます')
 
     window.namagomiAPI.log((event: IpcRendererEvent, level: string, contents: string) => {
         const built =  buildLog(level, contents)
@@ -12,7 +12,9 @@ export const Log = () => {
 
     return (
         <div className="log">
-            <p>{log}</p>
+            <textarea readOnly={true}>
+                {log}
+            </textarea>
         </div>
     )
 }
