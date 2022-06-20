@@ -15,6 +15,19 @@ Q. クラッシュしてこの画像が表示される！
 ![image](https://user-images.githubusercontent.com/71992891/172034709-a156fec0-bade-4704-ace0-568bc946336a.png)  
 A. [forge公式サイト](https://files.minecraftforge.net/net/minecraftforge/forge/index_1.12.2.html)から`1.12.2-forge-14.23.5.2860`をダウンロードしてインストールしてください。
 
+Q. 起動構成が作られない！  
+A. 現在不具合により一部のユーザーで起動構成が作られないことがあります。  
+<details>
+  <summary>対処法</summary>
+  1. Minecraft Launcherを開き、起動構成タブの新規作成を押します。<br>
+  2. 名前をわかりやすい名前（生ゴミ鯖など）にします。<br>
+  3. バージョンを release 1.12.2-forge-14.23.5.2860 にします（forgeをインストールしてない場合は選択できません）<br>
+  4. Namagomi Launcherを開き、OpenFolderボタンをクリックします。<br>
+  5. 4で開いたフォルダのパスをコピーし、1で作成した起動構成のゲームディレクトリに入力します。<br>
+  6. 右下にある作成ボタンを押して起動構成を作成します。<br>
+  7. 一番下に新しい起動構成が作成されます。<br>
+</details>
+
 # build
 
 ## Environment
