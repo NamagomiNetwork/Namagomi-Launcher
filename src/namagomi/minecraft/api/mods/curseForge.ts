@@ -200,7 +200,6 @@ export async function downloadModFiles(side: 'CLIENT' | 'SERVER' | '') {
     if (isSome(namagomiModList)) {
         const namagomiMods = await Promise.all(namagomiModList.value.map((n) => getModFileUrl(n, side)))
         const manuallyFiles = [] as string[]
-        log.info('namagomiMods')
         await Promise.all(
             namagomiMods.map(async (namagomiMod: NamagomiMod) => {
                 matchO<string, void>(
