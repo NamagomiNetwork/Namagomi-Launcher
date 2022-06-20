@@ -20,7 +20,7 @@ export const Buttons = ({side}: Props) => {
         <div id={'buttons'}>
             <button onClick={async () => {
                 await setup()
-                window.namagomiAPI.checkUpdate(side).then()
+                window.namagomiAPI.checkUpdate(side)
             }} disabled={disable}>Update
             </button>
 

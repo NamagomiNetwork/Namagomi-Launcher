@@ -9,7 +9,7 @@ export interface IElectronAPI {
     getIgnoreList: (side: string) => Promise<string[]>
     removeMods: (mods: string[], side: string) => void
     openLogsFolder: () => Promise<void>
-    checkUpdate: (side: string) => Promise<void>
+    checkUpdate: (side: string) => void
     log: (f: (event: IpcRendererEvent, level: string, contents: string) => void) => void
     checkUpdateBack: (f: (event: IpcRendererEvent, updatable: boolean) => void) => void
 }

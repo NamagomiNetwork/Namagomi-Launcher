@@ -1,9 +1,13 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {Buttons} from './buttons/Buttons'
 import './Switch.css'
 
 export const Switch = () => {
     const [side, setSide] = React.useState('CLIENT')
+
+    useEffect(() => {
+        window.namagomiAPI.checkUpdate(side)
+    }, [side])
 
     return (
         <div className="container">
