@@ -18,8 +18,7 @@ import {
 import {isNone, isSome, none, some, match as matchO} from 'fp-ts/Option'
 import {NamagomiMod} from './NamagomiMod'
 import {checkSum} from './checkSum'
-
-const log = require('electron-log')
+import {log} from '../../../Logger'
 
 const curseForgeHeaders = {
     headers: {

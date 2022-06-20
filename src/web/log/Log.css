@@ -7,3 +7,8 @@
     bottom: 0;
     background: darkslategrey;
 }
+
+p {
+    margin-left: 5px;
+    color: white;
+}

@@ -2,9 +2,10 @@ import path from 'path'
 import {searchDevtools} from 'electron-search-devtools'
 import {BrowserWindow, app, ipcMain, session} from 'electron'
 import {mainApiRegistry} from './namagomi/api/apiRegister'
+import {log} from './namagomi/Logger'
 
-const log = require('electron-log')
-log.transports.file.archiveLog(log.transports.file.getFile().path)
+const electronLog = require('electron-log')
+electronLog.transports.file.archiveLog(electronLog.transports.file.getFile().path)
 
 const isDev = process.env.NODE_ENV === 'development'
 
@@ -25,6 +26,8 @@ const createWindow = () => {
             preload: path.join(__dirname, 'preload.js')
         }
     })
+
+    log.mainWindow = mainWindow
 
     ipcMain.on('update-title', (_e, arg) => {
         mainWindow.setTitle(`Electron React TypeScript: ${arg}`)

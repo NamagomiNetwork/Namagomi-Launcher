@@ -1,3 +1,5 @@
+import IpcRendererEvent = Electron.IpcRendererEvent
+
 export interface IElectronAPI {
     downloadModFiles: (side: string) => Promise<string[]>
     downloadAllConfigFiles: (side: string) => Promise<void>
@@ -8,6 +10,7 @@ export interface IElectronAPI {
     removeMods: (mods: string[], side: string) => Promise<void>
     isLatestMods: (side: 'CLIENT' | 'SERVER' | '') => Promise<boolean>
     openLogsFolder: () => Promise<void>
+    log: (f: (event: IpcRendererEvent, level: string, contents: string) => void) => void
 }
 
 declare global {

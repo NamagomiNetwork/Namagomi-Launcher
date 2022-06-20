@@ -1,4 +1,5 @@
 import {contextBridge, ipcRenderer} from 'electron'
+import IpcRendererEvent = Electron.IpcRendererEvent
 
 contextBridge.exposeInMainWorld('namagomiAPI', {
     downloadModFiles: (side: string) => ipcRenderer.invoke('downloadModFiles', side),
@@ -9,5 +10,6 @@ contextBridge.exposeInMainWorld('namagomiAPI', {
     getIgnoreList: (side: string) => ipcRenderer.invoke('getIgnoreList', side),
     removeMods: (mods: string[], side: string) => ipcRenderer.send('removeMods', mods, side),
     isLatestMods: (side: string) => ipcRenderer.invoke('isLatestMods', side),
-    openLogsFolder: () => ipcRenderer.send('openLogsFolder')
+    openLogsFolder: () => ipcRenderer.send('openLogsFolder'),
+    log: (callback: (event: IpcRendererEvent, level: string, contents: string) => void) => ipcRenderer.on('log', callback)
 })

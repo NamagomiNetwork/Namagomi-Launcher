@@ -1,8 +1,7 @@
 import {shell} from 'electron'
 import {logsDir} from '../settings/localPath'
 import fs from 'fs'
-
-const log = require('electron-log')
+import {log} from '../Logger'
 
 export async function openLogsFolder() {
     if (!fs.existsSync(logsDir)) {
