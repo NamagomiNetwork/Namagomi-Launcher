@@ -13,9 +13,15 @@ export const Log = () => {
         )
     }, [])
 
+    useEffect(() => {
+        const logElement = document.getElementById('log')
+        if (logElement !== null)
+            logElement.scrollTop = logElement.scrollHeight
+    }, [log])
+
     return (
         <div className="log">
-            <textarea readOnly={true} value={log} wrap={'off'}></textarea>
+            <textarea id={'log'} readOnly={true} value={log} wrap={'off'}></textarea>
         </div>
     )
 }
