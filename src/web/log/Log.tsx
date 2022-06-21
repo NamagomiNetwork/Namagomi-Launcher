@@ -32,7 +32,7 @@ function buildLog(level: string, contents: string) {
 }
 
 function getNow() {
-    const now = Date.now()
+    const now = performance.now()
     const hour = Math.floor(now / 1000 / 60 / 60)
     const min = Math.floor(now / 1000 / 60 % 60)
     const sec = Math.floor(now / 1000 % 60)
