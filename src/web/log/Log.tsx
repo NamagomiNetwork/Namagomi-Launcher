@@ -32,12 +32,11 @@ function buildLog(level: string, contents: string) {
 }
 
 function getNow() {
-    const date = new Date()
-    const y = date.getFullYear()
-    const m = date.getMonth()
-    const d = date.getDay()
-    const h = date.getHours()
-    const min = date.getMinutes()
-    const s = date.getSeconds()
-    return `${y}/${m}/${d} ${h}:${min}:${s}`
+    const now = Date.now()
+    const hour = Math.floor(now / 1000 / 60 / 60)
+    const min = Math.floor(now / 1000 / 60 % 60)
+    const sec = Math.floor(now / 1000 % 60)
+    const millsec = Math.floor(now % 1000)
+
+    return `${hour}:${min}:${sec}.${millsec}`
 }
