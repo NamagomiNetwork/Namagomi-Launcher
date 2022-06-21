@@ -3,7 +3,12 @@ import BrowserWindow = Electron.BrowserWindow
 const electronLog = require('electron-log')
 
 export class log {
-    public static mainWindow: BrowserWindow
+    private static mainWindow: BrowserWindow
+
+    public static initialize(mainWindow: BrowserWindow) {
+        log.mainWindow = mainWindow
+    }
+
     static send = (level: string, contents: string) => log.mainWindow.webContents.send('log', level, contents)
 
     public static info(params: any) {

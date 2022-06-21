@@ -27,7 +27,7 @@ const createWindow = () => {
         }
     })
 
-    log.mainWindow = mainWindow
+    log.initialize(mainWindow)
 
     mainApiRegistry(mainWindow)
 
