@@ -4,6 +4,7 @@ import IpcRendererEvent = Electron.IpcRendererEvent
 
 export const Log = () => {
     const [log, setLog] = React.useState<string>('Logだよ～ん\n|log|log|log|log|\nlogはこちらです\nうるさかったですか？すみません')
+    const [wrap, setWrap] = React.useState<'soft' | 'hard' | 'off'>('off')
 
     useEffect(() => {
         window.namagomiAPI.log((event: IpcRendererEvent, level: string, contents: string) => {
@@ -21,7 +22,14 @@ export const Log = () => {
 
     return (
         <div className="log">
-            <textarea id={'log'} readOnly={true} value={log} wrap={'off'}></textarea>
+            <div className={'wrap'}>
+                <input type={'checkbox'} id={'wrap-switch'} onChange={(e)=> {
+                    setWrap(e.target.checked ? 'soft' : 'off')
+                }}/>
+                <label htmlFor={'wrap-switch'}>wrap</label>
+            </div>
+
+            <textarea id={'log'} readOnly={true} value={log} wrap={wrap}></textarea>
         </div>
     )
 }
