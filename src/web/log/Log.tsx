@@ -22,11 +22,14 @@ export const Log = () => {
 
     return (
         <div className="log">
-            <div className={'wrap'}>
-                <input type={'checkbox'} id={'wrap-switch'} onChange={(e)=> {
-                    setWrap(e.target.checked ? 'soft' : 'off')
-                }}/>
-                <label htmlFor={'wrap-switch'}>wrap</label>
+            <div className="log-header">
+                Log
+                <div className={'wrap'}>
+                    <input type={'checkbox'} id={'wrap-switch'} onChange={(e) => {
+                        setWrap(e.target.checked ? 'soft' : 'off')
+                    }}/>
+                    <label htmlFor={'wrap-switch'}>wrap</label>
+                </div>
             </div>
 
             <textarea id={'log'} readOnly={true} value={log} wrap={wrap}></textarea>

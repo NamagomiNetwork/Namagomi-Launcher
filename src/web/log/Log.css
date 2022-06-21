@@ -5,6 +5,11 @@
     right: 0;
     bottom: 20px;
     background-color: black;
+    color: white;
+}
+
+.log-header {
+    display: flex;
 }
 
 textarea {
