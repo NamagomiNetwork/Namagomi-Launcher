@@ -15,4 +15,5 @@ textarea {
     background: #000000;
     outline: none;
     overflow-y: scroll;
+    font-family: "Yu Gothic UI", serif;
 }

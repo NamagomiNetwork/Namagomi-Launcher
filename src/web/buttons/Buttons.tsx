@@ -1,12 +1,13 @@
 import React, {useState} from 'react'
 import {AddMods} from './AddMods'
+import './Button.css'
 
 type Props = { side: string }
 
 export const Buttons = ({side}: Props) => {
     const [manuallyMods, setManuallyMods] = useState<string[]>([])
     const [disable, setDisable] = useState(false)
-
+    
     async function setup() {
         setDisable(true)
         await window.namagomiAPI.setupNamagomiLauncherProfile(side)
@@ -21,11 +22,16 @@ export const Buttons = ({side}: Props) => {
             <button onClick={async () => {
                 await setup()
                 window.namagomiAPI.checkUpdate(side)
-            }} disabled={disable}>Update
+            }} disabled={disable} className={'update-button'}>Update
             </button>
 
-            <button onClick={() => window.namagomiAPI.OpenFolder(side)}>OpenFolder</button>
-            <button onClick={window.namagomiAPI.openLogsFolder}>OpenLogs</button>
+            <button onClick={() => window.namagomiAPI.OpenFolder(side)} className={'open-folder-button'}>
+                📁OpenFolder
+            </button>
+
+            <button onClick={window.namagomiAPI.openLogsFolder} className={'open-logs-button'}>
+                📝OpenLogs
+            </button>
 
             <br/>
             {
