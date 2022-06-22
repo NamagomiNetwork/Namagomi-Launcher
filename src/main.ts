@@ -1,8 +1,8 @@
 import path from 'path'
 import {searchDevtools} from 'electron-search-devtools'
 import {BrowserWindow, app, ipcMain, session} from 'electron'
-import {mainApiRegistry} from './namagomi/api/apiRegister'
-import {log} from './namagomi/Logger'
+import {mainApiRegistry} from './main/namagomi/api/apiRegister'
+import {log} from './main/namagomi/Logger'
 
 const electronLog = require('electron-log')
 electronLog.transports.file.archiveLog(electronLog.transports.file.getFile().path)
