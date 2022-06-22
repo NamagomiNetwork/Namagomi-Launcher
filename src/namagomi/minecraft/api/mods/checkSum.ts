@@ -13,7 +13,6 @@ export async function checkSum(contents: string, hash: string, algorithm: string
 
 function calculateHash(filePath: string, algorithm: string) {
     return new Promise((resolve, reject) => {
-
         const shasum = crypto.createHash(algorithm)
         let stream = fs.createReadStream(filePath)
         stream.on('data', chunk => shasum.update(chunk))

@@ -160,37 +160,50 @@ async function downloadModFile(namagomiMod: NamagomiMod, side: string) {
     setupLauncherDirs(side)
 
     if (!fs.existsSync(filePath) && isSome(namagomiMod.downloadUrl)) {
-        await pipeline(
-            (await fetch(namagomiMod.downloadUrl.value)).body,
-            createWriteStream(filePath)
-        ).then(async () => {
-            if (isSome(namagomiMod.curseForge)) {
-                const isMatch = await namagomiMod.curseForge.value.hashes.reduce(async (result, hash) => {
-                    if (await result) {
-                        switch (hash.algo) {
-                            case 1:
-                                return checkSum(filePath, hash.value, 'sha1')
-                            case 2:
-                                return checkSum(filePath, hash.value, 'md5')
+        const res = await fetch(namagomiMod.downloadUrl.value)
+        switch (res.status) {
+            case 200:
+                await pipeline(res.body, createWriteStream(filePath))
+                if (isSome(namagomiMod.curseForge)) {
+                    const isMatch = await namagomiMod.curseForge.value.hashes.reduce(async (result, hash) => {
+                        if (await result) {
+                            return  isHashMatch(hash.value, hash.algo, filePath)
                         }
-                    }
-                    return Promise.resolve(false)
-                }, Promise.resolve(true))
-                if (!isMatch)
-                    log.error(`hash miss match: ${namagomiMod.fileName}`)
-            }
-            log.info('downloaded: ' + namagomiMod.fileName)
-        }).catch(err => {
-            log.error(err)
-            matchO(
-                () => {
-                    log.error('failed: ' + namagomiMod.fileName + ' None')
-                },
-                (url: string) => {
-                    log.error('failed: ' + namagomiMod.fileName + ' ' + url)
+                        return Promise.resolve(false)
+                    }, Promise.resolve(true))
+                    if (!isMatch)
+                        log.warn(`hash miss match: ${namagomiMod.fileName}`)
                 }
-            )(namagomiMod.downloadUrl)
-        })
+                log.info('downloaded: ' + namagomiMod.fileName)
+                return
+            case 429:
+                log.error(`file downloading error: Wait a while and try again.`)
+                log.error(`\tstate: ${res.status}`)
+                log.error(`\tfile name: ${namagomiMod.fileName}`)
+                log.error(`\turl: ${namagomiMod.downloadUrl.value}`)
+                return
+            default:
+                log.error(`file downloading error: unexpected error`)
+                log.error(`\tstate: ${res.status}`)
+                log.error(`\tfile name: ${namagomiMod.fileName}`)
+                log.error(`\turl: ${namagomiMod.downloadUrl.value}`)
+                return
+        }
+    }
+}
+
+function isHashMatch(hash: string, algorithm: number, file: string) {
+    switch (algorithm) {
+        case 1:
+            return checkSum(file, hash, 'sha1')
+        case 2:
+            return checkSum(file, hash, 'md5')
+        default:
+            log.warn('unexpected algorithm')
+            log.warn(`\thash: ${hash}`)
+            log.warn(`\talgorithm: ${algorithm}`)
+            log.warn(`\tfile: ${file}`)
+            return Promise.resolve(false)
     }
 }
 
