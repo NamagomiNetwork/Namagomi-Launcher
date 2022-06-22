@@ -19,12 +19,16 @@ input[type=checkbox] {
 label {
     width: 20px;
     height: 20px;
+    margin: 5px;
+    user-select: none;
 }
 
 input[type=checkbox] + label {
-    background-image: url("/assets/resource/wrap_icon.png");
-    margin: 5px;
-    user-select: none;
+    border: black 1px solid;
+}
+
+input[type=checkbox]:checked + label {
+    border: white 1px solid;
 }
 
 textarea {
