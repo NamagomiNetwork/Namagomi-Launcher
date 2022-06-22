@@ -1,8 +1,8 @@
 import React from 'react'
 import './App.css'
-import {Version} from './Version'
 import {Switch} from './Switch'
 import {Log} from './log/Log'
+import {Footer} from './footer/Footer'
 
 export const App = () => {
     return (
@@ -11,9 +11,7 @@ export const App = () => {
                 <Switch/>
                 <Log/>
             </div>
-            <footer>
-                <Version/>
-            </footer>
+            <Footer/>
         </div>
     )
 }

@@ -2,8 +2,7 @@ import UUID from 'uuidjs'
 import path from 'path'
 import {app} from 'electron'
 import * as fs from 'fs'
-
-const log = require('electron-log')
+import {log} from '../../Logger'
 
 type SetPattern =
     'uniqueId'

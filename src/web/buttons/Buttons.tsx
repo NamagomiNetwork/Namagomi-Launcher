@@ -1,17 +1,13 @@
-import React, {useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import {AddMods} from './AddMods'
+import './Button.css'
 
 type Props = { side: string }
 
 export const Buttons = ({side}: Props) => {
-    const [updateAvailable, setUpdateAvailable] = useState(false)
     const [manuallyMods, setManuallyMods] = useState<string[]>([])
     const [disable, setDisable] = useState(false)
-
-    useEffect(() => {
-        checkUpdate()
-    })
-
+    
     async function setup() {
         setDisable(true)
         await window.namagomiAPI.setupNamagomiLauncherProfile(side)
@@ -21,25 +17,21 @@ export const Buttons = ({side}: Props) => {
         setDisable(false)
     }
 
-    function checkUpdate() {
-        window.namagomiAPI.isLatestMods('CLIENT').then((isLatest) => {
-            setUpdateAvailable(!isLatest)
-        })
-    }
-
     return (
         <div id={'buttons'}>
             <button onClick={async () => {
                 await setup()
-                checkUpdate()
-            }} disabled={disable}>Update
+                window.namagomiAPI.checkUpdate(side)
+            }} disabled={disable} className={'update-button'}>Update
             </button>
 
-            <button
-                onClick={() => checkUpdate()}>updatable: {updateAvailable ? '更新可能' : '最新の状態です'}</button>
+            <button onClick={() => window.namagomiAPI.OpenFolder(side)} className={'open-folder-button'}>
+                📁OpenFolder
+            </button>
 
-            <button onClick={() => window.namagomiAPI.OpenFolder(side)}>OpenFolder</button>
-            <button onClick={window.namagomiAPI.openLogsFolder}>OpenLogs</button>
+            <button onClick={window.namagomiAPI.openLogsFolder} className={'open-logs-button'}>
+                📝OpenLogs
+            </button>
 
             <br/>
             {

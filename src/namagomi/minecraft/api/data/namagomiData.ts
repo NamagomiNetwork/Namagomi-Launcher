@@ -5,8 +5,7 @@ import fetch from 'electron-fetch'
 import {namagomiDataFileUrlBase, namagomiFileUrlBase} from '../../../settings/config'
 import path from 'path'
 import {mainDir, namagomiCache} from '../../../settings/localPath'
-
-const log = require('electron-log')
+import {log} from '../../../Logger'
 
 export interface NamagomiCache {
     data: {

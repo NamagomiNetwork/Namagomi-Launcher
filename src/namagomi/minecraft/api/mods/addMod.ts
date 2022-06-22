@@ -2,8 +2,7 @@ import {modsDir, namagomiIgnore} from '../../../settings/localPath'
 import fs from 'fs'
 import {NamagomiIgnore} from './NamagomiIgnore'
 import path from 'path'
-
-const log = require('electron-log')
+import {log} from '../../../Logger'
 
 export function addMods(paths: string[], names: string[], side: string) {
     const namagomiIgnoreJson = getIgnoreList(side)

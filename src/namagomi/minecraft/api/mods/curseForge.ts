@@ -18,8 +18,7 @@ import {
 import {isNone, isSome, none, some, match as matchO} from 'fp-ts/Option'
 import {NamagomiMod} from './NamagomiMod'
 import {checkSum} from './checkSum'
-
-const log = require('electron-log')
+import {log} from '../../../Logger'
 
 const curseForgeHeaders = {
     headers: {
@@ -148,12 +147,12 @@ async function updateModCache(side: string) {
     fs.writeFileSync(namagomiCache(side), JSON.stringify(cacheJson))
 }
 
-export async function isLatestMods(side: 'CLIENT' | 'SERVER' | '') {
+export async function checkUpdate(side: 'CLIENT' | 'SERVER' | '') {
     setupLauncherDirs(side)
     const cacheJson = JSON.parse(fs.readFileSync(namagomiCache(side), 'utf8')) as NamagomiCache
 
     const tree = await new GitTree().build('NamagomiNetwork', 'Namagomi-mod', 'main')
-    return cacheJson.mods === tree.getData('mod/mod_list.json').data.sha
+    return cacheJson.mods !== tree.getData('mod/mod_list.json').data.sha
 }
 
 async function downloadModFile(namagomiMod: NamagomiMod, side: string) {
@@ -201,7 +200,6 @@ export async function downloadModFiles(side: 'CLIENT' | 'SERVER' | '') {
     if (isSome(namagomiModList)) {
         const namagomiMods = await Promise.all(namagomiModList.value.map((n) => getModFileUrl(n, side)))
         const manuallyFiles = [] as string[]
-        log.info('namagomiMods')
         await Promise.all(
             namagomiMods.map(async (namagomiMod: NamagomiMod) => {
                 matchO<string, void>(

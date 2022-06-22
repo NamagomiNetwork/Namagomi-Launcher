@@ -7,7 +7,7 @@ type Props = {
 }
 
 function removeMod(mod: string, side: string) {
-    window.namagomiAPI.removeMods([mod], side).then()
+    window.namagomiAPI.removeMods([mod], side)
 }
 
 export const ModList = ({files, freshList, side}: Props) => (

@@ -1,13 +1,17 @@
 import {contextBridge, ipcRenderer} from 'electron'
+import IpcRendererEvent = Electron.IpcRendererEvent
 
 contextBridge.exposeInMainWorld('namagomiAPI', {
     downloadModFiles: (side: string) => ipcRenderer.invoke('downloadModFiles', side),
-    downloadAllConfigFiles: (side: string) => ipcRenderer.invoke('downloadAllConfigFiles', side),
-    setupNamagomiLauncherProfile: (side: string) => ipcRenderer.invoke('setupNamagomiLauncherProfile', side),
-    OpenFolder: (side: string) => ipcRenderer.invoke('OpenFolder', side),
-    addMods: (paths: string[], names: string[], side: string) => ipcRenderer.invoke('addMods', paths, names, side),
+    downloadAllConfigFiles: (side: string) => ipcRenderer.send('downloadAllConfigFiles', side),
+    setupNamagomiLauncherProfile: (side: string) => ipcRenderer.send('setupNamagomiLauncherProfile', side),
+    OpenFolder: (side: string) => ipcRenderer.send('OpenFolder', side),
+    addMods: (paths: string[], names: string[], side: string) => ipcRenderer.send('addMods', paths, names, side),
     getIgnoreList: (side: string) => ipcRenderer.invoke('getIgnoreList', side),
-    removeMods: (mods: string[], side: string) => ipcRenderer.invoke('removeMods', mods, side),
+    removeMods: (mods: string[], side: string) => ipcRenderer.send('removeMods', mods, side),
     isLatestMods: (side: string) => ipcRenderer.invoke('isLatestMods', side),
-    openLogsFolder: () => ipcRenderer.invoke('openLogsFolder')
+    openLogsFolder: () => ipcRenderer.send('openLogsFolder'),
+    log: (callback: (event: IpcRendererEvent, level: string, contents: string) => void) => ipcRenderer.on('log', callback),
+    checkUpdate: (side: string) => ipcRenderer.send('checkUpdate', side),
+    checkUpdateBack: (callback: (event: IpcRendererEvent, updatable: boolean) => void) => ipcRenderer.on('checkUpdateBack', callback)
 })
