@@ -4,12 +4,27 @@
     top: 0;
     right: 0;
     bottom: 20px;
-    background-color: black;
+    background-color: #000000;
     color: white;
 }
 
 .log-header {
     display: flex;
+}
+
+input[type=checkbox] {
+    display: none;
+}
+
+label {
+    width: 20px;
+    height: 20px;
+}
+
+input[type=checkbox] + label {
+    background-image: url("/assets/resource/wrap_icon.png");
+    margin: 5px;
+    user-select: none;
 }
 
 textarea {
