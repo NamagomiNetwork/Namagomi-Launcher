@@ -2,7 +2,7 @@ import UUID from 'uuidjs'
 import path from 'path'
 import {app} from 'electron'
 import * as fs from 'fs'
-import {log} from '../../Logger'
+import {log} from '../../../../generic/Logger'
 
 type SetPattern =
     'uniqueId'
