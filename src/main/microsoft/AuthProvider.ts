@@ -1,5 +1,5 @@
 import {AuthenticationResult, CryptoProvider, LogLevel, PublicClientApplication} from '@azure/msal-node'
-import {AuthData} from './AuthData'
+import {AuthData} from '../../@types/AuthData'
 import {protocol} from 'electron'
 import url from 'url'
 import path from 'path'

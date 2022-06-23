@@ -8,7 +8,7 @@ import {mainDir} from '../settings/localPath'
 import {addMods, getIgnoreList, removeMods} from '../minecraft/api/mods/addMod'
 import {openLogsFolder} from './logs'
 import BrowserWindow = Electron.BrowserWindow
-import {apply, login} from '../../../web/microsoft/OAuth/AuthProvider'
+import {apply, login} from '../../microsoft/AuthProvider'
 import {log} from '../../../generic/Logger'
 
 export function mainApiRegistry(mainWindow: BrowserWindow) {

@@ -3,7 +3,7 @@ import './App.css'
 import {Switch} from './Switch'
 import {Log} from './log/Log'
 import {Footer} from './footer/Footer'
-import {Auth} from './microsoft/OAuth/Auth'
+import {Auth} from './microsoft/Auth'
 
 export const App = () => {
     return (
