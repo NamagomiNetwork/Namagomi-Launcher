@@ -8,6 +8,8 @@ import {mainDir} from '../settings/localPath'
 import {addMods, getIgnoreList, removeMods} from '../minecraft/api/mods/addMod'
 import {openLogsFolder} from './logs'
 import BrowserWindow = Electron.BrowserWindow
+import {apply, login} from '../../../web/microsoft/OAuth/AuthProvider'
+import {log} from '../../../generic/Logger'
 
 export function mainApiRegistry(mainWindow: BrowserWindow) {
     ipcMain.on('setupNamagomiLauncherProfile', (e, side: 'CLIENT' | 'SERVER' | '') => {
@@ -42,5 +44,25 @@ export function mainApiRegistry(mainWindow: BrowserWindow) {
 
     ipcMain.on('checkUpdate', async (e, side: 'CLIENT' | 'SERVER' | '') => {
         mainWindow.webContents.send('checkUpdateBack', await checkUpdate(side))
+    })
+
+    ipcMain.on('login', async () => {
+        const data = apply()
+        const account = await login(mainWindow, data)
+
+        await mainWindow.loadFile('../../index.html')
+
+        if (account !== null) {
+            log.debug(`name: ${account.name}`)
+            log.debug(`username: ${account.username}`)
+            log.debug(`${account.idTokenClaims?.name}`)
+        }else {
+            log.error('account is null')
+        }
+        // mainWindow.webContents.send('showWelcomeMessage', account)
+    })
+
+    ipcMain.on('logout', async () => {
+
     })
 }

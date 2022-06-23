@@ -13,5 +13,6 @@ contextBridge.exposeInMainWorld('namagomiAPI', {
     openLogsFolder: () => ipcRenderer.send('openLogsFolder'),
     log: (callback: (event: IpcRendererEvent, level: string, contents: string) => void) => ipcRenderer.on('log', callback),
     checkUpdate: (side: string) => ipcRenderer.send('checkUpdate', side),
-    checkUpdateBack: (callback: (event: IpcRendererEvent, updatable: boolean) => void) => ipcRenderer.on('checkUpdateBack', callback)
+    checkUpdateBack: (callback: (event: IpcRendererEvent, updatable: boolean) => void) => ipcRenderer.on('checkUpdateBack', callback),
+    login: () => ipcRenderer.send('login')
 })

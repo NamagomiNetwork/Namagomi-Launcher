@@ -1,15 +1,15 @@
 import React from 'react'
-import {log} from '../../../generic/Logger'
 
-function Auth() {
+export function Auth() {
 
     return (
         <div className={'auth'}>
-            <button className={'login-button'}>login</button>
+            <button className={'login-button'} onClick={login}>login</button>
         </div>
     )
 }
 
 function login() {
-    log.info('login')
+    console.info('login')
+    window.namagomiAPI.login()
 }
