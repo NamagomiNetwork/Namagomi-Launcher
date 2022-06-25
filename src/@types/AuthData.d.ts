@@ -21,7 +21,7 @@ export declare type AuthCodeRequest = {
 }
 
 export declare type PkceCodes = {
-    challengeMethod: string
-    verifier: string
-    challenge: string
+    readonly challengeMethod: string
+    readonly verifier: string
+    readonly challenge: string
 }
