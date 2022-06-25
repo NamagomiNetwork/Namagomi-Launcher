@@ -59,110 +59,47 @@ export function set(key: SetPattern, value: string) {
         switch (key) {
             case 'uniqueId':
                 return {
-                    uniqueId: value,
-                    created: profile.created,
-                    gameDir: profile.gameDir,
-                    icon: profile.icon,
-                    javaArgs: profile.javaArgs,
-                    lastUsed: profile.lastUsed,
-                    lastVersionId: profile.lastVersionId,
-                    name: profile.name,
-                    type: profile.type
+                    ...profile,
+                    uniqueId: value
                 }
             case 'created':
                 return {
-                    uniqueId: profile.uniqueId,
-                    created: value,
-                    gameDir: profile.gameDir,
-                    icon: profile.icon,
-                    javaArgs: profile.javaArgs,
-                    lastUsed: profile.lastUsed,
-                    lastVersionId: profile.lastVersionId,
-                    name: profile.name,
-                    type: profile.type
+                    ...profile,
+                    created: value
                 }
             case 'gameDir':
                 return {
-                    uniqueId: profile.uniqueId,
-                    created: profile.created,
-                    gameDir: value,
-                    icon: profile.icon,
-                    javaArgs: profile.javaArgs,
-                    lastUsed: profile.lastUsed,
-                    lastVersionId: profile.lastVersionId,
-                    name: profile.name,
-                    type: profile.type
+                    ...profile,
+                    gameDir: value
                 }
             case 'icon':
                 return {
-                    uniqueId: profile.uniqueId,
-                    created: profile.created,
-                    gameDir: profile.gameDir,
-                    icon: value,
-                    javaArgs: profile.javaArgs,
-                    lastUsed: profile.lastUsed,
-                    lastVersionId: profile.lastVersionId,
-                    name: profile.name,
-                    type: profile.type
+                    ...profile,
+                    icon: value
                 }
             case 'javaArgs':
                 return {
-                    uniqueId: profile.uniqueId,
-                    created: profile.created,
-                    gameDir: profile.gameDir,
-                    icon: profile.icon,
-                    javaArgs: value,
-                    lastUsed: profile.lastUsed,
-                    lastVersionId: profile.lastVersionId,
-                    name: profile.name,
-                    type: profile.type
+                    ...profile,
+                    javaArgs: value
                 }
             case 'lastUsed':
                 return {
-                    uniqueId: profile.uniqueId,
-                    created: profile.created,
-                    gameDir: profile.gameDir,
-                    icon: profile.icon,
-                    javaArgs: profile.javaArgs,
-                    lastUsed: value,
-                    lastVersionId: profile.lastVersionId,
-                    name: profile.name,
-                    type: profile.type
+                    ...profile,
+                    lastUsed: value
                 }
             case 'lastVersionId':
                 return {
-                    uniqueId: profile.uniqueId,
-                    created: profile.created,
-                    gameDir: profile.gameDir,
-                    icon: profile.icon,
-                    javaArgs: profile.javaArgs,
-                    lastUsed: profile.lastUsed,
-                    lastVersionId: value,
-                    name: profile.name,
-                    type: profile.type
+                    ...profile,
+                    lastVersionId: value
                 }
             case 'name':
                 return {
-                    uniqueId: profile.uniqueId,
-                    created: profile.created,
-                    gameDir: profile.gameDir,
-                    icon: profile.icon,
-                    javaArgs: profile.javaArgs,
-                    lastUsed: profile.lastUsed,
-                    lastVersionId: profile.lastVersionId,
-                    name: value,
-                    type: profile.type
+                    ...profile,
+                    name: value
                 }
             case 'type':
                 return {
-                    uniqueId: profile.uniqueId,
-                    created: profile.created,
-                    gameDir: profile.gameDir,
-                    icon: profile.icon,
-                    javaArgs: profile.javaArgs,
-                    lastUsed: profile.lastUsed,
-                    lastVersionId: profile.lastVersionId,
-                    name: profile.name,
+                    ...profile,
                     type: value
                 }
         }
