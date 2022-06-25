@@ -1,23 +1,23 @@
 import {AccountInfo, CryptoProvider, PublicClientApplication} from '@azure/msal-node'
 
 export declare type AuthData = {
-    clientApplication: PublicClientApplication
-    cryptoProvider: CryptoProvider
-    authCodeUrlParams: AuthCodeUrlParams
-    authCodeRequest: AuthCodeRequest
-    pkceCodes: PkceCodes
-    account: AccountInfo | null
+    readonly clientApplication: PublicClientApplication
+    readonly cryptoProvider: CryptoProvider
+    readonly authCodeUrlParams: AuthCodeUrlParams
+    readonly authCodeRequest: AuthCodeRequest
+    readonly pkceCodes: PkceCodes
+    readonly account: AccountInfo | null
 }
 
 export declare type AuthCodeUrlParams = {
-    scopes: string[]
-    redirectUri: string
+    readonly scopes: string[]
+    readonly redirectUri: string
 }
 
 export declare type AuthCodeRequest = {
-    scopes: string[]
-    redirectUri: string
-    code: null
+    readonly scopes: string[]
+    readonly redirectUri: string
+    readonly code: null
 }
 
 export declare type PkceCodes = {
