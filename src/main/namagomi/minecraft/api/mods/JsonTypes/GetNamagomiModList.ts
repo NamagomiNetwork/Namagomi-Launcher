@@ -1,5 +1,5 @@
 import {none, Option, some} from 'fp-ts/Option'
-import {log} from '../../../../Logger'
+import {log} from '../../../../../../generic/Logger'
 
 export type GetNamagomiModList = GetNamagomiMod[]
 

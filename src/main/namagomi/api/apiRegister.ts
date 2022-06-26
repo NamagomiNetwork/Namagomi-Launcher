@@ -7,7 +7,12 @@ import {downloadAllDataFiles} from '../minecraft/api/data/namagomiData'
 import {mainDir} from '../settings/localPath'
 import {addMods, getIgnoreList, removeMods} from '../minecraft/api/mods/addMod'
 import {openLogsFolder} from './logs'
-import BrowserWindow = Electron.BrowserWindow
+import {BrowserWindow} from 'electron'
+import {apply, login, logout} from '../../microsoft/AuthProvider'
+import {log} from '../../../generic/Logger'
+import {AuthData} from '../../../@types/AuthData'
+
+var authData: AuthData = apply()
 
 export function mainApiRegistry(mainWindow: BrowserWindow) {
     ipcMain.on('setupNamagomiLauncherProfile', (e, side: 'CLIENT' | 'SERVER' | '') => {
@@ -42,5 +47,31 @@ export function mainApiRegistry(mainWindow: BrowserWindow) {
 
     ipcMain.on('checkUpdate', async (e, side: 'CLIENT' | 'SERVER' | '') => {
         mainWindow.webContents.send('checkUpdateBack', await checkUpdate(side))
+    })
+
+    ipcMain.on('login', async () => {
+        const win = new BrowserWindow({ width: 800, height: 600 })
+        const data = apply()
+        authData = await login(win, data)
+        win.close()
+
+        if (authData.account !== null) {
+            log.debug(`name: ${authData.account.name}`)
+            log.debug(`username: ${authData.account.username}`)
+            log.debug(`environment: ${authData.account.environment}`)
+        }else {
+            log.error('account is null')
+        }
+
+        // mainWindow.webContents.send('showWelcomeMessage', account)
+    })
+
+    ipcMain.on('logout', async () => {
+        const accounts = await authData.clientApplication.getTokenCache().getAllAccounts()
+        log.debug(`accounts: ${accounts.length}`)
+        accounts.map(account => {
+            log.debug(`name: ${account.name}`)
+        })
+        authData = await logout(authData)
     })
 }

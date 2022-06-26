@@ -1,7 +1,7 @@
 import {apply, set, build} from "./LauncherProfileBuilder"
 import {mainDir} from "../../settings/localPath"
 import {pipe} from "fp-ts/function";
-import {log} from '../../Logger'
+import {log} from '../../../../generic/Logger'
 
 const namagomiBase64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAAAAADmVT4XAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABFSURBVHhe7c6hEQAgDATBQK2URbGYDC4ChciuefUzFwAAAAAAAABAeyP32rmVlVt5/c/cbwQIECBAgAABAAAAAABAdxEHuD0CIPKU7VAAAAAASUVORK5CYII="
 

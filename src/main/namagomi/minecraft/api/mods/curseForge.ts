@@ -18,7 +18,7 @@ import {
 import {isNone, isSome, none, some, match as matchO} from 'fp-ts/Option'
 import {NamagomiMod} from './NamagomiMod'
 import {checkSum} from './checkSum'
-import {log} from '../../../Logger'
+import {log} from '../../../../../generic/Logger'
 
 const curseForgeHeaders = {
     headers: {

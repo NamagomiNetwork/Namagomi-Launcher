@@ -2,6 +2,8 @@ import BrowserWindow = Electron.BrowserWindow
 
 const electronLog = require('electron-log')
 
+type LogLevel = 'debug' | 'info' | 'warn' | 'error'
+
 export class log {
     private static mainWindow: BrowserWindow
 
@@ -29,5 +31,22 @@ export class log {
     public static debug(params: any) {
         electronLog.debug(params)
         log.send('DEBUG', params.toString())
+    }
+
+    public static log(loglevel: LogLevel,params: any) {
+        switch (loglevel) {
+            case 'debug':
+                log.debug(params)
+                break
+            case 'info':
+                log.info(params)
+                break
+            case 'warn':
+                log.warn(params)
+                break
+            case 'error':
+                log.error(params)
+                break
+        }
     }
 }
