@@ -63,11 +63,25 @@ export function apply(): AuthData {
 
 export async function login(authWindow: Electron.BrowserWindow, authData: AuthData) {
     const authResult = await getTokenInteractive(authWindow, authData)
-    return handleResponse(authResult, authData)
+    const res = await handleResponse(authResult, authData)
+    return {
+        ...authData,
+        account: res
+    }
 }
 
-function handleResponse(response: AuthenticationResult | null, authData: AuthData) {
-    return response !== null ? response.account : getAccount(authData)
+export async function logout(authData: AuthData) {
+    if (authData.account) {
+        await authData.clientApplication.getTokenCache().removeAccount(authData.account);
+    }
+    return {
+        ...authData,
+        account: null
+    }
+}
+
+async function handleResponse(response: AuthenticationResult | null, authData: AuthData) {
+    return response !== null ? response.account : await getAccount(authData)
 }
 
 async function getAccount(authData: AuthData) {
@@ -114,8 +128,6 @@ async function getTokenInteractive(authWindow: Electron.BrowserWindow, authData:
         code: authCode,
         codeVerifier: verifier
     }
-
-    console.log(request)
 
     return await authData.clientApplication.acquireTokenByCode(request)
 }

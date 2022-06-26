@@ -13,6 +13,7 @@ export interface IElectronAPI {
     log: (f: (event: IpcRendererEvent, level: string, contents: string) => void) => void
     checkUpdateBack: (f: (event: IpcRendererEvent, updatable: boolean) => void) => void
     login: () => void
+    logout: () => void
 }
 
 declare global {
