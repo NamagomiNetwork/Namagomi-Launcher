@@ -7,7 +7,7 @@ import {downloadAllDataFiles} from '../minecraft/api/data/namagomiData'
 import {mainDir} from '../settings/localPath'
 import {addMods, getIgnoreList, removeMods} from '../minecraft/api/mods/addMod'
 import {openLogsFolder} from './logs'
-import BrowserWindow = Electron.BrowserWindow
+import {BrowserWindow} from 'electron'
 import {apply, login} from '../../microsoft/AuthProvider'
 import {log} from '../../../generic/Logger'
 
@@ -47,18 +47,20 @@ export function mainApiRegistry(mainWindow: BrowserWindow) {
     })
 
     ipcMain.on('login', async () => {
+        const win = new BrowserWindow({ width: 800, height: 600 })
         const data = apply()
-        const account = await login(mainWindow, data)
-
-        await mainWindow.loadFile('../../index.html')
+        const account = await login(win, data)
 
         if (account !== null) {
             log.debug(`name: ${account.name}`)
             log.debug(`username: ${account.username}`)
-            log.debug(`${account.idTokenClaims?.name}`)
+            log.debug(`environment: ${account.environment}`)
+            log.debug(`${account.idTokenClaims}`)
         }else {
             log.error('account is null')
         }
+
+        win.close()
         // mainWindow.webContents.send('showWelcomeMessage', account)
     })
 

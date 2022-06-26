@@ -1,8 +1,9 @@
 import {AuthenticationResult, CryptoProvider, LogLevel, PublicClientApplication} from '@azure/msal-node'
-import {AuthData} from '../../@types/AuthData'
+import {AuthCodeRequest, AuthCodeUrlParams, AuthData, PkceCodes} from '../../@types/AuthData'
 import {protocol} from 'electron'
 import url from 'url'
 import path from 'path'
+
 require('dotenv').config()
 
 const CUSTOM_FILE_PROTOCOL_NAME = process.env.REDIRECT_URI!.split(':')[0]
@@ -30,21 +31,21 @@ export function apply(): AuthData {
 
     const cryptoProvider = new CryptoProvider()
 
-    const requestScopes = ['openid', 'profile', 'User.Read']
+    const requestScopes = ['XboxLive.signin', 'offline_access']
     const redirectUri = process.env.REDIRECT_URI!
 
-    const authCodeUrlParams = {
+    const authCodeUrlParams: AuthCodeUrlParams = {
         scopes: requestScopes,
         redirectUri: redirectUri
     }
 
-    const authCodeRequest = {
+    const authCodeRequest: AuthCodeRequest = {
         scopes: requestScopes,
         redirectUri: redirectUri,
         code: null
     }
 
-    const pkceCodes = {
+    const pkceCodes: PkceCodes = {
         challengeMethod: 'S256',
         verifier: '',
         challenge: ''
@@ -66,25 +67,25 @@ export async function login(authWindow: Electron.BrowserWindow, authData: AuthDa
 }
 
 function handleResponse(response: AuthenticationResult | null, authData: AuthData) {
-    return response !== null ? response.account : getAccount(authData);
+    return response !== null ? response.account : getAccount(authData)
 }
 
 async function getAccount(authData: AuthData) {
-    const cache = authData.clientApplication.getTokenCache();
-    const currentAccounts = await cache.getAllAccounts();
+    const cache = authData.clientApplication.getTokenCache()
+    const currentAccounts = await cache.getAllAccounts()
 
     if (currentAccounts === null) {
-        console.log('No accounts detected');
-        return null;
+        console.log('No accounts detected')
+        return null
     }
 
     if (currentAccounts.length > 1) {
-        console.log('Multiple accounts detected, need to add choose account code.');
-        return currentAccounts[0];
+        console.log('Multiple accounts detected, need to add choose account code.')
+        return currentAccounts[0]
     } else if (currentAccounts.length === 1) {
-        return currentAccounts[0];
+        return currentAccounts[0]
     } else {
-        return null;
+        return null
     }
 }
 
@@ -107,16 +108,20 @@ async function getTokenInteractive(authWindow: Electron.BrowserWindow, authData:
 
     const authCode = await listenForAuthCode(authCodeUrl, authWindow)
 
-    return await authData.clientApplication.acquireTokenByCode({
+    const request = {
         ...authData.authCodeRequest,
         scopes: authData.authCodeUrlParams.scopes,
         code: authCode,
         codeVerifier: verifier
-    })
+    }
+
+    console.log(request)
+
+    return await authData.clientApplication.acquireTokenByCode(request)
 }
 
-function listenForAuthCode(navigateUrl: string, authWindow: Electron.BrowserWindow) {
-    authWindow.loadURL(navigateUrl).then()
+async function listenForAuthCode(navigateUrl: string, authWindow: Electron.BrowserWindow) {
+    await authWindow.loadURL(navigateUrl)
 
     return new Promise((resolve: (authCode: string) => void, reject) => {
         authWindow.webContents.on('will-redirect', (event, responseUrl) => {
