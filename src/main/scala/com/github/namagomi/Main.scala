@@ -11,7 +11,7 @@ import scalafx.scene.paint.Color.*
 import scalafx.scene.text.Text
 
 object ScalaFXHelloWorld extends JFXApp3 {
-  override def start(): Unit = {
+  override def start(): Unit =
     stage = new JFXApp3.PrimaryStage {
       //    initStyle(StageStyle.Unified)
       title = "ScalaFX Hello World"
@@ -44,5 +44,4 @@ object ScalaFXHelloWorld extends JFXApp3 {
         }
       }
     }
-  }
 }
