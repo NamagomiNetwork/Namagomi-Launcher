@@ -4,7 +4,10 @@ version := "0.1"
 
 scalaVersion := "3.1.3"
 
-libraryDependencies += "org.scalafx" %% "scalafx" % "16.0.0-R24"
+libraryDependencies ++= Seq(
+  "org.scalafx" %% "scalafx" % "16.0.0-R24",
+  "com.softwaremill.sttp.client3" %% "core" % "3.6.2",
+)
 
 libraryDependencies ++= {
   // Determine OS version of JavaFX binaries
