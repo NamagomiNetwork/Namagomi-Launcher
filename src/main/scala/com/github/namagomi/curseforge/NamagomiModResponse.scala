@@ -1,25 +1,15 @@
 package com.github.namagomi.curseforge
 
-type Side = "SERVER" | "CLIENT" | ""
-
-class NamagomiModResponse
+case class NamagomiModResponse
 (
-  val side: Side,
-  val fileName: String,
-  val downloadUrl: String,
-  val curseForge: Option[CurseForge]
+  side: String,
+  fileName: String,
+  downloadUrl: Option[String],
+  hashes: Option[List[Hash]]
 )
 
-class CurseForge
+case class Hash
 (
-  val id: String,
-  val gameVersion: String,
-  val fileId: String,
-  val hashes: List[Hash]
-)
-
-class Hash
-(
-  val value: String,
-  val algo: Int
+  value: String,
+  algo: Int
 )
