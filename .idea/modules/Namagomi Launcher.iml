@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module external.linked.project.id="namagomi-launcher [file:/C:/Users/i2011430/OneDrive%20-%20独立行政法人%20国立高等専門学校機構/ドキュメント/application/Scala/Namagomi%20Launcher/]" external.linked.project.path="$MODULE_DIR$/../.." external.root.project.path="$MODULE_DIR$/../.." external.system.id="SBT" type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_17">
-    <output url="file://$MODULE_DIR$/../../target/scala-3.1.3/classes" />
-    <output-test url="file://$MODULE_DIR$/../../target/scala-3.1.3/test-classes" />
+    <output url="file://$MODULE_DIR$/../../target/scala-2.13/classes" />
+    <output-test url="file://$MODULE_DIR$/../../target/scala-2.13/test-classes" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../..">
       <sourceFolder url="file://$MODULE_DIR$/../../src/main/scala" isTestSource="false" />
@@ -11,10 +11,18 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="sbt: com.softwaremill.sttp.client3:core_3:3.6.2:jar" level="project" />
-    <orderEntry type="library" name="sbt: com.softwaremill.sttp.model:core_3:1.4.26:jar" level="project" />
-    <orderEntry type="library" name="sbt: com.softwaremill.sttp.shared:core_3:1.3.5:jar" level="project" />
-    <orderEntry type="library" name="sbt: com.softwaremill.sttp.shared:ws_3:1.3.5:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.chuusai:shapeless_2.13:2.3.7:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.softwaremill.sttp.client3:circe_2.13:3.6.2:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.softwaremill.sttp.client3:core_2.13:3.6.2:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.softwaremill.sttp.client3:json-common_2.13:3.6.2:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.softwaremill.sttp.model:core_2.13:1.4.26:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.softwaremill.sttp.shared:core_2.13:1.3.5:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.softwaremill.sttp.shared:ws_2.13:1.3.5:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.circe:circe-core_2.13:0.14.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.circe:circe-generic_2.13:0.14.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.circe:circe-jawn_2.13:0.14.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.circe:circe-numbers_2.13:0.14.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.circe:circe-parser_2.13:0.14.1:jar" level="project" />
     <orderEntry type="library" name="sbt: org.openjfx:javafx-base:16:jar" level="project" />
     <orderEntry type="library" name="sbt: org.openjfx:javafx-base:16:win:jar" level="project" />
     <orderEntry type="library" name="sbt: org.openjfx:javafx-controls:16:jar" level="project" />
@@ -26,10 +34,14 @@
     <orderEntry type="library" name="sbt: org.openjfx:javafx-media:16:win:jar" level="project" />
     <orderEntry type="library" name="sbt: org.openjfx:javafx-swing:16:win:jar" level="project" />
     <orderEntry type="library" name="sbt: org.openjfx:javafx-web:16:win:jar" level="project" />
-    <orderEntry type="library" name="sbt: org.scala-lang.modules:scala-java8-compat_3:1.0.2:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.scala-lang.modules:scala-java8-compat_2.13:1.0.2:jar" level="project" />
     <orderEntry type="library" name="sbt: org.scala-lang:scala-library:2.13.8:jar" level="project" />
-    <orderEntry type="library" name="sbt: org.scala-lang:scala3-library_3:3.1.3:jar" level="project" />
-    <orderEntry type="library" name="sbt: org.scalafx:scalafx_3:16.0.0-R24:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.scala-lang:scala-reflect:2.13.8:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.scalafx:scalafx_2.13:16.0.0-R24:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.typelevel:cats-core_2.13:2.6.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.typelevel:cats-kernel_2.13:2.6.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.typelevel:jawn-parser_2.13:1.1.2:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.typelevel:simulacrum-scalafix-annotations_2.13:0.5.4:jar" level="project" />
     <orderEntry type="module-library">
       <library name="sbt: unmanaged-sources-and-docs">
         <CLASSES />
