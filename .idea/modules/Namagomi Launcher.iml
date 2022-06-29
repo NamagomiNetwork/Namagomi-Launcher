@@ -23,6 +23,9 @@
     <orderEntry type="library" name="sbt: io.circe:circe-jawn_2.13:0.14.1:jar" level="project" />
     <orderEntry type="library" name="sbt: io.circe:circe-numbers_2.13:0.14.1:jar" level="project" />
     <orderEntry type="library" name="sbt: io.circe:circe-parser_2.13:0.14.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: net.harawata:appdirs:1.2.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: net.java.dev.jna:jna-platform:5.6.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: net.java.dev.jna:jna:5.6.0:jar" level="project" />
     <orderEntry type="library" name="sbt: org.openjfx:javafx-base:16:jar" level="project" />
     <orderEntry type="library" name="sbt: org.openjfx:javafx-base:16:win:jar" level="project" />
     <orderEntry type="library" name="sbt: org.openjfx:javafx-controls:16:jar" level="project" />

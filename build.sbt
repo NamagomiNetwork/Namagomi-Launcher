@@ -15,7 +15,8 @@ libraryDependencies ++= Seq(
 libraryDependencies ++= Seq(
   "org.scalafx" %% "scalafx" % "16.0.0-R24",
   "com.softwaremill.sttp.client3" %% "core" % "3.6.2",
-  "com.softwaremill.sttp.client3" %% "circe" % "3.6.2"
+  "com.softwaremill.sttp.client3" %% "circe" % "3.6.2",
+  "net.harawata" % "appdirs" % "1.2.1"
 )
 
 libraryDependencies ++= {
