@@ -2,11 +2,20 @@ name := "Namagomi Launcher"
 
 version := "0.1"
 
-scalaVersion := "3.1.3"
+scalaVersion := "2.13.8"
+
+val circeVersion = "0.14.1"
+
+libraryDependencies ++= Seq(
+  "io.circe" %% "circe-core",
+  "io.circe" %% "circe-generic",
+  "io.circe" %% "circe-parser"
+).map(_ % circeVersion)
 
 libraryDependencies ++= Seq(
   "org.scalafx" %% "scalafx" % "16.0.0-R24",
   "com.softwaremill.sttp.client3" %% "core" % "3.6.2",
+  "com.softwaremill.sttp.client3" %% "circe" % "3.6.2"
 )
 
 libraryDependencies ++= {
