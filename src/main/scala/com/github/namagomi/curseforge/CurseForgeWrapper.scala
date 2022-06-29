@@ -19,7 +19,6 @@ object CurseForgeWrapper {
 
   private val backend: SttpBackend[Identity, Any] = HttpClientSyncBackend()
 
-  private implicit val encoder: Encoder[CurseForgeResponse] = deriveEncoder
   private implicit val decoder: Decoder[CurseForgeResponse] = deriveDecoder
 
   private def getModFileUrl(namagomiMod: NamagomiModData): Either[ResponseException[String, io.circe.Error], NamagomiModResponse] = {
@@ -77,5 +76,9 @@ object CurseForgeWrapper {
       case _ =>
         println(s"${namagomiMod.fileName} hasn't download url")
     }
+  }
+
+  def downloadModFiles(side: String): Unit = {
+
   }
 }
