@@ -1,20 +1,17 @@
 package com.github.namagomi
 
-type Side = "SERVER" | "CLIENT" | ""
+sealed trait NamagomiModData
 
-sealed trait NamagomiMod
-
-case class NamagomiModA
+case class HasDownloadUrl
 (
   name: Option[String],
   directUrl: String,
-  side: Side
-) extends NamagomiMod
-case class NamagomiModB
+  side: String
+) extends NamagomiModData
+case class HasNotDownloadUrl
 (
   name: Option[String],
   modId: String,
-  mcVersion: String,
   fileId: String,
-  side: Side
-) extends NamagomiMod
+  side: String
+) extends NamagomiModData
