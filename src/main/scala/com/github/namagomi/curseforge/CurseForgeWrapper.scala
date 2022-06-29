@@ -1,13 +1,12 @@
 package com.github.namagomi.curseforge
 
 import com.github.namagomi.Config.{curseForgeApiKey, curseForgeUrl}
-import com.github.namagomi.{NamagomiMod, NamagomiModA, NamagomiModB}
-import com.github.namagomi.curseforge.NamagomiModResponse
-import cats.effect.IO
-import org.http4s.ember.client.*
-import cats.effect.IO
-import cats.effect.unsafe.implicits.global
-import io.circe.Decoder
+import com.github.namagomi.{HasDownloadUrl, HasNotDownloadUrl, NamagomiModData}
+import io.circe.generic.semiauto._
+import io.circe.{Decoder, Encoder}
+import sttp.client3._
+import sttp.client3.circe._
+import sttp.model.Uri
 
 object CurseForgeWrapper {
   private val curseForgeHeaders = Map(
@@ -15,33 +14,43 @@ object CurseForgeWrapper {
     "x-api-key" -> curseForgeApiKey
   )
 
-  import io.circe.generic.semiauto._
-  implicit def namagomiModResponseDecoder: Decoder[NamagomiModResponse] = deriveDecoder[NamagomiModResponse]
+  val backend: SttpBackend[Identity, Any] = HttpClientSyncBackend()
 
-  import org.http4s.circe.CirceEntityDecoder._
-  implicit def responseDecoder: Any = circeEntityDecoder[IO,NamagomiModResponse]
+  implicit val encoder: Encoder[CurseForgeResponse] = deriveEncoder
+  implicit val decoder: Decoder[CurseForgeResponse] = deriveDecoder
 
-  def getModFileUrl(namagomiMod: NamagomiMod): Unit =
+  def getModFileUrl(namagomiMod: NamagomiModData): Either[ResponseException[String, io.circe.Error],NamagomiModResponse] = {
     namagomiMod match {
-      case NamagomiModA(_, directUrl, side) =>
-        NamagomiModResponse(
+      case HasDownloadUrl(_, directUrl, side) =>
+        Right(NamagomiModResponse(
           side,
           getFileName(directUrl),
-          directUrl,
+          Some(directUrl),
           None,
-        )
-      case NamagomiModB(_, modId, mcVersion, fileId, side) =>
+        ))
+      case HasNotDownloadUrl(_, modId, fileId, side) =>
         val getFileUrl = Uri(curseForgeUrl, Seq("v1/mods", modId, "files", fileId))
-        val request = Request.apply[IO](Method.POST)
+        val response = basicRequest
+          .headers(curseForgeHeaders)
+          .post(getFileUrl)
+          .response(asJson[CurseForgeResponse])
+          .send(backend)
 
-        NamagomiModResponse(
-          side,
-          "",
-          "directUrl",
-          None,
-        )
+        response.body match {
+          case Right(value)=>
+            Right(NamagomiModResponse(
+              side,
+              value.fileName,
+              value.downloadUrl,
+              Some(value.hashes)
+            ))
+          case Left(value)=>
+            Left(value)
+        }
     }
+  }
 
-    def getFileName(url: String): String =
-      "TODO: urlからファイル名を取得" //TODO: urlからファイル名を取得
+  def getFileName(url: String): String = {
+    "TODO: urlからファイル名を取得" //TODO: urlからファイル名を取得
+  }
 }
