@@ -17,12 +17,12 @@ object CurseForgeWrapper {
     "x-api-key" -> curseForgeApiKey
   )
 
-  val backend: SttpBackend[Identity, Any] = HttpClientSyncBackend()
+  private val backend: SttpBackend[Identity, Any] = HttpClientSyncBackend()
 
-  implicit val encoder: Encoder[CurseForgeResponse] = deriveEncoder
-  implicit val decoder: Decoder[CurseForgeResponse] = deriveDecoder
+  private implicit val encoder: Encoder[CurseForgeResponse] = deriveEncoder
+  private implicit val decoder: Decoder[CurseForgeResponse] = deriveDecoder
 
-  def getModFileUrl(namagomiMod: NamagomiModData): Either[ResponseException[String, io.circe.Error], NamagomiModResponse] = {
+  private def getModFileUrl(namagomiMod: NamagomiModData): Either[ResponseException[String, io.circe.Error], NamagomiModResponse] = {
     namagomiMod match {
       case HasDownloadUrl(_, directUrl, side) =>
         Right(NamagomiModResponse(
@@ -53,7 +53,7 @@ object CurseForgeWrapper {
     }
   }
 
-  def getFileName(url: String): String = {
+  private def getFileName(url: String): String = {
     url match {
       case "https://web.archive.org/web/20190716014402/http://forum.minecraftuser.jp/download/file.php?id=75930" =>
         "[1.12][forge2413]mod_StorageBox_v3.2.0.zip"
@@ -62,7 +62,7 @@ object CurseForgeWrapper {
     }
   }
 
-  def downloadModFile(namagomiMod: NamagomiModResponse): Unit = {
+  private def downloadModFile(namagomiMod: NamagomiModResponse): Unit = {
     val file = Paths.get(modsDir(namagomiMod.side), namagomiMod.fileName).toFile
     namagomiMod.downloadUrl match {
       case Some(url) if !file.exists() =>
