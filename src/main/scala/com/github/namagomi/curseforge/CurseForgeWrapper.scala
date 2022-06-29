@@ -51,6 +51,11 @@ object CurseForgeWrapper {
   }
 
   def getFileName(url: String): String = {
-    "TODO: urlからファイル名を取得" //TODO: urlからファイル名を取得
+    url match {
+      case "https://web.archive.org/web/20190716014402/http://forum.minecraftuser.jp/download/file.php?id=75930"=>
+        "[1.12][forge2413]mod_StorageBox_v3.2.0.zip"
+      case _=>
+        url.split("/").last.split("\\?").head.split('#').head
+    }
   }
 }
