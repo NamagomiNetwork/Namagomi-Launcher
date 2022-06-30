@@ -1,12 +1,12 @@
-package com.github.namagomi
+package com.github.namagomi.renderer
 
 import scalafx.application.JFXApp3
 import scalafx.geometry.Insets
 import scalafx.scene.Scene
 import scalafx.scene.effect.DropShadow
 import scalafx.scene.layout.HBox
-import scalafx.scene.paint.Color._
-import scalafx.scene.paint._
+import scalafx.scene.paint.Color.{DarkGray, DarkRed, Red, White}
+import scalafx.scene.paint.{Color, LinearGradient, Stops}
 import scalafx.scene.text.Text
 
 object Main extends JFXApp3 {

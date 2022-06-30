@@ -1,9 +1,9 @@
-package com.github.namagomi.curseforge
+package com.github.namagomi.main.curseforge
 
-import com.github.namagomi.Config.{curseForgeApiKey, curseForgeUrl, namagomiModListUrl}
-import com.github.namagomi.LocalPaths._
-import com.github.namagomi.github.Github.getModList
-import com.github.namagomi.{HasDownloadUrl, HasNotDownloadUrl, NamagomiModData, Unexpected}
+import com.github.namagomi.main.Config.{curseForgeApiKey, curseForgeUrl, namagomiModListUrl}
+import com.github.namagomi.main.LocalPaths._
+import com.github.namagomi.main.github.Github.getModList
+import com.github.namagomi.main.{HasDownloadUrl, HasNotDownloadUrl, NamagomiModData, Unexpected}
 import io.circe.Decoder
 import io.circe.generic.semiauto._
 import sttp.client3._

@@ -1,6 +1,7 @@
-package com.github.namagomi.github
+package com.github.namagomi.main.github
 
 import com.github.namagomi._
+import com.github.namagomi.main.{HasDownloadUrl, HasNotDownloadUrl, NamagomiModData, Unexpected}
 import io.circe.Decoder
 import io.circe.generic.semiauto.deriveDecoder
 import sttp.client3._

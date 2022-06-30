@@ -1,4 +1,4 @@
-package com.github.namagomi
+package com.github.namagomi.main
 
 import java.nio.file.Paths
 

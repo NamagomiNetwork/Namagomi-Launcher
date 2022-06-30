@@ -1,4 +1,4 @@
-package com.github.namagomi.github
+package com.github.namagomi.main.github
 
 case class NamagomiModResponse
 (

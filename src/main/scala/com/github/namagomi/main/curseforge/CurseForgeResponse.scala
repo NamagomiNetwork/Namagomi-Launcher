@@ -1,4 +1,4 @@
-package com.github.namagomi.curseforge
+package com.github.namagomi.main.curseforge
 
 case class CurseForgeResponse
 (
