@@ -7,9 +7,3 @@ case class NamagomiModResponse
   downloadUrl: Option[String],
   hashes: Option[List[Hash]]
 )
-
-case class Hash
-(
-  value: String,
-  algo: Int
-)
