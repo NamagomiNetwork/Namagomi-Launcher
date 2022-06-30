@@ -20,6 +20,9 @@ object CurseForgeWrapper {
 
   private val backend: SttpBackend[Identity, Any] = HttpClientSyncBackend()
 
+  private implicit val decodeHash: Decoder[Hash] = deriveDecoder
+  private implicit val decodeSortableGameVersion: Decoder[SortableGameVersion] = deriveDecoder
+  private implicit val decodeModule: Decoder[Module] = deriveDecoder
   private implicit val decoder: Decoder[CurseForgeResponse] = deriveDecoder
 
   private def getModFileUrl(namagomiMod: NamagomiModData): Either[ResponseException[String, io.circe.Error], NamagomiModResponse] = {

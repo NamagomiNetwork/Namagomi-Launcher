@@ -1,6 +1,6 @@
 package com.github.namagomi.main.github
 
-import com.github.namagomi._
+import com.github.namagomi.main.curseforge.Hash
 import com.github.namagomi.main.{HasDownloadUrl, HasNotDownloadUrl, NamagomiModData, Unexpected}
 import io.circe.Decoder
 import io.circe.generic.semiauto.deriveDecoder
@@ -10,6 +10,8 @@ import sttp.client3.circe._
 object Github {
   private val backend: SttpBackend[Identity, Any] = HttpClientSyncBackend()
 
+  private implicit val decodeHash: Decoder[Hash] = deriveDecoder
+  private implicit val decodeNamagomiModResponse: Decoder[NamagomiModResponse] = deriveDecoder
   private implicit val decoder: Decoder[List[NamagomiModResponse]] = deriveDecoder
 
   def getModList(url: String): Either[ResponseException[String, io.circe.Error], List[NamagomiModData]] = {
