@@ -22,4 +22,4 @@ case class Unexpected
   fileId: Option[String],
   directUrl: Option[String],
   side: String
-)
+) extends NamagomiModData

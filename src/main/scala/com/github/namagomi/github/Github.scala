@@ -34,6 +34,14 @@ object Github {
                 fileId,
                 i.side
               )
+            case _ =>
+              Unexpected(
+                i.name,
+                i.modId,
+                i.fileId,
+                i.directUrl,
+                i.side
+              )
           }))
       case Left(e) => Left(e)
     }
