@@ -1,10 +1,11 @@
 package com.github.namagomi.curseforge
 
-import com.github.namagomi.Config.{curseForgeApiKey, curseForgeUrl}
+import com.github.namagomi.Config.{curseForgeApiKey, curseForgeUrl, namagomiModListUrl}
 import com.github.namagomi.LocalPaths._
-import com.github.namagomi.{HasDownloadUrl, HasNotDownloadUrl, NamagomiModData}
+import com.github.namagomi.github.Github.getModList
+import com.github.namagomi.{HasDownloadUrl, HasNotDownloadUrl, NamagomiModData, Unexpected}
+import io.circe.Decoder
 import io.circe.generic.semiauto._
-import io.circe.{Decoder, Encoder}
 import sttp.client3._
 import sttp.client3.circe._
 import sttp.model.Uri
@@ -61,8 +62,8 @@ object CurseForgeWrapper {
     }
   }
 
-  private def downloadModFile(namagomiMod: NamagomiModResponse): Unit = {
-    val file = Paths.get(modsDir(namagomiMod.side), namagomiMod.fileName).toFile
+  private def downloadModFile(namagomiMod: NamagomiModResponse, side: String): Unit = {
+    val file = Paths.get(modsDir(side), namagomiMod.fileName).toFile
     namagomiMod.downloadUrl match {
       case Some(url) if !file.exists() =>
         basicRequest
@@ -79,6 +80,26 @@ object CurseForgeWrapper {
   }
 
   def downloadModFiles(side: String): Unit = {
+    val modList = getModList(namagomiModListUrl("main"))
 
+    modList match {
+      case Right(modList) =>
+        modList.foreach {
+          case Unexpected(name, modId, fileId, directUrl, side) =>
+            println("Unexpected json value")
+            println(s"\tname: $name")
+            println(s"\tmodId: $modId")
+            println(s"\tfileId: $fileId")
+            println(s"\tdirectUrl: $directUrl")
+            println(s"\tside: $side")
+          case mod =>
+            getModFileUrl(mod) match {
+              case Right(url) if url.side.contains(side) =>
+                downloadModFile(url, side)
+              case Left(e) => println(e)
+            }
+        }
+      case Left(e) => println(e)
+    }
   }
 }
