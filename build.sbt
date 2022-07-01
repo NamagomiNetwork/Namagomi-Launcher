@@ -14,8 +14,10 @@ libraryDependencies ++= Seq(
 
 libraryDependencies ++= Seq(
   "org.scalafx" %% "scalafx" % "16.0.0-R24",
-  "com.softwaremill.sttp.client3" %% "core" % "3.6.2",
-  "com.softwaremill.sttp.client3" %% "circe" % "3.6.2",
+  "org.scala-lang.modules" %% "scala-xml" % "2.1.0",
+  "com.typesafe.akka" %% "akka-http" % "10.2.9",
+  "com.typesafe.akka" %% "akka-stream" % "2.6.19",
+  "com.typesafe.akka" %% "akka-actor" % "2.6.19",
   "net.harawata" % "appdirs" % "1.2.1"
 )
 
