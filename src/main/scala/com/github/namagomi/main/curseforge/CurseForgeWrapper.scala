@@ -7,15 +7,10 @@ import com.github.namagomi.main.{HasDownloadUrl, HasNotDownloadUrl, NamagomiModD
 import io.circe.generic.auto._
 import sttp.client3._
 import sttp.client3.circe._
-import sttp.model.Uri
 
 import java.nio.file.Paths
 
 object CurseForgeWrapper {
-  private val curseForgeHeaders = Map(
-    "Accept" -> "application/json",
-    "x-api-key" -> curseForgeApiKey
-  )
 
   private val backend: SttpBackend[Identity, Any] = HttpClientSyncBackend()
 
@@ -29,18 +24,20 @@ object CurseForgeWrapper {
           None,
         )
       case HasNotDownloadUrl(_, modId, fileId, side) =>
-        val getFileUrl = Uri(curseForgeUrl, Seq("v1/mods", modId, "files", fileId))
+        val getFileUrl = uri"$curseForgeUrl/v1/mods/$modId/files/$fileId"
+
         val response = basicRequest
-          .headers(curseForgeHeaders)
-          .post(getFileUrl)
+          .header("Accept", "application/json")
+          .header("x-api-key", curseForgeApiKey)
           .response(asJson[CurseForgeResponse].getRight)
+          .get(getFileUrl)
           .send(backend)
 
         NamagomiModResponse(
           side,
-          response.body.fileName,
-          response.body.downloadUrl,
-          Some(response.body.hashes)
+          response.body.data.fileName,
+          response.body.data.downloadUrl,
+          Some(response.body.data.hashes)
         )
     }
   }
@@ -59,11 +56,11 @@ object CurseForgeWrapper {
     val file = Paths.get(modsDir(side), namagomiMod.fileName).toFile
     namagomiMod.downloadUrl match {
       case Some(url) if !file.exists() =>
-        basicRequest
+        val response = basicRequest
           .get(uri"$url")
           .response(asFile(file))
           .send(backend)
-          .body match {
+        response.body match {
           case Left(value) =>
             println(s"[ERROR] $value")
           case Right(value) =>
@@ -91,7 +88,7 @@ object CurseForgeWrapper {
         println(s"\tside: $side")
       case mod =>
         val url = getModFileUrl(mod)
-        if (getModFileUrl(mod).side.contains(side))
+        if (side.contains(url.side))
           downloadModFile(url, side)
     }
   }
