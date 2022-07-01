@@ -6,5 +6,6 @@ case class NamagomiModResponse
   modId: Option[String],
   fileId: Option[String],
   directUrl: Option[String],
+  mcVersion: Option[String],
   side: String
 )
