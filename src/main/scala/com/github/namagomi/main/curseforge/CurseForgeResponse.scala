@@ -22,7 +22,7 @@ case class Data
   downloadUrl: Option[String],
   gameVersions: List[String],
   sortableGameVersions: List[SortableGameVersion],
-  dependencies: List[String],
+  dependencies: List[Dependencie],
   alternateFileId: Int,
   isServerPack: Boolean,
   fileFingerprint: Long,
