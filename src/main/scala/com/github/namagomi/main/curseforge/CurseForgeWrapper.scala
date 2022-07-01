@@ -58,6 +58,7 @@ object CurseForgeWrapper {
       case Some(url) if !file.exists() =>
         val response = basicRequest
           .get(uri"$url")
+          .acceptEncoding("identity")
           .response(asFile(file))
           .send(backend)
         response.body match {
@@ -68,10 +69,11 @@ object CurseForgeWrapper {
               value.getName
             }")
         }
-      case _ =>
+      case None =>
         println(s"${
           namagomiMod.fileName
         } hasn't download url")
+      case _ =>
     }
   }
 
