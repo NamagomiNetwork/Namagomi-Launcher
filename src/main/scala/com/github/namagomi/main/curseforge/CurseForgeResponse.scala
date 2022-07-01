@@ -18,14 +18,14 @@ case class Data
   hashes: List[Hash],
   fileDate: String,
   fileLength: Int,
-  downloadCount: Int,
+  downloadCount: Long,
   downloadUrl: Option[String],
   gameVersions: List[String],
   sortableGameVersions: List[SortableGameVersion],
   dependencies: List[String],
   alternateFileId: Int,
   isServerPack: Boolean,
-  fileFingerprint: Int,
+  fileFingerprint: Long,
   modules: List[Module]
 )
 
@@ -44,8 +44,14 @@ case class SortableGameVersion
   gameVersionTypeId: Int
 )
 
+case class Dependencie
+(
+  modId: Int,
+  relationType: Int
+)
+
 case class Module
 (
   name: String,
-  fingerprint: Int
+  fingerprint: Long
 )
