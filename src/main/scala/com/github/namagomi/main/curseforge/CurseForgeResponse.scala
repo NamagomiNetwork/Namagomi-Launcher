@@ -2,6 +2,11 @@ package com.github.namagomi.main.curseforge
 
 case class CurseForgeResponse
 (
+  data: Data
+)
+
+case class Data
+(
   id: Int,
   gameId: Int,
   modId: Int,
