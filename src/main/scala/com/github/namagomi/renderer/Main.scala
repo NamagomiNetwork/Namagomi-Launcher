@@ -4,11 +4,9 @@ import scalafx.application.JFXApp3
 import scalafx.geometry.Insets
 import scalafx.scene.Scene
 import scalafx.scene.control.Button
-import scalafx.scene.effect.DropShadow
 import scalafx.scene.layout.HBox
-import scalafx.scene.paint.Color.{DarkGray, DarkRed, Red, White}
-import scalafx.scene.paint.{Color, LinearGradient, Stops}
-import scalafx.scene.text.Text
+import scalafx.scene.paint.Color
+import com.github.namagomi.api.Events
 
 object Main extends JFXApp3 {
   override def start(): Unit = {
@@ -22,6 +20,7 @@ object Main extends JFXApp3 {
           children = Seq(
             new Button {
               text = "sample"
+              onAction = Events.sampleButtonOnClick
             }
           )
         }
