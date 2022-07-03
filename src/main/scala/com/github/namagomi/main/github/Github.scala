@@ -1,20 +1,27 @@
 package com.github.namagomi.main.github
 
+import akka.actor.ActorSystem
+import akka.http.scaladsl.Http
+import akka.http.scaladsl.client.RequestBuilding.Get
+import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
+import akka.http.scaladsl.model.Uri
+import akka.http.scaladsl.unmarshalling.Unmarshal
 import com.github.namagomi.main.{HasDownloadUrl, HasNotDownloadUrl, NamagomiModData, Unexpected}
-import io.circe.generic.auto._
-import sttp.client3._
-import sttp.client3.circe._
+import com.github.namagomi.main.github.NamagomiModResponseProtocol._
 
-object Github {
-  private val backend: SttpBackend[Identity, Any] = HttpClientSyncBackend()
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContextExecutor}
+
+object Github extends SprayJsonSupport {
+  implicit val system: ActorSystem = ActorSystem()
+  implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
   def getModList(url: String): List[NamagomiModData] = {
-    val response = basicRequest
-      .get(uri"$url")
-      .response(asJson[List[NamagomiModResponse]].getRight)
-      .send(backend)
+    val request = Get(Uri(url))
+    val response = Await.result(Http().singleRequest(request), Duration.Inf)
+    val body = Await.result(Unmarshal(response.entity).to[List[NamagomiModResponse]], Duration.Inf)
 
-    response.body.map(i =>
+    body.map(i =>
       (i.directUrl, i.modId, i.fileId) match {
         case (Some(directUrl), _, _) =>
           HasDownloadUrl(
