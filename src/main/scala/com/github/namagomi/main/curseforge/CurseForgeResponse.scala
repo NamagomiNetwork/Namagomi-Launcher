@@ -22,7 +22,7 @@ case class Data
   downloadUrl: Option[String],
   gameVersions: List[String],
   sortableGameVersions: List[SortableGameVersion],
-  dependencies: List[Dependencie],
+  dependencies: List[Dependency],
   alternateFileId: Int,
   isServerPack: Boolean,
   fileFingerprint: Long,
@@ -44,7 +44,7 @@ case class SortableGameVersion
   gameVersionTypeId: Int
 )
 
-case class Dependencie
+case class Dependency
 (
   modId: Int,
   relationType: Int
