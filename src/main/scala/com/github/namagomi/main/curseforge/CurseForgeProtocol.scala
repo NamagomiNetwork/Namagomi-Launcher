@@ -1,12 +1,14 @@
 package com.github.namagomi.main.curseforge
 
+import akka.http.scaladsl.model.ResponseEntity
+import akka.http.scaladsl.unmarshalling.Unmarshaller
 import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 
-class CurseForgeProtocol extends DefaultJsonProtocol{
-  implicit val moduleProtocol: RootJsonFormat[Module] = jsonFormat2(Module)
-  implicit val dependencyProtocol: RootJsonFormat[Dependency] = jsonFormat2(Dependency)
-  implicit val sortableGameVersionProtocol: RootJsonFormat[SortableGameVersion] = jsonFormat5(SortableGameVersion)
-  implicit val hashProtocol: RootJsonFormat[Hash] = jsonFormat2(Hash)
-  implicit val dataProtocol: RootJsonFormat[Data] = jsonFormat20(Data)
-  implicit val curseForgeResponseProtocol: RootJsonFormat[CurseForgeResponse] = jsonFormat1(CurseForgeResponse)
+object CurseForgeProtocol extends DefaultJsonProtocol{
+  implicit val moduleProtocol: RootJsonFormat[Module] = jsonFormat(Module.apply, "name", "fingerprint")
+  implicit val dependencyProtocol: RootJsonFormat[Dependency] = jsonFormat(Dependency, "modId", "relationType")
+  implicit val sortableGameVersionProtocol: RootJsonFormat[SortableGameVersion] = jsonFormat(SortableGameVersion, "gameVersionName", "gameVersionPadded", "gameVersion", "gameVersionReleaseDate", "gameVersionTypeId")
+  implicit val hashProtocol: RootJsonFormat[Hash] = jsonFormat(Hash, "value", "algo")
+  implicit val dataProtocol: RootJsonFormat[Data] = jsonFormat(Data, "id", "gameId", "modId", "isAvailable", "displayName", "fileName", "releaseType", "fileStatus", "hashes", "fileDate", "fileLength", "downloadCount", "downloadUrl", "gameVersions", "sortableGameVersions", "dependencies", "alternateFileId", "isServerPack", "fileFingerprint", "modules")
+  implicit val curseForgeResponseProtocol: RootJsonFormat[CurseForgeResponse] = jsonFormat(CurseForgeResponse.apply, "data")
 }
