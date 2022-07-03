@@ -1,7 +1,5 @@
 package com.github.namagomi.main.curseforge
 
-import akka.http.scaladsl.model.ResponseEntity
-import akka.http.scaladsl.unmarshalling.Unmarshaller
 import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 
 object CurseForgeProtocol extends DefaultJsonProtocol{
