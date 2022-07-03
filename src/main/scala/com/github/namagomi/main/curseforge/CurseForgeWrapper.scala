@@ -1,18 +1,27 @@
 package com.github.namagomi.main.curseforge
 
+import akka.actor.ActorSystem
+import akka.http.scaladsl.Http
+import akka.http.scaladsl.client.RequestBuilding.Get
+import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
+import akka.http.scaladsl.model.HttpMethods._
+import akka.http.scaladsl.model._
+import akka.http.scaladsl.model.headers.RawHeader
+import akka.http.scaladsl.unmarshalling.Unmarshal
+import akka.stream.javadsl.FileIO
 import com.github.namagomi.main.Config.{curseForgeApiKey, curseForgeUrl, namagomiModListUrl}
 import com.github.namagomi.main.LocalPaths._
+import com.github.namagomi.main.curseforge.CurseForgeProtocol._
 import com.github.namagomi.main.github.Github.getModList
 import com.github.namagomi.main.{HasDownloadUrl, HasNotDownloadUrl, NamagomiModData, Unexpected}
-import io.circe.generic.auto._
-import sttp.client3._
-import sttp.client3.circe._
 
 import java.nio.file.Paths
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContextExecutor}
 
-object CurseForgeWrapper {
-
-  private val backend: SttpBackend[Identity, Any] = HttpClientSyncBackend()
+object CurseForgeWrapper extends SprayJsonSupport{
+  implicit val system: ActorSystem = ActorSystem()
+  implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
   private def getModFileUrl(namagomiMod: NamagomiModData): NamagomiModResponse = {
     namagomiMod match {
@@ -24,20 +33,22 @@ object CurseForgeWrapper {
           None,
         )
       case HasNotDownloadUrl(_, modId, fileId, side) =>
-        val getFileUrl = uri"$curseForgeUrl/v1/mods/$modId/files/$fileId"
+        val getFileUrl = Uri(s"$curseForgeUrl/v1/mods/$modId/files/$fileId")
 
-        val response = basicRequest
-          .header("Accept", "application/json")
-          .header("x-api-key", curseForgeApiKey)
-          .response(asJson[CurseForgeResponse].getRight)
-          .get(getFileUrl)
-          .send(backend)
+        val request = HttpRequest(GET, getFileUrl)
+          .withHeaders(
+            RawHeader("Accept", "application/json"),
+            RawHeader("x-api-key", curseForgeApiKey)
+          )
+
+        val response = Await.result(Http().singleRequest(request), Duration.Inf)
+        val body = Await.result(Unmarshal(response.entity).to[CurseForgeResponse], Duration.Inf)
 
         NamagomiModResponse(
           side,
-          response.body.data.fileName,
-          response.body.data.downloadUrl,
-          Some(response.body.data.hashes)
+          body.data.fileName,
+          body.data.downloadUrl,
+          Some(body.data.hashes)
         )
     }
   }
@@ -53,22 +64,13 @@ object CurseForgeWrapper {
   }
 
   private def downloadModFile(namagomiMod: NamagomiModResponse, side: String): Unit = {
-    val file = Paths.get(modsDir(side), namagomiMod.fileName).toFile
+    val path = Paths.get(modsDir(side), namagomiMod.fileName)
+    val file = path.toFile
     namagomiMod.downloadUrl match {
       case Some(url) if !file.exists() =>
-        val response = basicRequest
-          .get(uri"$url")
-          .acceptEncoding("identity")
-          .response(asFile(file))
-          .send(backend)
-        response.body match {
-          case Left(value) =>
-            println(s"[ERROR] $value")
-          case Right(value) =>
-            println(s"[INFO] downloaded: ${
-              value.getName
-            }")
-        }
+        val request = Get(Uri(url))
+        val response = Await.result(Http().singleRequest(request), Duration.Inf)
+        response.entity.dataBytes.runWith(FileIO.toPath(path))
       case None =>
         println(s"${
           namagomiMod.fileName
