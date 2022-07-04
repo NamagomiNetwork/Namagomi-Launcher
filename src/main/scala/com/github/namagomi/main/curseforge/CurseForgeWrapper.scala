@@ -68,7 +68,7 @@ object CurseForgeWrapper extends SprayJsonSupport{
     val file = path.toFile
     namagomiMod.downloadUrl match {
       case Some(url) if !file.exists() =>
-        val request = Get(Uri(url))
+        val request = Get(Uri(url.replace(' ', '+')))
         val response = Await.result(Http().singleRequest(request), Duration.Inf)
         response.entity.dataBytes.runWith(FileIO.toPath(path))
       case None =>
