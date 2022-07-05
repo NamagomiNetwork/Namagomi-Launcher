@@ -4,7 +4,7 @@ case class GitTreesResponse
 (
   sha: String,
   url: String,
-  tree: Tree
+  tree: Seq[Tree]
 )
 
 case class Tree
