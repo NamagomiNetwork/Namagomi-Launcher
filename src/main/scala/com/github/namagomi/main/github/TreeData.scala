@@ -2,8 +2,8 @@ package com.github.namagomi.main.github
 
 case class TreeData
 (
-  path: String,
-  _type: FileType,
-  sha: String,
-  url: String
+  var path: String,
+  var _type: FileType,
+  var sha: String,
+  var url: String
 )
