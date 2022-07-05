@@ -1,5 +1,9 @@
 package com.github.namagomi.main.github
 
-class TreeData {
-
-}
+case class TreeData
+(
+  path: String,
+  _type: FileType,
+  sha: String,
+  url: String
+)
