@@ -2,7 +2,7 @@ package com.github.namagomi.main.curseforge
 
 import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 
-object CurseForgeProtocol extends DefaultJsonProtocol{
+object Protocol extends DefaultJsonProtocol{
   implicit val moduleProtocol: RootJsonFormat[Module] = jsonFormat(Module.apply, "name", "fingerprint")
   implicit val dependencyProtocol: RootJsonFormat[Dependency] = jsonFormat(Dependency, "modId", "relationType")
   implicit val sortableGameVersionProtocol: RootJsonFormat[SortableGameVersion] = jsonFormat(SortableGameVersion, "gameVersionName", "gameVersionPadded", "gameVersion", "gameVersionReleaseDate", "gameVersionTypeId")

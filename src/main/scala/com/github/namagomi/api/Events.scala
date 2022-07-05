@@ -1,6 +1,6 @@
 package com.github.namagomi.api
 
-import com.github.namagomi.main.curseforge.CurseForgeWrapper.downloadModFiles
+import com.github.namagomi.main.curseforge.Wrapper.downloadModFiles
 import javafx.event.{ActionEvent, EventHandler}
 
 object Events {

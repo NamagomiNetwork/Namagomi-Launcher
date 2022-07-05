@@ -11,7 +11,7 @@ import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.javadsl.FileIO
 import com.github.namagomi.main.Config.{curseForgeApiKey, curseForgeUrl, namagomiModListUrl}
 import com.github.namagomi.main.LocalPaths._
-import com.github.namagomi.main.curseforge.CurseForgeProtocol._
+import com.github.namagomi.main.curseforge.Protocol._
 import com.github.namagomi.main.github.Github.getModList
 import com.github.namagomi.main.{HasDownloadUrl, HasNotDownloadUrl, NamagomiModData, Unexpected}
 
@@ -19,7 +19,7 @@ import java.nio.file.Paths
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContextExecutor}
 
-object CurseForgeWrapper extends SprayJsonSupport{
+object Wrapper extends SprayJsonSupport{
   implicit val system: ActorSystem = ActorSystem()
   implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
