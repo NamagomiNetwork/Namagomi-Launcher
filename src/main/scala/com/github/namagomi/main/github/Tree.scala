@@ -6,11 +6,9 @@ import akka.http.scaladsl.client.RequestBuilding.Get
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import akka.http.scaladsl.model.{HttpEntity, Uri}
 import akka.http.scaladsl.unmarshalling.Unmarshal
-import com.github.namagomi.main.github.FileType.Blob
 import com.github.namagomi.main.github.Protocol._
 import com.github.namagomi.main.github.Tree.getFileType
 
-import scala.+:
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContextExecutor}
 
@@ -44,7 +42,7 @@ class Tree(val data: TreeData, var children: Seq[Tree]) extends SprayJsonSupport
     val response = Await.result(Http().singleRequest(request), Duration.Inf)
     val body = Await.result(Unmarshal(response.entity).to[GitTreesResponse], Duration.Inf)
     body.tree.foreach(item =>
-      this.children = this.children +: new Tree().build(owner, repo, item.sha, item.path, getFileType(item.`type`), item.url)
+      this.children = this.children :+ new Tree().build(owner, repo, item.sha, item.path, getFileType(item.`type`), item.url)
     )
   }
 }
