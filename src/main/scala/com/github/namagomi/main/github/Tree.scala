@@ -46,12 +46,34 @@ class Tree(val data: TreeData, var children: Seq[Tree]) extends SprayJsonSupport
     )
   }
 
-  private def getAllPaths(pwd: String): Seq[String] = {
+  def getAllPaths(pwd: String = ""): Seq[String] = {
+    this.data._type match {
+      case FileType.Blob =>
+        Seq(pwd)
+      case FileType.Tree =>
+        this.children.foldLeft(Seq(pwd))((a: Seq[String], child: Tree) =>
+          a ++ child.getAllPaths(s"$pwd/${child.data.path}")
+        )
+    }
+  }
+
+  def getAllFilePaths(pwd: String = ""): Seq[String] = {
     this.data._type match {
       case FileType.Blob =>
         Seq(pwd)
       case FileType.Tree =>
         this.children.foldLeft(Seq.empty[String])((a: Seq[String], child: Tree) =>
+          a ++ child.getAllPaths(s"$pwd/${child.data.path}")
+        )
+    }
+  }
+
+  def getAllDirPaths(pwd: String = ""): Seq[String] = {
+    this.data._type match {
+      case FileType.Blob =>
+        Seq.empty[String]
+      case FileType.Tree =>
+        this.children.foldLeft(Seq(pwd))((a: Seq[String], child: Tree) =>
           a ++ child.getAllPaths(s"$pwd/${child.data.path}")
         )
     }
