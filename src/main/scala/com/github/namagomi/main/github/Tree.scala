@@ -78,6 +78,20 @@ class Tree(val data: TreeData, var children: Seq[Tree]) extends SprayJsonSupport
         )
     }
   }
+
+  def getData(path: String): Option[Tree] = {
+    val paths = path.split('/').filter(_ != "")
+    paths.foldLeft(Option.apply(this))((tree: Option[Tree], path: String) => {
+      tree match {
+        case Some(value) =>
+          value.children.find(_.data.path == path) match {
+            case Some(a) => Some(a)
+            case None => None
+          }
+        case None => None
+      }
+    })
+  }
 }
 
 object Tree {
