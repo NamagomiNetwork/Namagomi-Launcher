@@ -81,7 +81,7 @@ class Tree(val data: TreeData, var children: Seq[Tree]) extends SprayJsonSupport
 
   def getData(path: String): Option[Tree] = {
     val paths = path.split('/').filter(_ != "")
-    paths.foldLeft(Option.apply(this))((tree: Option[Tree], path: String) => {
+    paths.foldLeft(Option.apply(this))((tree, path) => {
       tree match {
         case Some(value) =>
           value.children.find(_.data.path == path) match {
@@ -91,6 +91,13 @@ class Tree(val data: TreeData, var children: Seq[Tree]) extends SprayJsonSupport
         case None => None
       }
     })
+  }
+
+  def exists(path: String): Boolean = {
+    getData(path) match {
+      case Some(_) => true
+      case None => false
+    }
   }
 }
 
