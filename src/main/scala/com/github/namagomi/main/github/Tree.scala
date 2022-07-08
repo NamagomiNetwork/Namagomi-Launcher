@@ -45,10 +45,21 @@ class Tree(val data: TreeData, var children: Seq[Tree]) extends SprayJsonSupport
       this.children = this.children :+ new Tree().build(owner, repo, item.sha, item.path, getFileType(item.`type`), item.url)
     )
   }
+
+  private def getAllPaths(pwd: String): Seq[String] = {
+    this.data._type match {
+      case FileType.Blob =>
+        Seq(pwd)
+      case FileType.Tree =>
+        this.children.foldLeft(Seq.empty[String])((a: Seq[String], child: Tree) =>
+          a ++ child.getAllPaths(s"$pwd/${child.data.path}")
+        )
+    }
+  }
 }
 
 object Tree {
-  def getFileType(_type: String): FileType ={
+  def getFileType(_type: String): FileType = {
     _type match {
       case "blob" => FileType.Blob
       case "tree" => FileType.Tree
