@@ -12,12 +12,14 @@ import akka.stream.javadsl.FileIO
 import com.github.namagomi.main.Config.{curseForgeApiKey, curseForgeUrl, namagomiModListUrl}
 import com.github.namagomi.main.LocalPaths._
 import com.github.namagomi.main.curseforge.Protocol._
+import com.github.namagomi.main.data.NamagomiCache
 import com.github.namagomi.main.github.Github.getModList
 import com.github.namagomi.main.{HasDownloadUrl, HasNotDownloadUrl, NamagomiModData, Unexpected}
 
 import java.nio.file.Paths
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContextExecutor}
+import scala.reflect.io.File
 
 object Wrapper extends SprayJsonSupport {
   implicit val system: ActorSystem = ActorSystem()
@@ -94,5 +96,31 @@ object Wrapper extends SprayJsonSupport {
         if (side.contains(url.side))
           downloadModFile(url, side)
     }
+  }
+
+  def updateModCache(side: String) = {
+
+  }
+
+  private def setupLauncherDirs(side: String): Unit = {
+    def mkdir(path: String): Unit = {
+      if (!File(path).exists) {
+        File(path).createDirectory()
+        println(s"create: $path")
+      }
+    }
+
+    def mkfile(path: String, content: String): Unit = {
+      if (!File(path).exists) {
+        File(path).writeAll(content)
+        println(s"create: $path")
+      }
+    }
+
+    mkdir(minecraftDir)
+    mkdir(mainDir(side))
+    mkdir(modsDir(side))
+    mkfile(namagomiCache(side), NamagomiCache.getEmpty)
+    mkfile(namagomiIgnore(side), "[]")
   }
 }
