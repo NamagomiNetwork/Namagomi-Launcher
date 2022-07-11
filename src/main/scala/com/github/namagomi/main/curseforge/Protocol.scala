@@ -8,5 +8,5 @@ object Protocol extends DefaultJsonProtocol{
   implicit val sortableGameVersionProtocol: RootJsonFormat[SortableGameVersion] = jsonFormat(SortableGameVersion, "gameVersionName", "gameVersionPadded", "gameVersion", "gameVersionReleaseDate", "gameVersionTypeId")
   implicit val hashProtocol: RootJsonFormat[Hash] = jsonFormat(Hash, "value", "algo")
   implicit val dataProtocol: RootJsonFormat[Data] = jsonFormat(Data, "id", "gameId", "modId", "isAvailable", "displayName", "fileName", "releaseType", "fileStatus", "hashes", "fileDate", "fileLength", "downloadCount", "downloadUrl", "gameVersions", "sortableGameVersions", "dependencies", "alternateFileId", "isServerPack", "fileFingerprint", "modules")
-  implicit val curseForgeResponseProtocol: RootJsonFormat[CurseForgeResponse] = jsonFormat(CurseForgeResponse.apply, "data")
+  implicit val curseForgeResponseProtocol: RootJsonFormat[FileResponse] = jsonFormat(FileResponse.apply, "data")
 }

@@ -1,6 +1,6 @@
 package com.github.namagomi.main.curseforge
 
-case class CurseForgeResponse
+case class FileResponse
 (
   data: Data
 )
