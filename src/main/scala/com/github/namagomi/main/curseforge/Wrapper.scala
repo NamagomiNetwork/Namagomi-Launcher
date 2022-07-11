@@ -15,10 +15,14 @@ import com.github.namagomi.main.curseforge.Protocol._
 import com.github.namagomi.main.data.NamagomiCache
 import com.github.namagomi.main.github.Github.getModList
 import com.github.namagomi.main.{HasDownloadUrl, HasNotDownloadUrl, NamagomiModData, Unexpected}
+import com.github.namagomi.main.data.NamagomiCacheProtocol._
+import com.github.namagomi.main.github.GitTree
+import spray.json._
 
 import java.nio.file.Paths
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContextExecutor}
+import scala.io.Source
 import scala.reflect.io.File
 
 object Wrapper extends SprayJsonSupport {
@@ -98,8 +102,25 @@ object Wrapper extends SprayJsonSupport {
     }
   }
 
-  def updateModCache(side: String) = {
+  def updateModCache(side: String): Unit = {
+    setupLauncherDirs(side)
 
+    val source = Source.fromFile(namagomiCache(side))
+    val cacheJson = source.getLines().mkString.parseJson.convertTo[NamagomiCache]
+    source.close()
+
+    val tree = new GitTree().build("NamagomiNetwork", "Namagomi-mod", "main")
+
+    tree.getData("mod/mod_list.json") match {
+      case Some(data) =>
+        val newJson = NamagomiCache(
+          cacheJson.data,
+          data.data.sha
+        )
+          .toJson
+          .compactPrint
+        File(namagomiCache(side)).writeAll(newJson)
+    }
   }
 
   private def setupLauncherDirs(side: String): Unit = {
