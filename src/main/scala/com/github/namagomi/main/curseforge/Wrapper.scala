@@ -19,7 +19,7 @@ import java.nio.file.Paths
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContextExecutor}
 
-object Wrapper extends SprayJsonSupport{
+object Wrapper extends SprayJsonSupport {
   implicit val system: ActorSystem = ActorSystem()
   implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
@@ -52,7 +52,6 @@ object Wrapper extends SprayJsonSupport{
         )
     }
   }
-
 
   private def getFileName(url: String): String = {
     url match {

@@ -76,7 +76,7 @@ object NamagomiData {
           }
         })
 
-        val newJson = createJson(cacheJson,result)
+        val newJson = createJson(cacheJson, result)
         val cacheWriter = new PrintWriter(namagomiCache(side))
         cacheWriter.write(newJson)
         cacheWriter.close()
