@@ -123,6 +123,23 @@ object Wrapper extends SprayJsonSupport {
     }
   }
 
+  def checkUpdate(side: String): Boolean = {
+    setupLauncherDirs(side)
+
+    val source = Source.fromFile(namagomiCache(side))
+    val cacheJson = source.getLines().mkString.parseJson.convertTo[NamagomiCache]
+    source.close()
+
+    val tree = new GitTree().build("NamagomiNetwork", "Namagomi-mod", "main")
+
+    tree.getData("mod/mod_list.json") match {
+      case Some(data) => cacheJson.mods != data.data.sha
+      case None =>
+        println("[ERROR] check update failed")
+        false
+    }
+  }
+
   private def setupLauncherDirs(side: String): Unit = {
     def mkdir(path: String): Unit = {
       if (!File(path).exists) {
