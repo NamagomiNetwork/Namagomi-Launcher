@@ -19,7 +19,7 @@ import com.github.namagomi.main.data.NamagomiCacheProtocol._
 import com.github.namagomi.main.github.GitTree
 import spray.json._
 
-import java.nio.file.Paths
+import java.nio.file.{Files, Paths}
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContextExecutor}
 import scala.io.Source
@@ -137,6 +137,24 @@ object Wrapper extends SprayJsonSupport {
       case None =>
         println("[ERROR] check update failed")
         false
+    }
+  }
+
+  def rmModFiles(namagomiMod: Seq[NamagomiModResponse], side: String): Unit = {
+    val files = Files.walk(Paths.get(modsDir(side)), 10)
+
+    val remoteFiles = namagomiMod
+      .filter(x => x.side == "" || x.side.contains(side))
+      .map(_.downloadUrl)
+      .collect { case Some(url) => getFileName(url) }
+
+    val source = Source.fromFile(namagomiIgnore(side))
+    val ignoreFiles = source.getLines().mkString.parseJson.convertTo[Seq[String]]
+    source.close()
+
+    files.collect {
+      case file if !(remoteFiles.contains(file) || ignoreFiles.contains(file) || Paths.get(modsDir(side), file).toFile.isDirectory) =>
+        Paths.get(modsDir(side), file).toFile.delete()
     }
   }
 
