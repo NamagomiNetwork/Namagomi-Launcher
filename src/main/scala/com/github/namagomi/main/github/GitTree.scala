@@ -7,12 +7,12 @@ import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import akka.http.scaladsl.model.{HttpEntity, Uri}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import com.github.namagomi.main.github.Protocol._
-import com.github.namagomi.main.github.Tree.getFileType
+import com.github.namagomi.main.github.GitTree.getFileType
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContextExecutor}
 
-class Tree(val data: TreeData, var children: Seq[Tree]) extends SprayJsonSupport {
+class GitTree(val data: TreeData, var children: Seq[GitTree]) extends SprayJsonSupport {
   def this() = {
     this(TreeData("", FileType.Tree, "", ""), Seq.apply())
   }
@@ -20,14 +20,14 @@ class Tree(val data: TreeData, var children: Seq[Tree]) extends SprayJsonSupport
   implicit val system: ActorSystem = ActorSystem()
   implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
-  def build(owner: String, repo: String, sha: String): Tree = {
+  def build(owner: String, repo: String, sha: String): GitTree = {
     this.data.sha = sha
     val apiUrl = s"https://api.github.com/repos/$owner/$repo/git/trees/$sha"
     this.fetchTree(owner, repo, apiUrl)
     this
   }
 
-  def build(owner: String, repo: String, sha: String, path: String, _type: FileType, url: String): Tree = {
+  def build(owner: String, repo: String, sha: String, path: String, _type: FileType, url: String): GitTree = {
     this.data.sha = sha
     this.data.path = path
     this.data._type = _type
@@ -42,7 +42,7 @@ class Tree(val data: TreeData, var children: Seq[Tree]) extends SprayJsonSupport
     val response = Await.result(Http().singleRequest(request), Duration.Inf)
     val body = Await.result(Unmarshal(response.entity).to[GitTreesResponse], Duration.Inf)
     body.tree.foreach(item =>
-      this.children = this.children :+ new Tree().build(owner, repo, item.sha, item.path, getFileType(item.`type`), item.url)
+      this.children = this.children :+ new GitTree().build(owner, repo, item.sha, item.path, getFileType(item.`type`), item.url)
     )
   }
 
@@ -51,7 +51,7 @@ class Tree(val data: TreeData, var children: Seq[Tree]) extends SprayJsonSupport
       case FileType.Blob =>
         Seq(pwd)
       case FileType.Tree =>
-        this.children.foldLeft(Seq(pwd))((a: Seq[String], child: Tree) =>
+        this.children.foldLeft(Seq(pwd))((a: Seq[String], child: GitTree) =>
           a ++ child.getAllPaths(s"$pwd/${child.data.path}")
         )
     }
@@ -62,7 +62,7 @@ class Tree(val data: TreeData, var children: Seq[Tree]) extends SprayJsonSupport
       case FileType.Blob =>
         Seq(pwd)
       case FileType.Tree =>
-        this.children.foldLeft(Seq.empty[String])((a: Seq[String], child: Tree) =>
+        this.children.foldLeft(Seq.empty[String])((a: Seq[String], child: GitTree) =>
           a ++ child.getAllPaths(s"$pwd/${child.data.path}")
         )
     }
@@ -73,13 +73,13 @@ class Tree(val data: TreeData, var children: Seq[Tree]) extends SprayJsonSupport
       case FileType.Blob =>
         Seq.empty[String]
       case FileType.Tree =>
-        this.children.foldLeft(Seq(pwd))((a: Seq[String], child: Tree) =>
+        this.children.foldLeft(Seq(pwd))((a: Seq[String], child: GitTree) =>
           a ++ child.getAllPaths(s"$pwd/${child.data.path}")
         )
     }
   }
 
-  def getData(path: String): Option[Tree] = {
+  def getData(path: String): Option[GitTree] = {
     val paths = path.split('/').filter(_ != "")
     paths.foldLeft(Option.apply(this))((tree, path) => {
       tree match {
@@ -101,7 +101,7 @@ class Tree(val data: TreeData, var children: Seq[Tree]) extends SprayJsonSupport
   }
 }
 
-object Tree {
+object GitTree {
   def getFileType(_type: String): FileType = {
     _type match {
       case "blob" => FileType.Blob
