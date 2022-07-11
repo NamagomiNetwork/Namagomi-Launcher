@@ -29,8 +29,7 @@ object NamagomiData {
         val dataPaths = dataTree.getAllFilePaths()
         val dataSubDirs = dataTree.getAllDirPaths()
 
-        if (!File(namagomiCache(side)).exists)
-          new PrintWriter(namagomiCache(side)).write(NamagomiCache.getEmpty)
+        mkEmptyJson(side)
 
         val source = Source.fromFile(namagomiCache(side))
         val cacheJson = source.getLines().mkString.parseJson.convertTo[NamagomiCache]
@@ -90,5 +89,39 @@ object NamagomiData {
     )
       .toJson
       .compactPrint
+  }
+
+  private def mkEmptyJson(side: String): Unit ={
+    if (!File(namagomiCache(side)).exists)
+      new PrintWriter(namagomiCache(side)).write(NamagomiCache.getEmpty)
+  }
+
+  def deleteFiles(dataTree: GitTree, side: String): Unit = {
+    mkEmptyJson(side)
+
+    val source = Source.fromFile(namagomiCache(side))
+    val cacheJson = source.getLines().mkString.parseJson.convertTo[NamagomiCache]
+    source.close()
+
+    val newData = cacheJson.data.map(data => {
+      if (!dataTree.exists(data.name)) {
+        val filePath = Paths.get(mainDir(side), data.name).toString
+        if (File(filePath).exists) {
+          File(filePath).delete()
+          println(s"delete: $filePath")
+        }
+        None
+      }
+      else
+        Some(data)
+    })
+      .collect {
+        case Some(value) => value
+      }
+
+    val newJson = createJson(cacheJson, newData)
+    val cacheWriter = new PrintWriter(namagomiCache(side))
+    cacheWriter.write(newJson)
+    cacheWriter.close()
   }
 }
