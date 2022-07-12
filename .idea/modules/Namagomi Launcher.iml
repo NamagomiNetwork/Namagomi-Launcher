@@ -52,6 +52,10 @@
     <orderEntry type="library" name="sbt: org.typelevel:cats-kernel_2.13:2.6.1:jar" level="project" />
     <orderEntry type="library" name="sbt: org.typelevel:jawn-parser_2.13:1.1.2:jar" level="project" />
     <orderEntry type="library" name="sbt: org.typelevel:simulacrum-scalafix-annotations_2.13:0.5.4:jar" level="project" />
+    <orderEntry type="library" name="sbt: pl.iterators:kebs-instances_2.13:1.9.4:jar" level="project" />
+    <orderEntry type="library" name="sbt: pl.iterators:kebs-macro-utils_2.13:1.9.4:jar" level="project" />
+    <orderEntry type="library" name="sbt: pl.iterators:kebs-spray-json-macros_2.13:1.9.4:jar" level="project" />
+    <orderEntry type="library" name="sbt: pl.iterators:kebs-spray-json_2.13:1.9.4:jar" level="project" />
     <orderEntry type="module-library">
       <library name="sbt: unmanaged-sources-and-docs">
         <CLASSES />
