@@ -95,14 +95,14 @@ object ModResponse {
     fileName: String,
     releaseType: Int,
     fileStatus: Int,
-    hashes: Seq[Hash],
+    hashes: Seq[Common.Hash],
     fileDate: String,
     fileLength: Int,
     downloadCount: Int,
     downloadUrl: String,
     gameVersions: Seq[String],
-    sortableGameVersions: Seq[SortableGameVersion],
-    dependencies: Seq[Dependency],
+    sortableGameVersions: Seq[Common.SortableGameVersion],
+    dependencies: Seq[Common.Dependency],
     exposeAsAlternative: Boolean,
     parentProjectFileId: Int,
     alternateFileId: Int,
@@ -110,33 +110,6 @@ object ModResponse {
     serverPackFileId: Int,
     fileFingerprint: Int,
     modules: Seq[Module]
-  )
-
-  case class Hash
-  (
-    value: String,
-    algo: Int
-  )
-
-  case class SortableGameVersion
-  (
-    gameVersionName: String,
-    gameVersionPadded: String,
-    gameVersion: String,
-    gameVersionReleaseDate: String,
-    gameVersionTypeId: Int
-  )
-
-  case class Dependency
-  (
-    modId: Int,
-    relationType: Int
-  )
-
-  case class Module
-  (
-    name: String,
-    fingerprint: Long
   )
 
   case class LatestFilesIndex
