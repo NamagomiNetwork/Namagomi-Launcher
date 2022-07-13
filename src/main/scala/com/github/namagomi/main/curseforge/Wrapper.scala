@@ -48,7 +48,7 @@ object Wrapper extends SprayJsonSupport {
           )
 
         val response = Await.result(Http().singleRequest(request), Duration.Inf)
-        val body = Await.result(Unmarshal(response.entity).to[CurseForgeResponse], Duration.Inf)
+        val body = Await.result(Unmarshal(response.entity).to[FileResponse.FileResponse], Duration.Inf)
 
         NamagomiModResponse(
           side,
@@ -156,6 +156,19 @@ object Wrapper extends SprayJsonSupport {
       case file if !(remoteFiles.contains(file) || ignoreFiles.contains(file) || Paths.get(modsDir(side), file).toFile.isDirectory) =>
         Paths.get(modsDir(side), file).toFile.delete()
     }
+  }
+
+  def getWebsiteLink(modId: String): String = {
+    val request = HttpRequest(GET, s"https://api.curseforge.com/v1/mods/$modId")
+      .withHeaders(
+        RawHeader("Accept", "application/json"),
+        RawHeader("x-api-key", curseForgeApiKey)
+      )
+
+    val response = Await.result(Http().singleRequest(request), Duration.Inf)
+    val body = Await.result(Unmarshal(response.entity).to[String], Duration.Inf)
+    val modResponse = body.toJson.convertTo[ModResponse.ModResponse]
+    modResponse.data.links.websiteUrl
   }
 
   private def setupLauncherDirs(side: String): Unit = {
