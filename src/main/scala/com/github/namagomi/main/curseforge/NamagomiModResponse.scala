@@ -5,5 +5,5 @@ case class NamagomiModResponse
   side: String,
   fileName: String,
   downloadUrl: Option[String],
-  hashes: Option[List[Hash]]
+  hashes: Option[List[Common.Hash]]
 )

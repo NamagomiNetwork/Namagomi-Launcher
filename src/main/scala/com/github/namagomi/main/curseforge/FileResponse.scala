@@ -27,6 +27,6 @@ object FileResponse {
     alternateFileId: Int,
     isServerPack: Boolean,
     fileFingerprint: Long,
-    modules: List[Module]
+    modules: List[Common.Module]
   )
 }

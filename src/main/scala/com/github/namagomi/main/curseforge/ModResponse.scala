@@ -109,7 +109,7 @@ object ModResponse {
     isServerPack: Boolean,
     serverPackFileId: Int,
     fileFingerprint: Int,
-    modules: Seq[Module]
+    modules: Seq[Common.Module]
   )
 
   case class LatestFilesIndex
