@@ -4,14 +4,6 @@ version := "0.1"
 
 scalaVersion := "2.13.8"
 
-val circeVersion = "0.14.1"
-
-libraryDependencies ++= Seq(
-  "io.circe" %% "circe-core",
-  "io.circe" %% "circe-generic",
-  "io.circe" %% "circe-parser"
-).map(_ % circeVersion)
-
 libraryDependencies ++= Seq(
   "org.scalafx" %% "scalafx" % "16.0.0-R24",
   "org.scala-lang.modules" %% "scala-xml" % "2.1.0",
