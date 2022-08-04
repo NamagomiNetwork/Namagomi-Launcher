@@ -1,4 +1,4 @@
-export interface GetXBL {
+export interface GetXbox {
     IssueInstant: string,
     NotAfter: string,
     Token: string,

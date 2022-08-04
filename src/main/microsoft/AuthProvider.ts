@@ -3,7 +3,7 @@ import {AuthCodeRequest, AuthCodeUrlParams, AuthData, PkceCodes} from '../../@ty
 import {protocol} from 'electron'
 import url from 'url'
 import path from 'path'
-import {GetXBL} from './GetXBL'
+import {GetXbox} from './GetXBL'
 import {log} from '../../generic/Logger'
 import {Option, none, some} from 'fp-ts/Option'
 
@@ -154,19 +154,46 @@ async function listenForAuthCode(navigateUrl: string, authWindow: Electron.Brows
     })
 }
 
+function authXbox(options: string | Electron.ClientRequestConstructorOptions, body:string){
+    const request = net.request(options)
+    request.setHeader('Content-Type', 'application/json')
+    request.setHeader('Accept', 'application/json')
+
+    request.write(body)
+
+    let token: Option<string> = none
+    let uhs: Option<string> = none
+
+    request.on('response', (response) => {
+        if (response.statusCode === 200)
+            response.on('data', (chunk) => {
+                const json = JSON.parse(chunk.join()) as GetXbox
+                token = some(json.Token)
+                uhs = some(json.DisplayClaims.xui[0].uhs)
+            })
+        else {
+            log.error('XBox Authorization error')
+            log.error(` StatusCode: ${response.statusCode}`)
+            log.error(` StatusMessage: ${response.statusCode}`)
+        }
+    })
+
+    request.end()
+
+    return [token, uhs]
+}
+
 /**
  * Get XBL token and XBL uhs from oauth2 access token
  * @param {string} accessToken oauth2 access token
  * @return {Option[string]} Return a tuple of XBL token and XBL uhs
  */
 function authXBL(accessToken: string) {
-    const request =
-        net.request({
+    const options =
+        {
             method: 'POST',
             url: 'https://user.auth.xboxlive.com/user/authenticate'
-        })
-    request.setHeader('Content-Type', 'application/json')
-    request.setHeader('Accept', 'application/json')
+        }
 
     const body = JSON.stringify({
         Properties: {
@@ -178,25 +205,30 @@ function authXBL(accessToken: string) {
         TokenType: 'JWT'
     })
 
-    request.write(body)
-
-    let XBLToken: Option<string> = none
-    let XBLUhs: Option<string> = none
-
-    request.on('response', (response) => {
-        if (response.statusCode === 200)
-            response.on('data', (chunk) => {
-                const json = JSON.parse(chunk.join()) as GetXBL
-                XBLToken = some(json.Token)
-                XBLUhs = some(json.DisplayClaims.xui[0].uhs)
-            })
-        else {
-            log.error('XBL Authorization error')
-            log.error(` StatusCode: ${response.statusCode}`)
-            log.error(` StatusMessage: ${response.statusCode}`)
-        }
-    })
-
-    return [XBLToken, XBLUhs]
+    return authXbox(options, body)
 }
 
+/**
+ * Get XSTS token and XSTS uhs from XBL token
+ * @param {string} XBLToken XBL token
+ * @return {Option[string]} Return a tuple of XSTS token and XSTS uhs
+ */
+function authXSTS(XBLToken: string) {
+    const options =
+        {
+            method: 'POST',
+            url: 'https://xsts.auth.xboxlive.com/xsts/authorize'
+        }
+    const body = JSON.stringify({
+        Properties: {
+            SandboxId: 'RETAIL',
+            UserTokens: [
+                `${XBLToken}`
+            ]
+        },
+        RelyingParty: 'rp://api.minecraftservices.com/',
+        TokenType: 'JWT'
+    })
+
+    return authXbox(options, body)
+}
