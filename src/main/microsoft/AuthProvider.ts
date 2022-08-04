@@ -154,7 +154,12 @@ async function listenForAuthCode(navigateUrl: string, authWindow: Electron.Brows
     })
 }
 
-function authXBL(accessToken: String) {
+/**
+ * Get XBL token and XBL uhs from oauth2 access token
+ * @param {string} accessToken oauth2 access token
+ * @return {Option[string]} Return a tuple of XBL token and XBL uhs
+ */
+function authXBL(accessToken: string) {
     const request =
         net.request({
             method: 'POST',
@@ -194,3 +199,4 @@ function authXBL(accessToken: String) {
 
     return [XBLToken, XBLUhs]
 }
+
