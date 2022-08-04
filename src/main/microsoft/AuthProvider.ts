@@ -268,5 +268,7 @@ function authMinecraft(XSTSUhs: string, XSTSToken: string) {
         }
     })
 
+    request.end()
+
     return accessToken
 }
