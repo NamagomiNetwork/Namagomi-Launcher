@@ -8,7 +8,7 @@ import {mainDir} from '../settings/localPath'
 import {addMods, getIgnoreList, removeMods} from '../minecraft/api/mods/addMod'
 import {openLogsFolder} from './logs'
 import {BrowserWindow} from 'electron'
-import {apply, login, logout} from '../../microsoft/AuthProvider'
+import {apply, loginMicrosoft, logout} from '../../microsoft/AuthProvider'
 import {log} from '../../../generic/Logger'
 import {AuthData} from '../../../@types/AuthData'
 
@@ -52,7 +52,7 @@ export function mainApiRegistry(mainWindow: BrowserWindow) {
     ipcMain.on('login', async () => {
         const win = new BrowserWindow({ width: 800, height: 600 })
         const data = apply()
-        authData = await login(win, data)
+        authData = await loginMicrosoft(win, data)
         win.close()
 
         if (authData.account !== null) {

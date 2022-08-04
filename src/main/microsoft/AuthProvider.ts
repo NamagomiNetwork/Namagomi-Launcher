@@ -3,6 +3,11 @@ import {AuthCodeRequest, AuthCodeUrlParams, AuthData, PkceCodes} from '../../@ty
 import {protocol} from 'electron'
 import url from 'url'
 import path from 'path'
+import {GetXBL} from './GetXBL'
+import {log} from '../../generic/Logger'
+import {Option, none, some} from 'fp-ts/Option'
+
+const {net} = require('electron')
 
 require('dotenv').config()
 
@@ -61,9 +66,10 @@ export function apply(): AuthData {
     }
 }
 
-export async function login(authWindow: Electron.BrowserWindow, authData: AuthData) {
+export async function loginMicrosoft(authWindow: Electron.BrowserWindow, authData: AuthData) {
     const authResult = await getTokenInteractive(authWindow, authData)
     const res = await handleResponse(authResult, authData)
+    console.log(authResult!.accessToken)
     return {
         ...authData,
         account: res
@@ -72,7 +78,7 @@ export async function login(authWindow: Electron.BrowserWindow, authData: AuthDa
 
 export async function logout(authData: AuthData) {
     if (authData.account) {
-        await authData.clientApplication.getTokenCache().removeAccount(authData.account);
+        await authData.clientApplication.getTokenCache().removeAccount(authData.account)
     }
     return {
         ...authData,
@@ -146,4 +152,45 @@ async function listenForAuthCode(navigateUrl: string, authWindow: Electron.Brows
             }
         })
     })
+}
+
+function authXBL(accessToken: String) {
+    const request =
+        net.request({
+            method: 'POST',
+            url: 'https://user.auth.xboxlive.com/user/authenticate'
+        })
+    request.setHeader('Content-Type', 'application/json')
+    request.setHeader('Accept', 'application/json')
+
+    const body = JSON.stringify({
+        Properties: {
+            AuthMethod: 'RPS',
+            SiteName: 'user.auth.xboxlive.com',
+            RpsTicket: `d=${accessToken}`
+        },
+        RelyingParty: 'http://auth.xboxlive.com',
+        TokenType: 'JWT'
+    })
+
+    request.write(body)
+
+    let XBLToken: Option<string> = none
+    let XBLUhs: Option<string> = none
+
+    request.on('response', (response) => {
+        if (response.statusCode === 200)
+            response.on('data', (chunk) => {
+                const json = JSON.parse(chunk.join()) as GetXBL
+                XBLToken = some(json.Token)
+                XBLUhs = some(json.DisplayClaims.xui[0].uhs)
+            })
+        else {
+            log.error('XBL Authorization error')
+            log.error(` StatusCode: ${response.statusCode}`)
+            log.error(` StatusMessage: ${response.statusCode}`)
+        }
+    })
+
+    return [XBLToken, XBLUhs]
 }
