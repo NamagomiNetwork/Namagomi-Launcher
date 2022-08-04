@@ -6,6 +6,7 @@ import path from 'path'
 import {GetXbox} from './GetXBL'
 import {log} from '../../generic/Logger'
 import {Option, none, some} from 'fp-ts/Option'
+import {GetMinecraft} from './GetMinecraft'
 
 const {net} = require('electron')
 
@@ -154,7 +155,7 @@ async function listenForAuthCode(navigateUrl: string, authWindow: Electron.Brows
     })
 }
 
-function authXbox(options: string | Electron.ClientRequestConstructorOptions, body:string){
+function authXbox(options: string | Electron.ClientRequestConstructorOptions, body: string) {
     const request = net.request(options)
     request.setHeader('Content-Type', 'application/json')
     request.setHeader('Accept', 'application/json')
@@ -231,4 +232,41 @@ function authXSTS(XBLToken: string) {
     })
 
     return authXbox(options, body)
+}
+
+/**
+ * Get Minecraft access token
+ * @param {string} XSTSUhs
+ * @param {string} XSTSToken
+ */
+function authMinecraft(XSTSUhs: string, XSTSToken: string) {
+    const request = net.request({
+        method: 'POST',
+        url: 'https://api.minecraftservices.com/authentication/login_with_xbox'
+    })
+    request.setHeader('Content-Type', 'application/json')
+    request.setHeader('Accept', 'application/json')
+
+    const body = JSON.stringify({
+        identityToken: `XBL3.0 x=${XSTSUhs};${XSTSToken}`
+    })
+
+    request.write(body)
+
+    let accessToken: Option<string>=none
+
+    request.on('response', (response) => {
+        if (response.statusCode === 200)
+            response.on('data', (chunk) => {
+                const json = JSON.parse(chunk.join()) as GetMinecraft
+                accessToken = some(json.access_token)
+            })
+        else {
+            log.error('Minecraft Authorization error')
+            log.error(` StatusCode: ${response.statusCode}`)
+            log.error(` StatusMessage: ${response.statusCode}`)
+        }
+    })
+
+    return accessToken
 }
