@@ -3,6 +3,6 @@
     "eslint:recommended"
   ],
   "rules": {
-    "semi": [false, "always"]
+    "semi": [0, "always"]
   }
 }
