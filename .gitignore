@@ -136,3 +136,4 @@ fabric.properties
 dist/
 .idea/
 assets/installer/
+.env
