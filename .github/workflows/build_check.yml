@@ -33,6 +33,9 @@ jobs:
 
   mac_build:
     runs-on: macos-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -41,6 +44,14 @@ jobs:
         with:
           node-version: 16
           cache: npm
+      - run: security create-keychain -p password my.keychain
+      - run: security default-keychain -s my.keychain
+      - run: security unlock-keychain -p password my.keychain
+      - run: security set-keychain-settings my.keychain
+      - run: security import namagomi-launcher.p12 -k my.keychain -A -P ${{ secret.P12PASS }}
+      - run: "security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k password my.keychain"
+      - run: security list-keychains -s my.keychain
+      - run: security find-identity -v
       - name: npm install
         run: npm install
       - name: install dmg-license
@@ -49,8 +60,6 @@ jobs:
         run: npm install -g typescript
       - name: Build Launcher
         run: npm run publish-mac
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
