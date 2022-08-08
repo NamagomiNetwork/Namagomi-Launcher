@@ -5,8 +5,11 @@ import url from 'url'
 import path from 'path'
 import {GetXbox} from './GetXBL'
 import {log} from '../../generic/Logger'
-import {Option, none, some} from 'fp-ts/Option'
+import {Option, none, some, fromNullable, chain} from 'fp-ts/Option'
 import {GetMinecraft} from './GetMinecraft'
+import {pipe} from 'fp-ts/function'
+import {Error, GetMinecraftProfile, Ok} from './GetMinecraftProfile'
+import {Either, left, right} from 'fp-ts/Either'
 
 const {net} = require('electron')
 
@@ -67,13 +70,29 @@ export function apply(): AuthData {
     }
 }
 
+/**
+ * Microsoft Authentication Scheme
+ * @param authWindow
+ * @param authData
+ */
 export async function loginMicrosoft(authWindow: Electron.BrowserWindow, authData: AuthData) {
     const authResult = await getTokenInteractive(authWindow, authData)
-    const res = await handleResponse(authResult, authData)
-    console.log(authResult!.accessToken)
+    const account = await handleResponse(authResult, authData)
+
+    const minecraftToken = pipe(
+        fromNullable(authResult),
+        chain(r => {
+            console.log(r.accessToken)
+            return some(r.accessToken)
+        }),
+        chain(authXBL),
+        chain(([token]: string[]) => authXSTS(token)),
+        chain(([token, uhs]: string[]) => authMinecraft(token, uhs))
+    )
+
     return {
         ...authData,
-        account: res
+        account: account
     }
 }
 
@@ -162,15 +181,15 @@ function authXbox(options: string | Electron.ClientRequestConstructorOptions, bo
 
     request.write(body)
 
-    let token: Option<string> = none
-    let uhs: Option<string> = none
+    let token = ''
+    let uhs = ''
 
     request.on('response', (response) => {
         if (response.statusCode === 200)
             response.on('data', (chunk) => {
                 const json = JSON.parse(chunk.join()) as GetXbox
-                token = some(json.Token)
-                uhs = some(json.DisplayClaims.xui[0].uhs)
+                token = json.Token
+                uhs = json.DisplayClaims.xui[0].uhs
             })
         else {
             log.error('XBox Authorization error')
@@ -181,7 +200,9 @@ function authXbox(options: string | Electron.ClientRequestConstructorOptions, bo
 
     request.end()
 
-    return [token, uhs]
+    if (token == '' || uhs == '')
+        return none
+    return some([token, uhs])
 }
 
 /**
@@ -239,7 +260,7 @@ function authXSTS(XBLToken: string) {
  * @param {string} XSTSUhs
  * @param {string} XSTSToken
  */
-function authMinecraft(XSTSUhs: string, XSTSToken: string) {
+function authMinecraft(XSTSToken: string, XSTSUhs: string) {
     const request = net.request({
         method: 'POST',
         url: 'https://api.minecraftservices.com/authentication/login_with_xbox'
@@ -253,7 +274,7 @@ function authMinecraft(XSTSUhs: string, XSTSToken: string) {
 
     request.write(body)
 
-    let accessToken: Option<string>=none
+    let accessToken: Option<string> = none
 
     request.on('response', (response) => {
         if (response.statusCode === 200)
@@ -271,4 +292,17 @@ function authMinecraft(XSTSUhs: string, XSTSToken: string) {
     request.end()
 
     return accessToken
+}
+
+async function getMinecraftProfile(minecraftToken: string): Promise<Either<string, GetMinecraftProfile>> {
+    const response = await fetch('https://api.minecraftservices.com/minecraft/profile', {headers: {Authorization: `Bearer ${minecraftToken}`}})
+
+    switch (response.status){
+        case 200:
+            if((await response.json()).id != undefined)
+                return right(await response.json() as Ok)
+            else return right(await response.json() as Error)
+        default:
+            return left(`status ${response.status}`)
+    }
 }
