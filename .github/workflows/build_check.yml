@@ -30,6 +30,20 @@ jobs:
         with:
           name: Namagomi-Launcher
           path: assets/installer/Namagomi-Launcher.AppImage
+      - name: Create dot env file
+      - shell: bash
+        run: |
+          touch .env
+          echo "CLIENT_ID=9afa5262-e6db-4497-a79b-08f17e684f24" >> .env
+          echo "TENANT_ID=consumers" >> .env
+          echo "REDIRECT_URI=msal://redirect" >> .env
+          echo "AD_ENDPOINT_HOST=https://login.microsoftonline.com/" >> .env
+          echo "GRAPH_ENDPOINT_HOST=https://graph.microsoft.com/" >> .env
+          echo "GRAPH_ME_ENDPOINT=v1.0/me" >> .env
+          echo "GRAPH_MAIL_ENDPOINT=v1.0/me/messages" >> .env
+          echo "APPLEID=yuuki1293@outlook.jp" >> .env
+          echo "APPLEIDPASS=${{ secret.APPLEIDPASS }}" >> .env
+          echo "ASC_PROVIDER=${{ secret.ASC_PROVIDER }}" >> .env
 
   mac_build:
     runs-on: macos-latest
