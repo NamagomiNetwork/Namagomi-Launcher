@@ -25,6 +25,8 @@ jobs:
         run: npm run publish-linux
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          APPLEIDPASS: ${{ secrets.APPLEIDPASS }}
+          ASC_PROVIDER: ${{ secrets.ASC_PROVIDER }}
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
@@ -42,13 +44,14 @@ jobs:
           echo "GRAPH_ME_ENDPOINT=v1.0/me" >> .env
           echo "GRAPH_MAIL_ENDPOINT=v1.0/me/messages" >> .env
           echo "APPLEID=yuuki1293@outlook.jp" >> .env
-          echo "APPLEIDPASS=${{ secret.APPLEIDPASS }}" >> .env
-          echo "ASC_PROVIDER=${{ secret.ASC_PROVIDER }}" >> .env
+          echo "APPLEIDPASS=${{ APPLEIDPASS }}" >> .env
+          echo "ASC_PROVIDER=${{ ASC_PROVIDER }}" >> .env
 
   mac_build:
     runs-on: macos-latest
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      P12PASS: ${{ secrets.P12PASS }}
     timeout-minutes: 30
     steps:
       - name: Checkout
@@ -62,7 +65,7 @@ jobs:
       - run: security default-keychain -s my.keychain
       - run: security unlock-keychain -p password my.keychain
       - run: security set-keychain-settings my.keychain
-      - run: security import namagomi-launcher.p12 -k my.keychain -A -P ${{ secret.P12PASS }}
+      - run: security import namagomi-launcher.p12 -k my.keychain -A -P ${{ P12PASS }}
       - run: "security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k password my.keychain"
       - run: security list-keychains -s my.keychain
       - run: security find-identity -v
