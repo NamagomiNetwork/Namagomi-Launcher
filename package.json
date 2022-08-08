@@ -40,7 +40,6 @@
     "electron-log": "^4.4.7",
     "electron-reload": "latest",
     "electron-search-devtools": "1.8.5",
-    "electron-notarize":  "^1.2.1",
     "eslint": "^8.18.0",
     "fp-ts": "^2.12.1",
     "fs-extra": "^10.1.0",
