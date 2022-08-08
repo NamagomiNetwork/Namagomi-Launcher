@@ -31,7 +31,7 @@ jobs:
           name: Namagomi-Launcher
           path: assets/installer/Namagomi-Launcher.AppImage
       - name: Create dot env file
-      - shell: bash
+        shell: bash
         run: |
           touch .env
           echo "CLIENT_ID=9afa5262-e6db-4497-a79b-08f17e684f24" >> .env
