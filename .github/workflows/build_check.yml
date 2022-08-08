@@ -44,8 +44,8 @@ jobs:
           echo "GRAPH_ME_ENDPOINT=v1.0/me" >> .env
           echo "GRAPH_MAIL_ENDPOINT=v1.0/me/messages" >> .env
           echo "APPLEID=yuuki1293@outlook.jp" >> .env
-          echo "APPLEIDPASS=${{ APPLEIDPASS }}" >> .env
-          echo "ASC_PROVIDER=${{ ASC_PROVIDER }}" >> .env
+          echo "APPLEIDPASS=$APPLEIDPASS" >> .env
+          echo "ASC_PROVIDER=$ASC_PROVIDER" >> .env
 
   mac_build:
     runs-on: macos-latest
@@ -65,7 +65,7 @@ jobs:
       - run: security default-keychain -s my.keychain
       - run: security unlock-keychain -p password my.keychain
       - run: security set-keychain-settings my.keychain
-      - run: security import namagomi-launcher.p12 -k my.keychain -A -P ${{ P12PASS }}
+      - run: security import namagomi-launcher.p12 -k my.keychain -A -P $P12PASS
       - run: "security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k password my.keychain"
       - run: security list-keychains -s my.keychain
       - run: security find-identity -v
