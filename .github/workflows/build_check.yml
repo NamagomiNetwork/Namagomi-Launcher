@@ -29,8 +29,6 @@ jobs:
         run: npm run publish-linux
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          APPLEIDPASS: ${{ secrets.APPLEIDPASS }}
-          ASC_PROVIDER: ${{ secrets.ASC_PROVIDER }}
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
@@ -65,12 +63,6 @@ jobs:
       - run: security find-identity -v
       - name: npm install
         run: npm install
-      - name: install dmg-license
-        run: npm i dmg-license
-      - name: install electron-notarize
-        run: npm i electron-notarize
-      - name: install TypeScript
-        run: npm install -g typescript
       - name: Build Launcher
         run: npm run publish-mac
       - name: Upload artifact
