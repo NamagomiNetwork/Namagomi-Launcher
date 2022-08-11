@@ -1,3 +1,4 @@
+[![Launcher Build](https://github.com/NamagomiNetwork/Namagomi-Launcher.old/actions/workflows/build_check.yml/badge.svg)](https://github.com/NamagomiNetwork/Namagomi-Launcher.old/actions/workflows/build_check.yml)
 # Namagomi Launcher
 生ゴミ鯖のランチャー
 
