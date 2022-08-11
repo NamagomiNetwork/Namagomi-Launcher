@@ -15,16 +15,10 @@
     "dev:webpack": "cross-env NODE_ENV=\"development\" webpack --progress",
     "dev:electron": "wait-on ./dist/index.html && cross-env NODE_ENV=\"development\" electron .",
     "publish-win-x64": "npm run build && electron-builder --win --x64 --publish=never",
-    "publish-mac": "npm install dmg-license electron-notarize typescript && npm run build && electron-builder --mac --universal --publish=never",
+    "publish-mac": "npm run build && electron-builder --mac --xuniversal --publish=never",
     "publish-linux": "npm run build && electron-builder --linux --publish=never"
   },
   "dependencies": {
-    "electron-notarize": "^1.2.1",
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0",
-    "uuidjs": "^4.2.11"
-  },
-  "devDependencies": {
     "@azure/msal-node": "^1.0.0",
     "@types/node": "17.0.34",
     "@types/react": "18.0.14",
@@ -35,13 +29,6 @@
     "cross-env": "7.0.3",
     "crypto-browserify": "^3.12.0",
     "css-loader": "6.7.1",
-    "electron": "19.0.5",
-    "electron-builder": "23.1.0",
-    "electron-dl": "3.3.1",
-    "electron-fetch": "^1.7.4",
-    "electron-log": "^4.4.7",
-    "electron-reload": "latest",
-    "electron-search-devtools": "1.8.5",
     "eslint": "^8.18.0",
     "fp-ts": "^2.12.1",
     "fs-extra": "^10.1.0",
@@ -50,15 +37,30 @@
     "mini-css-extract-plugin": "2.6.1",
     "npm-run-all": "4.1.5",
     "path-browserify": "^1.0.1",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
     "rimraf": "3.0.2",
     "stream-browserify": "^3.0.0",
     "ts-loader": "9.3.0",
     "ts-node": "10.8.1",
     "typescript": "^4.7.4",
-    "uuid-js": "^0.7.5",
+    "uuidjs": "^4.2.11",
     "wait-on": "6.0.1",
     "webpack": "5.73.0",
     "webpack-cli": "4.10.0"
+  },
+  "devDependencies": {
+    "electron": "19.0.5",
+    "electron-builder": "23.1.0",
+    "electron-dl": "3.3.1",
+    "electron-fetch": "^1.7.4",
+    "electron-log": "^4.4.7",
+    "electron-reload": "latest",
+    "electron-search-devtools": "1.8.5"
+  },
+  "optionalDependencies": {
+    "dmg-license": "^1.0.11",
+    "electron-notarize": "^1.2.1"
   },
   "build": {
     "extends": null,
