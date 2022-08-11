@@ -24,7 +24,7 @@ jobs:
       - name: npm install
         run: npm install
       - name: install TypeScript
-        run: npm install -g typescript
+        run: npm install --location=global typescript
       - name: Build Launcher
         run: npm run publish-linux
         env:
@@ -63,6 +63,8 @@ jobs:
       - run: security find-identity -v
       - name: npm install
         run: npm install
+      - name: install TypeScript
+        run: npm install --location=global typescript
       - name: Build Launcher
         run: npm run publish-mac
       - name: Upload artifact
@@ -88,7 +90,7 @@ jobs:
       - name: npm install
         run: npm install
       - name: install TypeScript
-        run: npm install -g typescript
+        run: npm install --location=global typescript
       - name: Build Launcher
         run: npm run publish-win-x64
         env:
