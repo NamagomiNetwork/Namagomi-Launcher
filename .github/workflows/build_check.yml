@@ -17,10 +17,14 @@ jobs:
         with:
           node-version: 16
           cache: npm
+      - name: Create dot env file
+        env:
+          DOT_ENV: ${{ secrets.DOT_ENV }}
+        run: echo $DOT_ENV | base64 --decode > .env
       - name: npm install
         run: npm install
       - name: install TypeScript
-        run: npm install -g typescript
+        run: npm install --location=global typescript
       - name: Build Launcher
         run: npm run publish-linux
         env:
@@ -33,6 +37,10 @@ jobs:
 
   mac_build:
     runs-on: macos-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      P12PASS: ${{ secrets.P12PASS }}
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -41,16 +49,24 @@ jobs:
         with:
           node-version: 16
           cache: npm
+      - name: Create dot env file
+        env:
+          DOT_ENV: ${{ secrets.DOT_ENV }}
+        run: echo $DOT_ENV | base64 --decode > .env
+      - run: security create-keychain -p password my.keychain
+      - run: security default-keychain -s my.keychain
+      - run: security unlock-keychain -p password my.keychain
+      - run: security set-keychain-settings my.keychain
+      - run: security import namagomi-launcher.p12 -k my.keychain -A -P $P12PASS
+      - run: "security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k password my.keychain"
+      - run: security list-keychains -s my.keychain
+      - run: security find-identity -v
       - name: npm install
         run: npm install
-      - name: install dmg-license
-        run: npm i dmg-license
       - name: install TypeScript
-        run: npm install -g typescript
+        run: npm install --location=global typescript
       - name: Build Launcher
         run: npm run publish-mac
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
@@ -67,10 +83,14 @@ jobs:
         with:
           node-version: 16
           cache: npm
+      - name: Create dot env file
+        env:
+          DOT_ENV: ${{ secrets.DOT_ENV }}
+        run: echo $DOT_ENV | base64 --decode > .env
       - name: npm install
         run: npm install
       - name: install TypeScript
-        run: npm install -g typescript
+        run: npm install --location=global typescript
       - name: Build Launcher
         run: npm run publish-win-x64
         env:
