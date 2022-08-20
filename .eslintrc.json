@@ -6,7 +6,7 @@
     "semi": [0, "always"]
   },
   "parserOptions": {
-    "ecmaVersion": 7,
+    "ecmaVersion": "latest",
     "sourceType": "module"
   }
 }
