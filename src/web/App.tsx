@@ -10,7 +10,6 @@ export const App = () => {
         <div className="container">
             <div className={"flexElements"}>
                 <Switch/>
-                <Auth/>
                 <Log/>
             </div>
             <Footer/>
