@@ -1,0 +1,71 @@
+### XBL による認証
+POST https://user.auth.xboxlive.com/user/authenticate
+Accept: application/json
+Content-Type: application/json
+
+{
+    "Properties": {
+        "AuthMethod": "RPS",
+        "SiteName": "user.auth.xboxlive.com",
+        "RpsTicket": "d={{oauth2-token}}"
+    },
+    "RelyingParty": "http://auth.xboxlive.com",
+    "TokenType": "JWT"
+}
+
+> {%
+    const token = response.body.Token;
+    const uhs = response.body.DisplayClaims.xui[0].uhs;
+    client.global.set("XBLToken", token);
+    client.global.set("XBLuhs", uhs);
+    client.log(`XBLToken: ${token}`);
+    client.log(`XBLuhs: ${uhs}`);
+%}
+
+### XSTS による認証
+POST https://xsts.auth.xboxlive.com/xsts/authorize
+Accept: application/json
+Content-Type: application/json
+
+{
+    "Properties": {
+        "SandboxId": "RETAIL",
+        "UserTokens": [
+          "{{XBLToken}}"
+        ]
+    },
+    "RelyingParty": "rp://api.minecraftservices.com/",
+    "TokenType": "JWT"
+}
+
+> {%
+    const token = response.body.Token;
+    const uhs = response.body.DisplayClaims.xui[0].uhs;
+    client.global.set("XSTSToken", token);
+    client.global.set("XSTSuhs", uhs);
+    client.log(`XSTSToken: ${token}`);
+    client.log(`XSTSuhs: ${uhs}`);
+%}
+
+### マインクラフトで認証する
+POST https://api.minecraftservices.com/authentication/login_with_xbox
+Accept: application/json
+Content-Type: application/json
+
+{
+    "identityToken": "XBL3.0 x={{XSTSuhs}};{{XSTSToken}}"
+}
+
+> {%
+    const accessToken = response.body.access_token;
+    client.global.set("minecraftAccessToken", accessToken);
+    client.log(`minecraftAccessToken: ${accessToken}`);
+%}
+
+### ゲームの所有権の確認
+GET https://api.minecraftservices.com/entitlements/mcstore
+Authorization: Bearer {{minecraftAccessToken}}
+
+### プロファイルの取得
+GET https://api.minecraftservices.com/minecraft/profile
+Authorization: Bearer {{minecraftAccessToken}}
