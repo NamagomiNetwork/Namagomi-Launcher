@@ -3,6 +3,8 @@ import {searchDevtools} from 'electron-search-devtools'
 import {BrowserWindow, app, ipcMain, session} from 'electron'
 import {mainApiRegistry} from './main/namagomi/api/apiRegister'
 import {log} from './generic/Logger'
+import * as dotenv from 'dotenv'
+dotenv.config()
 
 const electronLog = require('electron-log')
 electronLog.transports.file.archiveLog(electronLog.transports.file.getFile().path)
