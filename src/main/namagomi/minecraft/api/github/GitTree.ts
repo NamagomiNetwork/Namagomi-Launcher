@@ -28,13 +28,17 @@ export class GitTree implements IGitTree {
 
     private async fetchTree(owner: string, repo: string, apiUrl: string) {
         await fetch(apiUrl).then(p => p.json()).then(async (json: GetGitTrees) => {
-            await Promise.all(json.tree.map(async (item) => {
-                const path = item.path
-                const type = item.type
-                const sha = item.sha
-                const url = item.url
-                this.children.push(await new GitTree().build(owner, repo, sha, path, type, url))
-            }))
+            if (json.tree == null) {
+                console.error('Github API rate limit reached')
+            }else {
+                await Promise.all(json.tree.map(async (item) => {
+                    const path = item.path
+                    const type = item.type
+                    const sha = item.sha
+                    const url = item.url
+                    this.children.push(await new GitTree().build(owner, repo, sha, path, type, url))
+                }))
+            }
         })
     }
 
