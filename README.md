@@ -48,7 +48,7 @@ npm run publish-win-x64
 ## Mac
 ```shell
 npm install
-npm run publish-mac-x64
+npm run publish-mac
 ```
 
 ## Linux
