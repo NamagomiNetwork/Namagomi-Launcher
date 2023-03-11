@@ -55,7 +55,7 @@
     "electron-fetch": "^1.7.4",
     "electron-log": "^4.4.7",
     "electron-reload": "latest",
-    "electron-search-devtools": "1.8.5"
+    "electron-search-devtools": "1.8.8"
   },
   "optionalDependencies": {
     "dmg-license": "^1.0.11",
